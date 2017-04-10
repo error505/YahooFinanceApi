@@ -20,11 +20,8 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="interval"></param>
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
-        /// <param name="tickers"></param>
-        /// <param name="format"></param>
-        /// <param name="env"></param>
         /// <returns></returns>
-        public async Task RepeatActionEvery(TimeSpan interval, CancellationToken cancellationToken, string url, string tickers, string format, string env)
+        public async Task RepeatActionEvery(TimeSpan interval, CancellationToken cancellationToken, string url)
         {
             // still not in use anywhere....
             var financeModel = new List<FinanceModel>();
@@ -35,16 +32,10 @@ namespace StockExchangeYahooFinance.Services
                 {
                     await task;
                     Console.Clear();
-                    string json;
-                    using (var web = new WebClient())
-                    {
-                        json = web.DownloadString(url + tickers + format + env);
-                    }
-
-                    var v = JObject.Parse(json);
+                    var json = WebRequest(url);
                     var d = new FinanceData();
                     dynamic data = JObject.Parse(json);
-                    var quote = data.query.results.quote; //Use later
+                    var quote = data.query.results.quote;
                     foreach (var i in quote)
                     {
                         var f = new FinanceModel();
@@ -82,22 +73,14 @@ namespace StockExchangeYahooFinance.Services
         /// Get CSV from yahoo finance and parse it
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="tickers"></param>
-        /// <param name="data"></param>
         /// <returns></returns>
-        public List<FinanceModel> ParseCsv(string url, string tickers, string data)
+        public List<FinanceModel> ParseCsv(string url)
         {
-            //Add parameters in URL for more info
-            var csvUrl = url + $"{tickers}&f={data}";
-            string csvData;
-
-            using (var web = new WebClient())
-            {
-                csvData = web.DownloadString(csvUrl);
-            }
-
+            //Call web request
+            var csvData = WebRequest(url);
+            //Parse CSV
             var rows = csvData.Replace("\r", "").Split('\n');
-
+            //Get data from string
             var prices = (from row in rows
                 where !string.IsNullOrEmpty(row)
                 select row.Split(',')
@@ -106,15 +89,35 @@ namespace StockExchangeYahooFinance.Services
                 {
                     Symbol = cols[0], Name = cols[1], Bid = (cols[2]), Ask = (cols[3]), Open = (cols[4]), PreviousClose = (cols[5]), LastTradePriceOnly = (cols[6]), Change = cols[7]
                 }).ToList();
+
+            //Write data in console
             foreach (var price in prices)
             {
                 Console.WriteLine("{0} ({1})  Bid:{2} Offer:{3} Last:{4} Open: {5} PreviousClose:{6} Change:{7}",
                     price.Name, price.Symbol, price.Bid, price.Ask, price.LastTradePriceOnly, price.Open,
                     price.PreviousClose, price.Change);
             }
+
             Console.Read();
+
             return prices;
         }
+        /// <summary>
+        /// Call web API
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private static string WebRequest(string url)
+        {
+            string webResponseData;
 
+            //Make web request
+            using (var web = new WebClient())
+            {
+                webResponseData = web.DownloadString(url);
+            }
+
+            return webResponseData;
+        }
     }
 }

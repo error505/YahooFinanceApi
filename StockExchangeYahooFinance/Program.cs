@@ -40,11 +40,15 @@ namespace StockExchangeYahooFinance
             ContainerBootstrapper.RegisterTypes(container);
             var request = container.Resolve<ApiRequest>();
             var cancellation = new CancellationTokenSource(Timeout.Infinite);
-            var tickersData = $"(%22{Tickers}%22)";
-            //For JSON data
-            request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, FinanceQueryUrl, tickersData, Format, DataTableEnv).Wait(cancellation.Token);
+            var financeUrl = FinanceQueryUrl + $"(%22{Tickers}%22)" + Format + DataTableEnv;
+            var commoditiesUrl = FinanceQueryUrl + $"(%22{Commodities}%22)" + Format + DataTableEnv;
+            var csvUrl = CsvUrl + $"{Tickers}&f={CsvData}";
+            //For JSON data for Companies
+            request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, financeUrl).Wait(cancellation.Token);
+            //For JSON data for Commodities
+            //request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, commoditiesUrl).Wait(cancellation.Token);
             //If you want to use CSV Parsing use this method
-            //request.ParseCsv(CsvUrl, Tickers, CsvData);
+            //request.ParseCsv(csvUrl);
         }
     }
 }
