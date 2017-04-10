@@ -1,19 +1,33 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using System.Threading;
 using Microsoft.Practices.Unity;
-using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Mappings;
 using StockExchangeYahooFinance.Services;
 
 namespace StockExchangeYahooFinance
 {
-    internal class Program
+    internal static class Program
     {
-        private static readonly XmlObjectSerializer Serializer = new DataContractJsonSerializer(typeof(FinanceData));
         private const string Tickers = "AAPL,GOOG,GOOGL,YHOO,TSLA,INTC,AMZN,BIDU,ORCL,MSFT,ORCL,ATVI,NVDA,LNKD,NFLX,A,AZZ,SHLM,ADES,PIH,SAFT,SANM,SASR,FLWS,FCCY,SRCE,VNET";
         private const string Commodities = "GC=F,ZG=F,SI=F,ZI=F,PL=F,HG=F,PA=F,CL=F,HO=F,NG=F,RB=F,BZ=F,B0=F,C=F,O=F,KW=F,RR=F,SM=F,BO=F,S=F,FC=F,LH=F,LC=F,CC=F,KC=F,CT=F,LB=F,OJ=F,SB=F";
+        private const string CsvUrl = "http://finance.yahoo.com/d/quotes.csv?s=";
+        private const string DataTableEnv = "&env=store://datatables.org/alltableswithkeys&callback=";
+        private const string Format = "&format=json";
+        private const string FinanceQueryUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20";
+        private const string CsvData = "snbaopl1c1d1cm6";
+
+        //All other API Usage only for future needs
+        //var smallQuery =
+        //    "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20csv%20where%20url%3D%27http%3A%2F%2Fdownload.finance.yahoo.com%2Fd%2Fquotes.csv%3Fs%3DACA.PA%26f%3Dsl1d1t1c1ohgv%26e%3D.csv%27%20and%20columns%3D%27symbol%2Cprice%2Cdate%2Ctime%2Cchange%2Ccol1%2Chigh%2Clow%2Ccol2%27&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+        //var ecb = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
+        //var gold =
+        //    "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quote%20where%20symbol%20in%20(%22GC=F%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+        //var curencyXML =
+        //    "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.xchange%20where%20pair%20in%20(%22EURBAM%22,%20%22USDJPY%22,%20%22USDBGN%22,%20%22USDCZK%22,%20%22USDDKK%22,%20%22USDGBP%22,%20%22USDHUF%22,%20%22USDLTL%22,%20%22USDLVL%22,%20%22USDPLN%22,%20%22USDRON%22,%20%22USDSEK%22,%20%22USDCHF%22,%20%22USDNOK%22,%20%22USDHRK%22,%20%22USDRUB%22,%20%22USDTRY%22,%20%22USDAUD%22,%20%22USDBRL%22,%20%22USDCAD%22,%20%22USDCNY%22,%20%22USDHKD%22,%20%22USDIDR%22,%20%22USDILS%22,%20%22USDINR%22,%20%22USDKRW%22,%20%22USDMXN%22,%20%22USDMYR%22,%20%22USDNZD%22,%20%22USDPHP%22,%20%22USDSGD%22,%20%22USDTHB%22,%20%22USDZAR%22,%20%22USDISK%22)&env=store://datatables.org/alltableswithkeys";
+        //var curencyUrl =
+        //    "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.xchange%20where%20pair%20in%20(%22EURBAM%22,%20%22USDJPY%22,%20%22USDBGN%22,%20%22USDCZK%22,%20%22USDDKK%22,%20%22USDGBP%22,%20%22USDHUF%22,%20%22USDLTL%22,%20%22USDLVL%22,%20%22USDPLN%22,%20%22USDRON%22,%20%22USDSEK%22,%20%22USDCHF%22,%20%22USDNOK%22,%20%22USDHRK%22,%20%22USDRUB%22,%20%22USDTRY%22,%20%22USDAUD%22,%20%22USDBRL%22,%20%22USDCAD%22,%20%22USDCNY%22,%20%22USDHKD%22,%20%22USDIDR%22,%20%22USDILS%22,%20%22USDINR%22,%20%22USDKRW%22,%20%22USDMXN%22,%20%22USDMYR%22,%20%22USDNZD%22,%20%22USDPHP%22,%20%22USDSGD%22,%20%22USDTHB%22,%20%22USDZAR%22,%20%22USDISK%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+        //var curencyAllUSD =
+        //    "http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json";
 
         private static void Main()
         {
@@ -26,8 +40,11 @@ namespace StockExchangeYahooFinance
             ContainerBootstrapper.RegisterTypes(container);
             var request = container.Resolve<ApiRequest>();
             var cancellation = new CancellationTokenSource(Timeout.Infinite);
-            request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, Tickers).Wait(cancellation.Token);
-            //request.ParseCsv(); //If you want to use CSV Parsing use this method
+            var tickersData = $"(%22{Tickers}%22)";
+            //For JSON data
+            request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, FinanceQueryUrl, tickersData, Format, DataTableEnv).Wait(cancellation.Token);
+            //If you want to use CSV Parsing use this method
+            //request.ParseCsv(CsvUrl, Tickers, CsvData);
         }
     }
 }
