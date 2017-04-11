@@ -4,7 +4,8 @@ using StockExchangeYahooFinance.Models;
 namespace StockExchangeYahooFinance.DbContext
 {
     using Microsoft.EntityFrameworkCore;
-    class YahooFinanceDbContext : DbContext
+
+    public class YahooFinanceDbContext : DbContext
     {
         protected override void OnModelCreating(ModelBuilder builder)
         {

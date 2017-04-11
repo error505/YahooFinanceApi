@@ -7,14 +7,22 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
+using StockExchangeYahooFinance.DbContext;
 using StockExchangeYahooFinance.Models;
 
 namespace StockExchangeYahooFinance.Services
 {
     public class ApiRequest : IApiRequest
     {
+        private readonly YahooFinanceDbContext _context;
+
+        public ApiRequest(YahooFinanceDbContext context)
+        {
+            _context = context;
+        }
         /// <summary>
         /// Get JSON data from yahoo finance and parse it
         /// </summary>
@@ -52,14 +60,30 @@ namespace StockExchangeYahooFinance.Services
                         f.Name = name.ToString();
                         financeModel.Add(f);
                         var value = ((JValue)change).Value;
-                        if (value != null && (decimal)change < 0)
+                        if (value != null && (float)change < 0)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"{name}:{symbol} : {price} : {lastTime} : {change}");
                         }
-                        if (value == null || (decimal)change <= 0) continue;
+                        if (value == null || (float)change <= 0) continue;
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"{name} : {symbol} : {price} : {lastTime} : {change}");
+                        _context.FinanceModel.Add(f);
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (DbUpdateException)
+                        {
+                            if (IdExists(f.Id))
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
                     }
                 }
 
@@ -171,6 +195,11 @@ namespace StockExchangeYahooFinance.Services
             }
 
             return webResponseData;
+        }
+
+        private bool IdExists(string id)
+        {
+            return _context.FinanceModel.Any(e => e.Id == id);
         }
     }
 }
