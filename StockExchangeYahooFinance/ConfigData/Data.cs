@@ -84,6 +84,9 @@
         public string StockExchange = "StockExchange";
         public string DividendYield = "DividendYield";
         public string PercentChange = "PercentChange";
-
+        public string Id = "id";
+        public string Rate = "Rate";
+        public string Date = "Date";
+        public string Time = "Time";
     }
 }

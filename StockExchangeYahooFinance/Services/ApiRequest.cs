@@ -21,7 +21,7 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        public async Task RepeatActionEvery(TimeSpan interval, CancellationToken cancellationToken, string url)
+        public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url)
         {
             // still not in use anywhere....
             var financeModel = new List<FinanceModel>();
@@ -74,7 +74,7 @@ namespace StockExchangeYahooFinance.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public List<FinanceModel> ParseCsv(string url)
+        public List<FinanceModel> StockExchangeParseCsv(string url)
         {
             //Call web request
             var csvData = WebRequest(url);
@@ -102,6 +102,58 @@ namespace StockExchangeYahooFinance.Services
 
             return prices;
         }
+
+        /// <summary>
+        /// For Currency XCHANGE
+        /// </summary>
+        /// <param name="interval"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="url"></param>
+        /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
+        public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url)
+        {
+
+            while (true)
+            {
+                var task = Task.Delay(interval, cancellationToken);
+                try
+                {
+                    await task;
+                    Console.Clear();
+                    var json = WebRequest(url);
+                    var d = new FinanceData();
+                    dynamic data = JObject.Parse(json);
+                    var quote = data.query.results.rate;
+                    foreach (var i in quote)
+                    {
+                        var id = i.SelectToken(d.Id);
+                        var rate = i.SelectToken(d.Rate);
+                        var date = i.SelectToken(d.Date);
+                        var time = i.SelectToken(d.Time);
+                        var ask = i.SelectToken(d.Ask);
+                        var bid = i.SelectToken(d.Bid);
+                        var name = i.SelectToken(d.Name);
+                        var value = ((JValue)rate).Value;
+
+                        if (value != null && (decimal)rate < 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"{name}:{id} : {rate} : {date + time} : {ask}: {bid}");
+                        }
+
+                        if (value == null || (decimal)rate <= 0) continue;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"{name} : {id} : {rate} : {date + time} : {ask} : {bid}");
+                    }
+                }
+
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
+            }
+        }
+
         /// <summary>
         /// Call web API
         /// </summary>

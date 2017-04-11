@@ -15,14 +15,22 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        Task RepeatActionEvery(TimeSpan interval, CancellationToken cancellationToken, string url);
+        Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url);
 
         /// <summary>
         /// Get CSV from yahoo finance and parse it
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        List<FinanceModel> ParseCsv(string url);
+        List<FinanceModel> StockExchangeParseCsv(string url);
+        /// <summary>
+        /// For Currency XCHANGE
+        /// </summary>
+        /// <param name="interval"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="url"></param>
+        /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
+        Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url);
 
     }
 }
