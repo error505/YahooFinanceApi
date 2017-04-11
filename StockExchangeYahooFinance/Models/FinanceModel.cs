@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StockExchangeYahooFinance.ConfigData
+namespace StockExchangeYahooFinance.Models
 {
     public class FinanceModel
     {
+        public FinanceModel()
+        {
+            this.Id = Guid.NewGuid().ToString();
+        }
+        public string Id { get; set; }
         public string Symbol { get; set; }
         public string Ask { get; set; }
         public string AverageDailyVolume { get; set; }
@@ -90,5 +91,13 @@ namespace StockExchangeYahooFinance.ConfigData
         public string StockExchange { get; set; }
         public string DividendYield { get; set; }
         public string PercentChange { get; set; }
+
+        public string CurencyId { get; set; }
+
+        public string Rate { get; set; }
+
+        public string Date { get; set; }
+
+        public string Time { get; set; }
     }
 }

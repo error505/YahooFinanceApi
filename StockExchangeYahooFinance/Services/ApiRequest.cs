@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
+using StockExchangeYahooFinance.Models;
 
 namespace StockExchangeYahooFinance.Services
 {
