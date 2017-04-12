@@ -34,7 +34,7 @@ namespace StockExchangeYahooFinance.Repository
         {
             var region =
                 await _context.Region
-                    .SingleOrDefaultAsync(m => m.Name == name);
+                    .SingleAsync(m => m.Name == name);
             return region;
         }
 

@@ -45,14 +45,15 @@ namespace StockExchangeYahooFinance
             ContainerBootstrapper.RegisterTypes(container);
             var request = container.Resolve<ApiRequest>();
             var cancellation = new CancellationTokenSource(Timeout.Infinite);
+            var cancellation2 = new CancellationTokenSource(9);
             var financeQueryUrl = Configuration["Urls:FinanceQueryUrl"];
             var financeUrl = Configuration["Urls:FinanceQueryUrl"] + $"(%22{Tickers}%22)" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             var commoditiesUrl = Configuration["Urls:FinanceQueryUrl"] + $"(%22{Commodities}%22)" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             var csvUrl = Configuration["Urls:CsvUrl"] + $"{Tickers}&f={CsvData}";
             var xChangeUrl = Configuration["Urls:XchangeUrl"] + $"({Curencies})" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             //For JSON data for Companies
-            request.StockExchangeTask(TimeSpan.FromMilliseconds(900), cancellation.Token, financeUrl).Wait(cancellation.Token);
-            //request.ImportCompanies(TimeSpan.FromDays(1), cancellation.Token, "http://www.nasdaq.com/screening/companies-by-industry.aspx?region=Europe&render=download", "Europe").Wait(cancellation.Token);
+            //request.StockExchangeTask(TimeSpan.FromMilliseconds(900), cancellation.Token, financeUrl).Wait(cancellation.Token);
+            request.ImportCompanies(TimeSpan.FromSeconds(7), cancellation.Token, "http://www.nasdaq.com/screening/companies-by-industry.aspx?region=Europe&render=download", "Europe").Wait(cancellation.Token);
             //For JSON data for Commodities
             //request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, commoditiesUrl).Wait(cancellation.Token);
             //For currency x change
