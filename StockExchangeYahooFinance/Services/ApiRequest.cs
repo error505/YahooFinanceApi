@@ -10,18 +10,21 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
+using StockExchangeYahooFinance.Data;
 using StockExchangeYahooFinance.DbContext;
-using StockExchangeYahooFinance.Models;
+using StockExchangeYahooFinance.Repository;
 
 namespace StockExchangeYahooFinance.Services
 {
     public class ApiRequest : IApiRequest
     {
         private readonly YahooFinanceDbContext _context;
+        private readonly StockExchangeRepository _repository;
 
-        public ApiRequest(YahooFinanceDbContext context)
+        public ApiRequest(YahooFinanceDbContext context, StockExchangeRepository repository)
         {
             _context = context;
+            _repository = repository;
         }
         /// <summary>
         /// Get JSON data from yahoo finance and parse it
@@ -68,22 +71,7 @@ namespace StockExchangeYahooFinance.Services
                         if (value == null || (float)change <= 0) continue;
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"{name} : {symbol} : {price} : {lastTime} : {change}");
-                        _context.FinanceModel.Add(f);
-                        try
-                        {
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (DbUpdateException)
-                        {
-                            if (IdExists(f.Id))
-                            {
-                                return;
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
+                        await _repository.AddFinanceModel(f);
                     }
                 }
 

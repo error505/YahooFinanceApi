@@ -1,0 +1,5 @@
+C:\Users\Igor\Source\Repos\YahooFinanceApi\StockExchangeYahooFinance.Data\bin\Debug\StockExchangeYahooFinance.Data.dll
+C:\Users\Igor\Source\Repos\YahooFinanceApi\StockExchangeYahooFinance.Data\bin\Debug\StockExchangeYahooFinance.Data.pdb
+C:\Users\Igor\Source\Repos\YahooFinanceApi\StockExchangeYahooFinance.Data\obj\Debug\StockExchangeYahooFinance.Data.csprojResolveAssemblyReference.cache
+C:\Users\Igor\Source\Repos\YahooFinanceApi\StockExchangeYahooFinance.Data\obj\Debug\StockExchangeYahooFinance.Data.dll
+C:\Users\Igor\Source\Repos\YahooFinanceApi\StockExchangeYahooFinance.Data\obj\Debug\StockExchangeYahooFinance.Data.pdb

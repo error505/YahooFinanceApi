@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockExchangeYahooFinance.Models;
+using StockExchangeYahooFinance.Data;
 
 namespace StockExchangeYahooFinance.DbContext
 {

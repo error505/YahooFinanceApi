@@ -213,9 +213,10 @@
       <DependentUpon>20170411130832_AddedMoreStuffToModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
-    <Compile Include="Models\FinanceModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\IStockExchangeRepository.cs" />
+    <Compile Include="Repository\StockExchangeRepository.cs" />
     <Compile Include="Services\ApiRequest.cs" />
     <Compile Include="Services\IApiRequest.cs" />
   </ItemGroup>
@@ -229,6 +230,13 @@
   <ItemGroup>
     <Content Include="ConfigData\DataThatCanBeDownloadedInCsv.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StockExchangeYahooFinance.Data\StockExchangeYahooFinance.Data.csproj">
+      <Project>{b2e5aeee-e6cf-4753-a055-86a6636790ea}</Project>
+      <Name>StockExchangeYahooFinance.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

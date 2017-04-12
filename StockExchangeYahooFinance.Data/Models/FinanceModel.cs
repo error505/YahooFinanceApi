@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace StockExchangeYahooFinance.Models
+namespace StockExchangeYahooFinance.Data
 {
     public class FinanceModel
     {
-        public FinanceModel()
-        {
-            this.Id = Guid.NewGuid().ToString();
-        }
-        public string Id { get; set; }
+
+        [Key]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Symbol { get; set; }
         public string Ask { get; set; }
         public string AverageDailyVolume { get; set; }
