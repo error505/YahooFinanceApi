@@ -33,5 +33,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
         Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url);
 
+        Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken, string url, string region);
+
     }
 }

@@ -212,6 +212,18 @@
     <Compile Include="Migrations\20170411130832_AddedMoreStuffToModel.designer.cs">
       <DependentUpon>20170411130832_AddedMoreStuffToModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170412124401_Comapanies.cs" />
+    <Compile Include="Migrations\20170412124401_Comapanies.designer.cs">
+      <DependentUpon>20170412124401_Comapanies.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170412124458_Comapaniess.cs" />
+    <Compile Include="Migrations\20170412124458_Comapaniess.designer.cs">
+      <DependentUpon>20170412124458_Comapaniess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170412125512_Region.cs" />
+    <Compile Include="Migrations\20170412125512_Region.designer.cs">
+      <DependentUpon>20170412125512_Region.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

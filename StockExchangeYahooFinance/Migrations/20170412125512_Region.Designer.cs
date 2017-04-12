@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170412125512_Region")]
+    partial class Region
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")

@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170412124401_Comapanies")]
+    partial class Comapanies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -198,40 +199,6 @@ namespace StockExchangeYahooFinance.Migrations
                     b.ToTable("FinanceModel");
                 });
 
-            modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Companies", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ADR_TSO");
-
-                    b.Property<string>("IPOyear");
-
-                    b.Property<string>("IndustryId");
-
-                    b.Property<string>("LastSale");
-
-                    b.Property<string>("MarketCap");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("RegionId");
-
-                    b.Property<string>("SectorId");
-
-                    b.Property<string>("Symbol");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IndustryId");
-
-                    b.HasIndex("RegionId");
-
-                    b.HasIndex("SectorId");
-
-                    b.ToTable("Companies");
-                });
-
             modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Industry", b =>
                 {
                     b.Property<string>("Id")
@@ -244,18 +211,6 @@ namespace StockExchangeYahooFinance.Migrations
                     b.ToTable("Industrie");
                 });
 
-            modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Region", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Region");
-                });
-
             modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Sector", b =>
                 {
                     b.Property<string>("Id")
@@ -266,21 +221,6 @@ namespace StockExchangeYahooFinance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sector");
-                });
-
-            modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Companies", b =>
-                {
-                    b.HasOne("StockExchangeYahooFinance.Data.Models.Industry", "Industry")
-                        .WithMany()
-                        .HasForeignKey("IndustryId");
-
-                    b.HasOne("StockExchangeYahooFinance.Data.Models.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("RegionId");
-
-                    b.HasOne("StockExchangeYahooFinance.Data.Models.Sector", "Sector")
-                        .WithMany()
-                        .HasForeignKey("SectorId");
                 });
         }
     }

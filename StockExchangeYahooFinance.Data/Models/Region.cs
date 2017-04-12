@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace StockExchangeYahooFinance.Data.Models
 {
-    public class Industry
+    public class Region
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();

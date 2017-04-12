@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockExchangeYahooFinance.Data;
+using StockExchangeYahooFinance.Data.Models;
 
 namespace StockExchangeYahooFinance.DbContext
 {
@@ -20,6 +21,12 @@ namespace StockExchangeYahooFinance.DbContext
 
         public DbSet<FinanceModel> FinanceModel { get; set; }
 
+        public DbSet<Industry> Industrie { get; set; }
 
+        public DbSet<Sector> Sector { get; set; }
+
+        public DbSet<Companies> Companies { get; set; }
+
+        public DbSet<Region> Region { get; set; }
     }
 }
