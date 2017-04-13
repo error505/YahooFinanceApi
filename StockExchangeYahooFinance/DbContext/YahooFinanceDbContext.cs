@@ -28,5 +28,7 @@ namespace StockExchangeYahooFinance.DbContext
         public DbSet<Companies> Companies { get; set; }
 
         public DbSet<Region> Region { get; set; }
+
+        public DbSet<Currencies> Currencies { get; set; }
     }
 }

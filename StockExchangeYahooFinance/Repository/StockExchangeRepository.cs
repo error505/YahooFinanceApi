@@ -53,6 +53,14 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Symbol == symbol);
             return company;
         }
+
+        public async Task<Currencies> GetCurrencyByCode(string code)
+        {
+            var currency =
+                await _context.Currencies
+                    .SingleOrDefaultAsync(m => m.Code == code);
+            return currency;
+        }
         public async Task<FinanceModel> AddFinanceModel(FinanceModel financeModel)
         {
             if (financeModel == null)
@@ -208,6 +216,37 @@ namespace StockExchangeYahooFinance.Repository
             return companies.Id;
         }
 
+        public async Task<string> AddCurrency(Currencies currencies)
+        {
+            if (currencies == null)
+            {
+                return null;
+            }
+            if (CurrencyExists(currencies.Code))
+            {
+                var currency = await GetCurrencyByCode(currencies.Code);
+                return currency.Id;
+            }
+            _context.Currencies.Add(currencies);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (CompIdExists(currencies.Code))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return currencies.Id;
+        }
+
         private bool IdExists(string id)
         {
             return _context.FinanceModel.Any(e => e.Id == id);
@@ -231,6 +270,11 @@ namespace StockExchangeYahooFinance.Repository
         private bool SectorIdExists(string name)
         {
             return _context.Sector.Any(e => e.Name == name);
+        }       
+
+        private bool CurrencyExists(string code)
+        {
+            return _context.Currencies.Any(e => e.Code == code);
         }
     }
 }

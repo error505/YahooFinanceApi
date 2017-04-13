@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170413134816_currency")]
+    partial class currency
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -243,7 +244,7 @@ namespace StockExchangeYahooFinance.Migrations
 
                     b.Property<string>("Entity");
 
-                    b.Property<string>("MinorUnit");
+                    b.Property<int>("MinorUnit");
 
                     b.Property<int>("NumericCode");
 

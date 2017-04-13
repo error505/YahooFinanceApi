@@ -53,7 +53,8 @@ namespace StockExchangeYahooFinance
             var xChangeUrl = Configuration["Urls:XchangeUrl"] + $"({Curencies})" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             //For JSON data for Companies
             //request.StockExchangeTask(TimeSpan.FromMilliseconds(900), cancellation.Token, financeUrl).Wait(cancellation.Token);
-            request.ImportCompanies(TimeSpan.FromSeconds(7), cancellation.Token, Configuration["Urls:CompaniesCSV"] + Configuration["Urls:CompaniesCSVRegion"] + Configuration["Urls:ComaniesCSVDownload"], Configuration["Urls:CompaniesRegion"]).Wait(cancellation.Token);
+            request.ImportCurrencies(Configuration["Urls:CurrencyUrl"]).Wait(cancellation.Token);
+            //request.ImportCompanies(TimeSpan.FromSeconds(7), cancellation.Token, Configuration["Urls:CompaniesCSV"] + Configuration["Urls:CompaniesCSVRegion"] + Configuration["Urls:ComaniesCSVDownload"], Configuration["Urls:CompaniesRegion"]).Wait(cancellation.Token);
             //For JSON data for Commodities
             //request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, commoditiesUrl).Wait(cancellation.Token);
             //For currency x change

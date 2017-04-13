@@ -35,5 +35,7 @@ namespace StockExchangeYahooFinance.Services
 
         Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken, string url, string region);
 
+        Task ImportCurrencies(string url);
+
     }
 }

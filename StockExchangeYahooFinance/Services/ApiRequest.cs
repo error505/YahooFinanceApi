@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
@@ -249,7 +251,7 @@ namespace StockExchangeYahooFinance.Services
                         LastSale = comp.LastSale.Replace("\"", ""),
                         MarketCap = comp.MarketCap.Replace("\"", "")
                     };
-                    var companyAdd = await _repository.AddCompany(company);
+                    await _repository.AddCompany(company);
                     Console.WriteLine("{0} ({1})  Industry:{2}",
                         n, s, i);
                 }
@@ -262,6 +264,54 @@ namespace StockExchangeYahooFinance.Services
                 throw;
             }
             
+
+        }
+
+        public async Task ImportCurrencies(string url)
+        {
+
+            try
+            {
+                var csvData = WebRequest(url);
+                XDocument currency = XDocument.Parse(csvData);
+
+                //Get data from string
+                //Write data in console
+                var query = from c in currency.Descendants("CcyNtry")
+                    let element = c.Element("Ccy")
+                    where element != null
+                    let o = c.Element("CcyNm")
+                    where o != null
+                    let xElement1 = c.Element("CtryNm")
+                    where xElement1 != null
+                    let element1 = c.Element("CcyNbr")
+                    where element1 != null
+                    let o1 = c.Element("CcyMnrUnts")
+                    where o1 != null
+                    select
+                    new Currencies()
+                    {
+                        Code = element.Value,
+                        Currency = o.Value,
+                        Entity = xElement1.Value,
+                        NumericCode = Convert.ToInt32(element1.Value),
+                        MinorUnit = o1.Value
+                    };
+                foreach (var c in query)
+                {
+                    await _repository.AddCurrency(c);
+                    Console.WriteLine(c.Currency,c.Entity,c.Code);
+                }
+
+                Console.Read();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.Read();
+                throw;
+            }
+
 
         }
     }
