@@ -64,15 +64,16 @@ namespace StockExchangeYahooFinance.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
                 if (IdExists(financeModel.Id))
                 {
-                    return null;
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
             return null;
@@ -95,15 +96,16 @@ namespace StockExchangeYahooFinance.Repository
 
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
                 if (IndustryIdExists(industry.Name))
                 {
-                    return null;
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
 
             }
@@ -127,15 +129,16 @@ namespace StockExchangeYahooFinance.Repository
 
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
                 if (SectorIdExists(sector.Name))
                 {
-                    return null;
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
             return sector.Id;
@@ -158,15 +161,16 @@ namespace StockExchangeYahooFinance.Repository
 
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
                 if (RegionIdExists(region.Name))
                 {
-                    return null;
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
             return region.Id;
@@ -180,7 +184,7 @@ namespace StockExchangeYahooFinance.Repository
             }
             if (CompIdExists(companies.Symbol))
             {
-                var comp = await GetRegionByName(companies.Symbol);
+                var comp = await GetCompanyByName(companies.Symbol);
                 return comp.Id;
             }
             _context.Companies.Add(companies);
@@ -189,15 +193,16 @@ namespace StockExchangeYahooFinance.Repository
 
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
                 if (CompIdExists(companies.Symbol))
                 {
-                    return null;
+                   Console.WriteLine(ex.Message);
+                   Console.Read();
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
             return companies.Id;
