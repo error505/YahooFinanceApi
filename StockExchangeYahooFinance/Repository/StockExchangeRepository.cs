@@ -84,14 +84,15 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
+            if (IndustryIdExists(industry.Name))
+            {
+                var ind = await GetIndustryByName(industry.Name);
+                return ind.Id;
+            }
             _context.Industrie.Add(industry);
             try
             {
-                if (IndustryIdExists(industry.Name))
-                {
-                    var ind = await GetIndustryByName(industry.Name);
-                    return ind.Id;
-                }
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -115,14 +116,15 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
+            if (SectorIdExists(sector.Name))
+            {
+                var sec = await GetSectorByName(sector.Name);
+                return sec.Id;
+            }
             _context.Sector.Add(sector);
             try
             {
-                if (SectorIdExists(sector.Name))
-                {
-                    var sec = await GetSectorByName(sector.Name);
-                    return sec.Id;
-                }
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -145,14 +147,15 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
+            if (RegionIdExists(region.Name))
+            {
+                var reg = await GetRegionByName(region.Name);
+                return reg.Id;
+            }
             _context.Region.Add(region);
             try
             {
-                if (RegionIdExists(region.Name))
-                {
-                    var reg = await GetRegionByName(region.Name);
-                    return reg.Id;
-                }
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -175,14 +178,15 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
+            if (CompIdExists(companies.Symbol))
+            {
+                var comp = await GetRegionByName(companies.Symbol);
+                return comp.Id;
+            }
             _context.Companies.Add(companies);
             try
             {
-                if (CompIdExists(companies.Symbol))
-                {
-                    var comp = await GetRegionByName(companies.Symbol);
-                    return comp.Id;
-                }
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)

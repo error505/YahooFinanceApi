@@ -5,6 +5,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -97,13 +98,20 @@ namespace StockExchangeYahooFinance.Services
             var rows = csvData.Replace("\r", "").Split('\n');
             //Get data from string
             var prices = (from row in rows
-                where !string.IsNullOrEmpty(row)
-                select row.Split(',')
+                          where !string.IsNullOrEmpty(row)
+                          select row.Split(',')
                 into cols
-                select new FinanceModel
-                {
-                    Symbol = cols[0], Name = cols[1], Bid = (cols[2]), Ask = (cols[3]), Open = (cols[4]), PreviousClose = (cols[5]), LastTradePriceOnly = (cols[6]), Change = cols[7]
-                }).ToList();
+                          select new FinanceModel
+                          {
+                              Symbol = cols[0],
+                              Name = cols[1],
+                              Bid = (cols[2]),
+                              Ask = (cols[3]),
+                              Open = (cols[4]),
+                              PreviousClose = (cols[5]),
+                              LastTradePriceOnly = (cols[6]),
+                              Change = cols[7]
+                          }).ToList();
 
             //Write data in console
             foreach (var price in prices)
@@ -196,57 +204,57 @@ namespace StockExchangeYahooFinance.Services
         {
 
 
-                    var csvData = WebRequest(url);
-                    //Parse CSV
-                    var rows = csvData.Replace("\r", "").Split('\n');
-                    //Get data from string
-                    var companies = (from row in rows
-                        where !string.IsNullOrEmpty(row)
-                        select row.Split(',')
-                        into cols
-                        select new CompaniesViewModel()
-                        {
-                            Symbol = cols[0],
-                            Name = cols[1],
-                            LastSale = cols[2],
-                            MarketCap = cols[3],
-                            ADR_TSO = cols[4],
-                            IPOyear = cols[5],
-                            Sector = cols[7],
-                            Industry = cols[6]
-                        }).ToList();
-                    var reg = new Region {Name = region};
-                    var regId = await _repository.AddRegion(reg);
-                    //Write data in console
-                    foreach (var comp in companies.Skip(1))
-                    {
-                        var n = comp.Name.Replace("\"", "");
-                        var s = comp.Symbol.Replace("\"", "");
-                        var i = comp.Industry.Replace("\"", "");
-                        var sec = comp.Sector.Replace("\"", "");
-                        var sector = new Sector {Name = sec};
-                        var industry = new Industry {Name = i};
-                        var indId = await _repository.AddIndustry(industry);
-                        var secId = await _repository.AddSector(sector);
-                        var company = new Companies
-                        {
-                            IndustryId = indId,
-                            SectorId = secId,
-                            Name = comp.Name.Replace("\"", ""),
-                            Symbol = comp.Symbol.Replace("\"", ""),
-                            RegionId = regId,
-                            ADR_TSO = comp.ADR_TSO.Replace("\"", ""),
-                            IPOyear = comp.IPOyear.Replace("\"", ""),
-                            LastSale = comp.LastSale.Replace("\"", ""),
-                            MarketCap = comp.MarketCap.Replace("\"", "")
-                        };
-                        var companyAdd = await _repository.AddCompany(company);
-                        Console.WriteLine("{0} ({1})  Industry:{2}",
-                            n, s, i);
-                    }
-                    Console.Read();
-
+            var csvData = WebRequest(url);
+            //Parse CSV
+            var rows = csvData.Replace("\r", "").Split('\n');
+            //Get data from string
+            var companies = (from row in rows
+                             where !string.IsNullOrEmpty(row)
+                             let csvSplit = new Regex("((?<=\")[^\"]*(?=\"(,|$)+)|(?<=,|^)[^,\"]*(?=,|$))").Matches(row)
+                             let cols = row.Split(',')
+                             select new CompaniesViewModel()
+                             {
+                                 Symbol = csvSplit[0].ToString(),
+                                 Name = csvSplit[1].ToString(),
+                                 LastSale = csvSplit[2].ToString(),
+                                 MarketCap = csvSplit[3].ToString(),
+                                 ADR_TSO = csvSplit[4].ToString(),
+                                 IPOyear = csvSplit[5].ToString(),
+                                 Sector = csvSplit[7].ToString(),
+                                 Industry = csvSplit[6].ToString()
+                             }).ToList();
+            var reg = new Region { Name = region };
+            var regId = await _repository.AddRegion(reg);
+            //Write data in console
+            foreach (var comp in companies.Skip(1))
+            {
+                var n = comp.Name.Replace("\"", "");
+                var s = comp.Symbol.Replace("\"", "");
+                var i = comp.Industry.Replace("\"", "");
+                var sec = comp.Sector.Replace("\"", "");
+                var sector = new Sector { Name = sec };
+                var industry = new Industry { Name = i };
+                var indId = await _repository.AddIndustry(industry);
+                var secId = await _repository.AddSector(sector);
+                var company = new Companies
+                {
+                    IndustryId = indId,
+                    SectorId = secId,
+                    Name = comp.Name.Replace("\"", ""),
+                    Symbol = comp.Symbol.Replace("\"", ""),
+                    RegionId = regId,
+                    ADR_TSO = comp.ADR_TSO.Replace("\"", ""),
+                    IPOyear = comp.IPOyear.Replace("\"", ""),
+                    LastSale = comp.LastSale.Replace("\"", ""),
+                    MarketCap = comp.MarketCap.Replace("\"", "")
+                };
+                var companyAdd = await _repository.AddCompany(company);
+                Console.WriteLine("{0} ({1})  Industry:{2}",
+                    n, s, i);
             }
+            Console.Read();
+
         }
     }
+}
 
