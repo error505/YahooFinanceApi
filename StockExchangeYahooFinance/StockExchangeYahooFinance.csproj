@@ -236,6 +236,10 @@
     <Compile Include="Migrations\20170413143327_Currencychanges.designer.cs">
       <DependentUpon>20170413143327_Currencychanges.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170418135417_ExtendCompanies.cs" />
+    <Compile Include="Migrations\20170418135417_ExtendCompanies.designer.cs">
+      <DependentUpon>20170418135417_ExtendCompanies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

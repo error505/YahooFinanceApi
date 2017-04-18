@@ -39,5 +39,11 @@ namespace StockExchangeYahooFinance.Data.Models
 
         public string LastSale { get; set; }
 
+        public string ExchangeId { get; set; }
+
+        public Exchange Exchange { get; set; }
+
+        public string Type { get; set; }
+
     }
 }

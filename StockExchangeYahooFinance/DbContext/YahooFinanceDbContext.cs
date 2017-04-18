@@ -30,5 +30,7 @@ namespace StockExchangeYahooFinance.DbContext
         public DbSet<Region> Region { get; set; }
 
         public DbSet<Currencies> Currencies { get; set; }
+
+        public DbSet<Exchange> Exchange { get; set; }
     }
 }

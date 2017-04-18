@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Models\Companies.cs" />
     <Compile Include="Models\Currencies.cs" />
+    <Compile Include="Models\Exchange.cs" />
     <Compile Include="Models\FinanceModel.cs" />
     <Compile Include="Models\Industry.cs" />
     <Compile Include="Models\Region.cs" />
