@@ -13,6 +13,10 @@ namespace StockExchangeYahooFinance.DbContext
             base.OnModelCreating(builder);
 
         }
+        //public YahooFinanceDbContext(DbContextOptions<YahooFinanceDbContext> options)
+        //    : base(options)
+        //{
+        //}
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.UseSqlServer("Server=DESKTOP-0QCFIRJ;Database=YahooFinance;Trusted_Connection=True;MultipleActiveResultSets=true");
