@@ -37,5 +37,7 @@ namespace StockExchangeYahooFinance.Services
 
         Task ImportCurrencies(string url);
 
+        List<string> YahooCompanies(string url);
+
     }
 }
