@@ -25,12 +25,10 @@ namespace StockExchangeYahooFinance.Services
 {
     public class ApiRequest : IApiRequest
     {
-        private readonly YahooFinanceDbContext _context;
         private readonly StockExchangeRepository _repository;
 
-        public ApiRequest(YahooFinanceDbContext context, StockExchangeRepository repository)
+        public ApiRequest(StockExchangeRepository repository)
         {
-            _context = context;
             _repository = repository;
         }
         /// <summary>
@@ -181,31 +179,14 @@ namespace StockExchangeYahooFinance.Services
             }
         }
 
+
+
         /// <summary>
-        /// Call web API
+        /// 
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private static string WebRequest(string url)
-        {
-            string webResponseData;
-
-            //Make web request
-            using (var web = new WebClient())
-            {
-                webResponseData = web.DownloadString(url);
-            }
-
-            return webResponseData;
-        }
-
-        private bool IdExists(string id)
-        {
-            return _context.FinanceModel.Any(e => e.Id == id);
-        }
-
-
-        public List<string> YahooCompanies(string url)
+        public async Task YahooCompanies(string url)
         {
             //Search term
             const string s = "s=";
@@ -219,44 +200,18 @@ namespace StockExchangeYahooFinance.Services
             const string bypass = "&bypass=true";
 
             const string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
-
-            var results = new List<string>();
+            
+            //var results = new List<string>();
             foreach (var c in alphabet)
-            {
-                var urlTosend = url + s + c + t + "s" + m + "ALL" + bypass;
-                var csvData = WebRequest(urlTosend);
-                var doc = new HtmlDocument();
-                doc.LoadHtml(csvData);
-
-
-                var allNavNoded = doc.DocumentNode.SelectNodes("//ul[contains(@class, 'yui-nav')]");
-                var all = 0;
-                var stocks = 0;
-                var mutualFunds = 0;
-                var eTFs = 0;
-                var indices = 0;
-                var futures = 0;
-                var currencies = 0;
-                foreach (var item in allNavNoded)
-                {
-                    if (item == allNavNoded.First()) continue;
-                    all = Convert.ToInt32(Regex.Match(item.ChildNodes[0].InnerText, @"\(([^)]*)\)").Groups[1].Value);
-                    stocks = Convert.ToInt32(Regex.Match(item.ChildNodes[1].InnerText, @"\(([^)]*)\)").Groups[1].Value);
-                    mutualFunds = Convert.ToInt32(Regex.Match(item.ChildNodes[2].InnerText, @"\(([^)]*)\)").Groups[1].Value);
-                    eTFs = Convert.ToInt32(Regex.Match(item.ChildNodes[3].InnerText, @"\(([^)]*)\)").Groups[1].Value);
-                    indices = Convert.ToInt32(Regex.Match(item.ChildNodes[4].InnerText, @"\(([^)]*)\)").Groups[1].Value);
-                    futures = Convert.ToInt32(Regex.Match(item.ChildNodes[5].InnerText, @"\(([^)]*)\)").Groups[1].Value);
-                    currencies = Convert.ToInt32(Regex.Match(item.ChildNodes[6].InnerText, @"\(([^)]*)\)").Groups[1].Value);
-                }
-
+            {                             
                 for (var i = 0; i <= 2042; i += 20)
                 {
-                    var urlTosends = url + s + c + t + "s" + m + "ALL" + b + i + bypass;
-                    var data = WebRequest(urlTosends);
-                    var docs = new HtmlDocument();
-                    docs.LoadHtml(data);
+                    var urlTosend = url + s + c + t + "s" + m + "ALL" + b + i + bypass;
+                    var data = WebRequest(urlTosend);
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(data);
 
-                    var allRowNodes = docs.DocumentNode.SelectNodes("//tr[contains(@class, 'yui-dt')]");
+                    var allRowNodes = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'yui-dt')]");
                     if (allRowNodes == null) continue;
                     foreach (var item in allRowNodes)
                     {
@@ -265,20 +220,48 @@ namespace StockExchangeYahooFinance.Services
                         var tickerName = item.ChildNodes[1].InnerText;
                         var lastTrade = item.ChildNodes[2].InnerText;
                         var type = item.ChildNodes[3].InnerText;
-                        var industry = item.ChildNodes[4].InnerText;
                         var exchange = item.ChildNodes[5].InnerText;
-                        results.Add(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
+                        //var reg = new Region { Name = region };
+                        //var regId = await _repository.AddRegion(reg);
+                        //var sector = new Sector { Name = sec };
+                        var industry = new Industry { Name = item.ChildNodes[4].InnerText };
+                        var indId = await _repository.AddIndustry(industry);
+                        //var secId = await _repository.AddSector(sector);
+                        var companies = new Companies()
+                        {
+                            Symbol = com,
+                            Name = tickerName,
+                            LastSale = lastTrade,
+                            //SectorId = secId,
+                            IndustryId = indId,
+                            //RegionId = regId,
+                        };
+                        await _repository.AddCompany(companies);
+                        //results.Add(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
                         Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
                     }
                 }
             }
-            SaveData(results);
-            return results;
+            //SaveData(results);
+            //return results;
         }
-        private static void SaveData(List<string> results)
-        {
-            File.AppendAllLines(@"C:\Users\Igor\Desktop\stocks.txt", results);
-        }
+        /// <summary>
+        /// test
+        /// </summary>
+        /// <param name="results"></param>
+        //private static void SaveData(IEnumerable<string> results)
+        //{
+        //    File.AppendAllLines(@"C:\Users\Igor\Desktop\stocks.txt", results);
+        //}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interval"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="url"></param>
+        /// <param name="region"></param>
+        /// <returns></returns>
         public async Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken, string url, string region)
         {
 
@@ -344,6 +327,11 @@ namespace StockExchangeYahooFinance.Services
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public async Task ImportCurrencies(string url)
         {
 
@@ -390,6 +378,24 @@ namespace StockExchangeYahooFinance.Services
             }
 
 
+        }
+
+        /// <summary>
+        /// Call web API
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private static string WebRequest(string url)
+        {
+            string webResponseData;
+
+            //Make web request
+            using (var web = new WebClient())
+            {
+                webResponseData = web.DownloadString(url);
+            }
+
+            return webResponseData;
         }
     }
 }

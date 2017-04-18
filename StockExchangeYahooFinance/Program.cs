@@ -57,7 +57,7 @@ namespace StockExchangeYahooFinance
             //request.StockExchangeTask(TimeSpan.FromMilliseconds(900), cancellation.Token, financeUrl).Wait(cancellation.Token);
             //request.ImportCurrencies(Configuration["Urls:CurrencyUrl"]).Wait(cancellation.Token);
             //request.ImportCompanies(TimeSpan.FromSeconds(7), cancellation.Token, Configuration["Urls:CompaniesCSV"] + Configuration["Urls:CompaniesCSVRegion"] + Configuration["Urls:ComaniesCSVDownload"], Configuration["Urls:CompaniesRegion"]).Wait(cancellation.Token);
-            request.YahooCompanies(allComp);
+            request.YahooCompanies(allComp).Wait(cancellation.Token);
             //For JSON data for Commodities
             //request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, commoditiesUrl).Wait(cancellation.Token);
             //For currency x change
