@@ -240,6 +240,10 @@
     <Compile Include="Migrations\20170418135417_ExtendCompanies.designer.cs">
       <DependentUpon>20170418135417_ExtendCompanies.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170418142452_ExchangeTable.cs" />
+    <Compile Include="Migrations\20170418142452_ExchangeTable.designer.cs">
+      <DependentUpon>20170418142452_ExchangeTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
