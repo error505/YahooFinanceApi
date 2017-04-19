@@ -20,6 +20,6 @@ namespace StockExchangeYahooFinance.Data.Models
 
         public string MinorUnit { get; set; }
 
-        public DateTime CreationTime { get; set; }
+        public DateTime CreationTime { get; set; } = DateTime.Now;
     }
 }
