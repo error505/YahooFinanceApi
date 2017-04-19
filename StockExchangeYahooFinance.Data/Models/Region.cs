@@ -12,8 +12,6 @@ namespace StockExchangeYahooFinance.Data.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-
-        [Index(IsUnique = true)]
         public string Name { get; set; }
     }
 }

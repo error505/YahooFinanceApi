@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170419111542_updateExchange")]
+    partial class updateExchange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -56,20 +57,6 @@ namespace StockExchangeYahooFinance.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Country", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CountryCode");
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Country");
-                });
-
             modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Currencies", b =>
                 {
                     b.Property<string>("Id")
@@ -95,31 +82,17 @@ namespace StockExchangeYahooFinance.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ClosingTimeLocal");
-
-                    b.Property<string>("CountryId");
-
                     b.Property<string>("DataProvider");
 
                     b.Property<string>("Delay");
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("OpeningTimeLocal");
-
                     b.Property<string>("RegionId");
-
-                    b.Property<string>("StockExchangeId");
 
                     b.Property<string>("Suffix");
 
-                    b.Property<string>("TradingDays");
-
-                    b.Property<string>("UtcOffsetStandardTime");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.HasIndex("RegionId");
 
@@ -373,10 +346,6 @@ namespace StockExchangeYahooFinance.Migrations
 
             modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Exchange", b =>
                 {
-                    b.HasOne("StockExchangeYahooFinance.Data.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
-
                     b.HasOne("StockExchangeYahooFinance.Data.Models.Region", "Region")
                         .WithMany()
                         .HasForeignKey("RegionId");

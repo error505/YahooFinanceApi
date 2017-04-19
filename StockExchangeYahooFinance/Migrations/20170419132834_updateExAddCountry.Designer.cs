@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170419132834_updateExAddCountry")]
+    partial class updateExAddCountry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -97,8 +98,6 @@ namespace StockExchangeYahooFinance.Migrations
 
                     b.Property<string>("ClosingTimeLocal");
 
-                    b.Property<string>("CountryId");
-
                     b.Property<string>("DataProvider");
 
                     b.Property<string>("Delay");
@@ -118,8 +117,6 @@ namespace StockExchangeYahooFinance.Migrations
                     b.Property<string>("UtcOffsetStandardTime");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.HasIndex("RegionId");
 
@@ -373,10 +370,6 @@ namespace StockExchangeYahooFinance.Migrations
 
             modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Exchange", b =>
                 {
-                    b.HasOne("StockExchangeYahooFinance.Data.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
-
                     b.HasOne("StockExchangeYahooFinance.Data.Models.Region", "Region")
                         .WithMany()
                         .HasForeignKey("RegionId");

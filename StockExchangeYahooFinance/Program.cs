@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.DbContext;
+using StockExchangeYahooFinance.Repository;
 
 namespace StockExchangeYahooFinance
 {
@@ -24,54 +25,92 @@ namespace StockExchangeYahooFinance
             "%22EURBAM%22,%20%22USDJPY%22,%20%22USDBGN%22,%20%22USDCZK%22,%20%22USDDKK%22,%20%22USDGBP%22,%20%22USDHUF%22,%20%22USDLTL%22,%20%22USDLVL%22,%20%22USDPLN%22,%20%22USDRON%22,%20%22USDSEK%22,%20%22USDCHF%22,%20%22USDNOK%22,%20%22USDHRK%22,%20%22USDRUB%22,%20%22USDTRY%22,%20%22USDAUD%22,%20%22USDBRL%22,%20%22USDCAD%22,%20%22USDCNY%22,%20%22USDHKD%22,%20%22USDIDR%22,%20%22USDILS%22,%20%22USDINR%22,%20%22USDKRW%22,%20%22USDMXN%22,%20%22USDMYR%22,%20%22USDNZD%22,%20%22USDPHP%22,%20%22USDSGD%22,%20%22USDTHB%22,%20%22USDZAR%22,%20%22USDISK%22";
 
         private static IConfigurationRoot Configuration { get; set; }
-        private static IApiRequest _apiRequest;
+        public static IServiceProvider ServiceProvider { get; private set; }
+        private static ApiRequest _apiRequest;
+        private static IStockExchangeRepository _repository;
+        private static DbContextOptions _contextOptions;
 
-        public Program(IApiRequest apiRequest)
+        public Program(ApiRequest apiRequest, IStockExchangeRepository repository)
         {
             _apiRequest = apiRequest;
+            _repository = repository;
         }
-
-        private static void Main()
+        private static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
            .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            //var contextOptions = new DbContextOptionsBuilder()
+            //.UseSqlServer(Configuration.GetConnectionString("YFConnection"))
+            //.Options;
+
+            //IServiceCollection services = new ServiceCollection()
+            //    .AddDbContext<YahooFinanceDbContext>(options =>
+            //     options.UseSqlServer(Configuration.GetConnectionString("YFConnection")))
+            //.AddSingleton(contextOptions)
+            //.AddScoped<YahooFinanceDbContext>();
+
+            //ServiceProvider = services.BuildServiceProvider();
+
+
             Run();
         }
-
         //Will Be needed later when transform to web app
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<YahooFinanceDbContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("YFConnection")));
-            services.AddSingleton<IConfiguration>(Configuration);
-            services.AddLogging();
-            services.AddScoped<IApiRequest, ApiRequest>();
-        }
+        //public void ConfigureServices(IServiceCollection services)
+        //{
 
+        //    services.AddDbContext<YahooFinanceDbContext>(options =>
+        //             options.UseSqlServer(Configuration.GetConnectionString("YFConnection")))
+        //        .AddSingleton<IConfiguration>(Configuration)
+
+        //        .AddLogging()
+        //        .AddScoped<IApiRequest, ApiRequest>()
+        //        .AddScoped<IStockExchangeRepository, StockExchangeRepository>()
+        //        .BuildServiceProvider();
+        //    services.AddTransient<ApiRequest>();
+        //    services.AddTransient<StockExchangeRepository>();
+        //    var loggerFactory = new LoggerFactory();
+
+        //}
         private static void Run()
         {
+
             var container = new UnityContainer();
             ContainerBootstrapper.RegisterTypes(container);
             var request = container.Resolve<ApiRequest>();
             var cancellation = new CancellationTokenSource(Timeout.Infinite);
-            var cancellation2 = new CancellationTokenSource(9);
-            var financeQueryUrl = Configuration["Urls:FinanceQueryUrl"];
             var financeUrl = Configuration["Urls:FinanceQueryUrl"] + $"(%22{Tickers}%22)" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             var commoditiesUrl = Configuration["Urls:FinanceQueryUrl"] + $"(%22{Commodities}%22)" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             var csvUrl = Configuration["Urls:CsvUrl"] + $"{Tickers}&f={CsvData}";
             var xChangeUrl = Configuration["Urls:XchangeUrl"] + $"({Curencies})" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
+            //IApiRequest req = new ApiRequest(_repository);
+
+            Console.WriteLine("What do you want to do?" );
+
             //For JSON data for Companies
             //request.StockExchangeTask(TimeSpan.FromMilliseconds(900), cancellation.Token, financeUrl).Wait(cancellation.Token);
+
+            //Import list of currencies from ISO web site for Currencies
             //request.ImportCurrencies(Configuration["Urls:CurrencyUrl"]).Wait(cancellation.Token);
+
+            //Import Companies from NASDAQ
             //request.ImportCompanies(TimeSpan.FromSeconds(7), cancellation.Token, Configuration["Urls:CompaniesCSV"] + Configuration["Urls:CompaniesCSVRegion"] + Configuration["Urls:ComaniesCSVDownload"], Configuration["Urls:CompaniesRegion"]).Wait(cancellation.Token);
+
+            //Import Companies from yahoo
             request.YahooCompanies(allComp).Wait(cancellation.Token);
+
+            //Import Yahoo Exchanges from xml file
+            //request.YahooExchanges().Wait(cancellation.Token);
+
             //For JSON data for Commodities
             //request.RepeatActionEvery(TimeSpan.FromMilliseconds(900), cancellation.Token, commoditiesUrl).Wait(cancellation.Token);
+
             //For currency x change
             //request.XchangeTask(TimeSpan.FromSeconds(5), cancellation.Token, xChangeUrl).Wait(cancellation.Token);
+
             //If you want to use CSV Parsing use this method
             //request.StockExchangeParseCsv(csvUrl);
         }

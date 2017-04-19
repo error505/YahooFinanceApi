@@ -30,6 +30,14 @@ namespace StockExchangeYahooFinance.Repository
             return industry;
         }
 
+        public async Task<Country> GetCountryByName(string name)
+        {
+            var country =
+                await _context.Country
+                    .SingleOrDefaultAsync(m => m.Name == name);
+            return country;
+        }
+
         public async Task<Region> GetRegionByName(string name)
         {
             var region =
@@ -52,6 +60,14 @@ namespace StockExchangeYahooFinance.Repository
                 await _context.Companies
                     .SingleOrDefaultAsync(m => m.Symbol == symbol);
             return company;
+        }
+
+        public async Task<Exchange> GetExchangeByName(string symbol)
+        {
+            var exchange =
+                await _context.Exchange
+                    .SingleOrDefaultAsync(m => m.StockExchangeId == symbol);
+            return exchange;
         }
 
         public async Task<Currencies> GetCurrencyByCode(string code)
@@ -118,6 +134,39 @@ namespace StockExchangeYahooFinance.Repository
 
             }
             return industry.Id;
+        }
+
+        public async Task<string> AddCountry(Country country)
+        {
+            if (country == null)
+            {
+                return null;
+            }
+            if (CountryIdExists(country.Name))
+            {
+                var ind = await GetCountryByName(country.Name);
+                return ind.Id;
+            }
+            _context.Country.Add(country);
+            try
+            {
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (CountryIdExists(country.Name))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return country.Id;
         }
 
         public async Task<string> AddSector(Sector sector)
@@ -198,7 +247,6 @@ namespace StockExchangeYahooFinance.Repository
             _context.Companies.Add(companies);
             try
             {
-
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -214,6 +262,37 @@ namespace StockExchangeYahooFinance.Repository
                 }
             }
             return companies.Id;
+        }
+
+        public async Task<string> AddExchange(Exchange exchange)
+        {
+            if (exchange == null)
+            {
+                return null;
+            }
+            if (ExchangeIdExists(exchange.StockExchangeId))
+            {
+                var comp = await GetExchangeByName(exchange.StockExchangeId);
+                return comp.Id;
+            }
+            _context.Exchange.Add(exchange);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ExchangeIdExists(exchange.StockExchangeId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return exchange.Id;
         }
 
         public async Task<string> AddCurrency(Currencies currencies)
@@ -234,7 +313,7 @@ namespace StockExchangeYahooFinance.Repository
             }
             catch (DbUpdateException ex)
             {
-                if (CompIdExists(currencies.Code))
+                if (CurrencyExists(currencies.Code))
                 {
                     Console.WriteLine(ex.Message);
                     Console.Read();
@@ -247,32 +326,42 @@ namespace StockExchangeYahooFinance.Repository
             return currencies.Id;
         }
 
-        private bool IdExists(string id)
+        public bool IdExists(string id)
         {
             return _context.FinanceModel.Any(e => e.Id == id);
         }
 
-        private bool CompIdExists(string symbol)
+        public bool CompIdExists(string symbol)
         {
             return _context.Companies.Any(e => e.Symbol == symbol);
         }
 
-        private bool IndustryIdExists(string name)
+        public bool ExchangeIdExists(string symbol)
+        {
+            return _context.Exchange.Any(e => e.StockExchangeId == symbol);
+        }
+
+        public bool IndustryIdExists(string name)
         {
             return _context.Industrie.Any(e => e.Name == name);
         }
 
-        private bool RegionIdExists(string name)
+        public bool CountryIdExists(string name)
+        {
+            return _context.Country.Any(e => e.Name == name);
+        }
+
+        public bool RegionIdExists(string name)
         {
             return _context.Region.Any(e => e.Name == name);
         }
 
-        private bool SectorIdExists(string name)
+        public bool SectorIdExists(string name)
         {
             return _context.Sector.Any(e => e.Name == name);
-        }       
+        }
 
-        private bool CurrencyExists(string code)
+        public bool CurrencyExists(string code)
         {
             return _context.Currencies.Any(e => e.Code == code);
         }

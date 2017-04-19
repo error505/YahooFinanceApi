@@ -182,7 +182,7 @@ namespace StockExchangeYahooFinance.Services
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
@@ -200,10 +200,10 @@ namespace StockExchangeYahooFinance.Services
             const string bypass = "&bypass=true";
 
             const string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
-            
+
             //var results = new List<string>();
             foreach (var c in alphabet)
-            {                             
+            {
                 for (var i = 0; i <= 2042; i += 20)
                 {
                     var urlTosend = url + s + c + t + "s" + m + "ALL" + b + i + bypass;
@@ -220,11 +220,12 @@ namespace StockExchangeYahooFinance.Services
                         var tickerName = item.ChildNodes[1].InnerText;
                         var lastTrade = item.ChildNodes[2].InnerText;
                         var type = item.ChildNodes[3].InnerText;
+                        var industryN = item.ChildNodes[4].InnerText;
                         var exchange = item.ChildNodes[5].InnerText;
-                        //var reg = new Region { Name = region };
-                        //var regId = await _repository.AddRegion(reg);
+                        var exc = new Exchange() { Name = exchange };
+                        var excId = await _repository.AddExchange(exc);
                         //var sector = new Sector { Name = sec };
-                        var industry = new Industry { Name = item.ChildNodes[4].InnerText };
+                        var industry = new Industry { Name = industryN };
                         var indId = await _repository.AddIndustry(industry);
                         //var secId = await _repository.AddSector(sector);
                         var companies = new Companies()
@@ -235,13 +236,65 @@ namespace StockExchangeYahooFinance.Services
                             //SectorId = secId,
                             IndustryId = indId,
                             //RegionId = regId,
+                            ExchangeId = excId
                         };
                         await _repository.AddCompany(companies);
                         //results.Add(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
-                        Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
+                        Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industryN + "\t" + exchange);
                     }
                 }
             }
+            //SaveData(results);
+            //return results;
+        }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        public async Task YahooExchanges()
+        {
+
+            var doc = new XmlDocument();
+            var dir = AppDomain.CurrentDomain.BaseDirectory;
+            // Find Exchanges Template XML
+            var xmlFilePath = Path.Combine(dir, "ConfigData", "StockExchanges" + ".xml");
+            //Load XML into created XML document
+            doc.Load(xmlFilePath);
+            var nsmgrDoc = new XmlNamespaceManager(doc.NameTable);
+            var companyElements = doc.SelectNodes("StockExchanges/StockExchange", nsmgrDoc);
+            foreach (XmlElement item in companyElements)
+            {
+                var id = item.Attributes[0].Value;
+                var suffix = item.Attributes[1].Value;
+                var delayMinutes = item.Attributes[2].Value;
+                var openingTimeLocal = item.Attributes[3].Value;
+                var closingTimeLocal = item.Attributes[4].Value;
+                var utcOffsetStandardTime = item.Attributes[5].Value;
+                var country = item.Attributes[6].Value;
+                var name = item.Attributes[7].Value;
+                var tradingDays = item.Attributes[8].Value;
+
+                //var reg = new Region { Name = region };
+                //var regId = await _repository.AddRegion(reg);
+                //var sector = new Sector { Name = sec };
+                var countryAdd = new Country() {Name = country };
+                var countryId = await _repository.AddCountry(countryAdd);
+                //var secId = await _repository.AddSector(sector);
+                var exchange = new Exchange()
+                {
+                    StockExchangeId = id,
+                    Suffix = suffix,
+                    Delay = delayMinutes,
+                    OpeningTimeLocal = openingTimeLocal,
+                    ClosingTimeLocal = closingTimeLocal,
+                    UtcOffsetStandardTime = utcOffsetStandardTime,
+                    CountryId = countryId,
+                    Name = name,
+                    TradingDays = tradingDays,
+                };
+                await _repository.AddExchange(exchange);
+            }
+
             //SaveData(results);
             //return results;
         }
@@ -255,7 +308,7 @@ namespace StockExchangeYahooFinance.Services
         //}
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="interval"></param>
         /// <param name="cancellationToken"></param>
@@ -328,7 +381,7 @@ namespace StockExchangeYahooFinance.Services
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
