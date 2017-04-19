@@ -107,5 +107,7 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Date { get; set; }
 
         public string Time { get; set; }
+
+        public DateTime CreationTime { get; set; }
     }
 }

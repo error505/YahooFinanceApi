@@ -221,8 +221,8 @@ namespace StockExchangeYahooFinance.Services
                         var lastTrade = item.ChildNodes[2].InnerText;
                         var type = item.ChildNodes[3].InnerText;
                         var industryN = item.ChildNodes[4].InnerText;
-                        var exchange = item.ChildNodes[5].InnerText;
-                        var exc = new Exchange() { Name = exchange };
+                        var exchangeId = item.ChildNodes[5].InnerText;
+                        var exc = new Exchange() { StockExchangeId = exchangeId };
                         var excId = await _repository.AddExchange(exc);
                         //var sector = new Sector { Name = sec };
                         var industry = new Industry { Name = industryN };
@@ -240,7 +240,7 @@ namespace StockExchangeYahooFinance.Services
                         };
                         await _repository.AddCompany(companies);
                         //results.Add(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
-                        Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industryN + "\t" + exchange);
+                        Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industryN + "\t" + exchangeId);
                     }
                 }
             }

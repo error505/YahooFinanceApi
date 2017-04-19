@@ -12,7 +12,7 @@ namespace StockExchangeYahooFinance.Data.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        
+
         public string Symbol { get; set; }
 
         public string Name { get; set; }
@@ -43,5 +43,6 @@ namespace StockExchangeYahooFinance.Data.Models
 
         public string Type { get; set; }
 
+        public DateTime CreationTime { get; set; }
     }
 }

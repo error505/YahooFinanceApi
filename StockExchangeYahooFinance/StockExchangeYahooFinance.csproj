@@ -258,6 +258,10 @@
     <Compile Include="Migrations\20170419134212_updateExAddCountrya.designer.cs">
       <DependentUpon>20170419134212_updateExAddCountrya.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170419140737_addedCreationDateAndBugFixing.cs" />
+    <Compile Include="Migrations\20170419140737_addedCreationDateAndBugFixing.designer.cs">
+      <DependentUpon>20170419140737_addedCreationDateAndBugFixing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

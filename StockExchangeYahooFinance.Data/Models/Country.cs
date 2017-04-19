@@ -14,5 +14,7 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Name { get; set; }
         public string CountryCode { get; set; }
 
+        public DateTime CreationTime { get; set; }
+
     }
 }
