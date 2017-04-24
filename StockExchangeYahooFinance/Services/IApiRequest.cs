@@ -17,14 +17,14 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url);
+        Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get CSV from yahoo finance and parse it
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        List<FinanceModel> StockExchangeParseCsv(string url);
+        Task StockExchangeParseCsv();
         /// <summary>
         /// For Currency XCHANGE
         /// </summary>
@@ -32,7 +32,7 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
-        Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url);
+        Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken);
         /// <summary>
         ///
         /// </summary>
@@ -41,21 +41,21 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="url"></param>
         /// <param name="region"></param>
         /// <returns></returns>
-        Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken, string url, string region);
+        Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken);
         /// <summary>
         ///
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        Task ImportCurrencies(string url);
+        Task ImportCurrencies();
         /// <summary>
         ///
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        Task YahooCompanies(string url);
+        Task YahooCompanies();
         /// <summary>
-        ///
+        /// Import list of yahoo exchanges to database from xml fle
         /// </summary>
         /// <returns></returns>
         Task YahooExchanges();

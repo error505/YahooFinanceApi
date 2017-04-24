@@ -117,7 +117,6 @@ namespace StockExchangeYahooFinance.Repository
             _context.Industrie.Add(industry);
             try
             {
-
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)

@@ -13,6 +13,7 @@ using System.Xml;
 using System.Xml.Linq;
 using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Data;
@@ -26,10 +27,14 @@ namespace StockExchangeYahooFinance.Services
     public class ApiRequest : IApiRequest
     {
         private readonly StockExchangeRepository _repository;
-
+        private static IConfigurationRoot Configuration { get; set; }
         public ApiRequest(StockExchangeRepository repository)
         {
             _repository = repository;
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+           .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            Configuration = builder.Build();
         }
         /// <summary>
         /// Get JSON data from yahoo finance and parse it
@@ -38,8 +43,10 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url)
+        public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
+            var tickers = Configuration["Urls:Tickers"];
+            var url = Configuration["Urls:FinanceQueryUrl"] + $"(%22{tickers}%22)" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             // still not in use anywhere....
             var financeModel = new List<FinanceModel>();
             while (true)
@@ -92,12 +99,15 @@ namespace StockExchangeYahooFinance.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public List<FinanceModel> StockExchangeParseCsv(string url)
+        public async Task StockExchangeParseCsv()
         {
+            var csvData = Configuration["Urls:CsvData"];
+            var tickers = Configuration["Urls:Tickers"];
+            var url = Configuration["Urls:CsvUrl"] + $"{tickers}&f={csvData}";
             //Call web request
-            var csvData = WebRequest(url);
+            var request = WebRequest(url);
             //Parse CSV
-            var rows = csvData.Replace("\r", "").Split('\n');
+            var rows = request.Replace("\r", "").Split('\n');
             //Get data from string
             var prices = (from row in rows
                           where !string.IsNullOrEmpty(row)
@@ -121,11 +131,10 @@ namespace StockExchangeYahooFinance.Services
                 Console.WriteLine("{0} ({1})  Bid:{2} Offer:{3} Last:{4} Open: {5} PreviousClose:{6} Change:{7}",
                     price.Name, price.Symbol, price.Bid, price.Ask, price.LastTradePriceOnly, price.Open,
                     price.PreviousClose, price.Change);
+                await _repository.AddFinanceModel(price);
             }
 
             Console.Read();
-
-            return prices;
         }
 
         /// <summary>
@@ -135,9 +144,10 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
-        public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken, string url)
+        public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-
+            var curencies = Configuration["Urls:Curencies"];
+            var url = Configuration["Urls:XchangeUrl"] + $"({curencies})" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
@@ -186,8 +196,9 @@ namespace StockExchangeYahooFinance.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public async Task YahooCompanies(string url)
+        public async Task YahooCompanies()
         {
+            var allComp = Configuration["Urls:AllComp"];
             //Search term
             const string s = "s=";
             //All, Stocks, Mutual funds,...
@@ -206,7 +217,7 @@ namespace StockExchangeYahooFinance.Services
             {
                 for (var i = 0; i <= 2042; i += 20)
                 {
-                    var urlTosend = url + s + c + t + "s" + m + "ALL" + b + i + bypass;
+                    var urlTosend = allComp + s + c + t + "s" + m + "ALL" + b + i + bypass;
                     var data = WebRequest(urlTosend);
                     var doc = new HtmlDocument();
                     doc.LoadHtml(data);
@@ -315,9 +326,11 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="url"></param>
         /// <param name="region"></param>
         /// <returns></returns>
-        public async Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken, string url, string region)
+        public async Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken)
         {
-
+            var url = Configuration["Urls:CompaniesCSV"] + Configuration["Urls:CompaniesCSVRegion"] +
+                      Configuration["Urls:ComaniesCSVDownload"];
+            var region = Configuration["Urls:CompaniesRegion"];
             try
             {
                 var csvData = WebRequest(url);
@@ -385,9 +398,9 @@ namespace StockExchangeYahooFinance.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public async Task ImportCurrencies(string url)
+        public async Task ImportCurrencies()
         {
-
+            var url = Configuration["Urls:CurrencyUrl"];
             try
             {
                 var csvData = WebRequest(url);
