@@ -3,22 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using HtmlAgilityPack;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
-using StockExchangeYahooFinance.Data;
 using StockExchangeYahooFinance.Data.Models;
-using StockExchangeYahooFinance.DbContext;
 using StockExchangeYahooFinance.Repository;
 using StockExchangeYahooFinance.Data.ViewModel;
 
@@ -31,6 +25,7 @@ namespace StockExchangeYahooFinance.Services
         private static string YahooBaseUrl { get; set; }
         private static string YahooQuotes { get; set; }
         private static string YahooXchange { get; set; }
+        private static string YahooLookupAll { get; set; }
         private static string Format { get; set; }
         private static string Diagnostic { get; set; }
         private static string Enviroment { get; set; }
@@ -42,7 +37,8 @@ namespace StockExchangeYahooFinance.Services
         private static string NasdqRegionNormal { get; set; }
         private static string NasdqRender { get; set; }
         private static string IsoCurrencyUrl { get; set; }
-
+        private const string Select = "select ";
+        private const string From = " from";
         private const string SelectAll = "select * from ";
         private const string WhereSimbol = " where symbol ";
         private const string WherePair = " where pair ";
@@ -51,7 +47,9 @@ namespace StockExchangeYahooFinance.Services
 
         public ApiRequest(StockExchangeRepository repository)
         {
+            //Get repository
             _repository = repository;
+            //Get configuration parameters
             var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json");
@@ -70,6 +68,7 @@ namespace StockExchangeYahooFinance.Services
             NasdqRegionNormal = Configuration["Urls:NASDQRegion"];
             NasdqRender = Configuration["Urls:NASDQRender"];
             IsoCurrencyUrl = Configuration["Urls:IsoCurrencyUrl"];
+            YahooLookupAll = Configuration["Urls:AllComp"];
         }
         /// <summary>
         /// Get JSON data from yahoo finance and parse it
@@ -77,11 +76,10 @@ namespace StockExchangeYahooFinance.Services
         /// <param name="interval"></param>
         /// <param name="cancellationToken"></param>
         /// <param name="url"></param>
-        /// <returns></returns>
+        /// <returns>List of companies</returns>
         public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
             var url = YahooBaseUrl + SelectAll + YahooQuotes + WhereSimbol + In + "(%22" + Tickers + "%22)" + Format + Enviroment;
-
             var financeModel = new List<FinanceModel>();
             while (true)
             {
@@ -120,7 +118,6 @@ namespace StockExchangeYahooFinance.Services
                         await _repository.AddFinanceModel(f);
                     }
                 }
-
                 catch (TaskCanceledException)
                 {
                     return;
@@ -157,7 +154,6 @@ namespace StockExchangeYahooFinance.Services
                               LastTradePriceOnly = (cols[6]),
                               Change = cols[7]
                           }).ToList();
-
             //Write data in console
             foreach (var price in prices)
             {
@@ -166,7 +162,6 @@ namespace StockExchangeYahooFinance.Services
                     price.PreviousClose, price.Change);
                 await _repository.AddFinanceModel(price);
             }
-
             Console.Read();
         }
 
@@ -180,7 +175,6 @@ namespace StockExchangeYahooFinance.Services
         public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
             var url = YahooBaseUrl + SelectAll + YahooXchange + WherePair + In + "(%22" + Curencies + "%22)" + Format + Enviroment;
-            //var url = Configuration["Urls:XchangeUrl"] + $"({curencies})" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
@@ -214,15 +208,12 @@ namespace StockExchangeYahooFinance.Services
                         Console.WriteLine($"{name} : {id} : {rate} : {date + time} : {ask} : {bid}");
                     }
                 }
-
                 catch (TaskCanceledException)
                 {
                     return;
                 }
             }
         }
-
-
 
         /// <summary>
         ///
@@ -231,7 +222,6 @@ namespace StockExchangeYahooFinance.Services
         /// <returns></returns>
         public async Task YahooCompanies()
         {
-            var allComp = Configuration["Urls:AllComp"];
             //Search term
             const string s = "s=";
             //All, Stocks, Mutual funds,...
@@ -242,15 +232,13 @@ namespace StockExchangeYahooFinance.Services
             const string b = "&b=";
             //To put it in tables
             const string bypass = "&bypass=true";
-
             const string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
-
             //var results = new List<string>();
             foreach (var c in alphabet)
             {
                 for (var i = 0; i <= 2042; i += 20)
                 {
-                    var urlTosend = allComp + s + c + t + "s" + m + "ALL" + b + i + bypass;
+                    var urlTosend = YahooLookupAll + s + c + t + "s" + m + "ALL" + b + i + bypass;
                     var data = WebRequest(urlTosend);
                     var doc = new HtmlDocument();
                     doc.LoadHtml(data);
@@ -297,7 +285,6 @@ namespace StockExchangeYahooFinance.Services
         /// <returns></returns>
         public async Task YahooExchanges()
         {
-
             var doc = new XmlDocument();
             var dir = AppDomain.CurrentDomain.BaseDirectory;
             // Find Exchanges Template XML
@@ -420,8 +407,6 @@ namespace StockExchangeYahooFinance.Services
                 Console.Read();
                 throw;
             }
-
-
         }
 
         /// <summary>
@@ -434,9 +419,7 @@ namespace StockExchangeYahooFinance.Services
             try
             {
                 var csvData = WebRequest(IsoCurrencyUrl);
-                XDocument currency = XDocument.Parse(csvData);
-
-                //Get data from string
+                var currency = XDocument.Parse(csvData);
                 //Write data in console
                 var query = from c in currency.Descendants("CcyNtry")
                     let element = c.Element("Ccy")
@@ -472,8 +455,6 @@ namespace StockExchangeYahooFinance.Services
                 Console.Read();
                 throw;
             }
-
-
         }
 
         /// <summary>
@@ -484,13 +465,11 @@ namespace StockExchangeYahooFinance.Services
         private static string WebRequest(string url)
         {
             string webResponseData;
-
             //Make web request
             using (var web = new WebClient())
             {
                 webResponseData = web.DownloadString(url);
             }
-
             return webResponseData;
         }
     }
