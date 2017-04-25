@@ -18,6 +18,9 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Close { get; set; }
         public string Volume { get; set; }
         public string Adj_Close { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
+        public string CreatedByUser { get; set; }
     }
 }

@@ -270,6 +270,10 @@
     <Compile Include="Migrations\20170425090434_Historys.designer.cs">
       <DependentUpon>20170425090434_Historys.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170425121440_HistoryDateAdd.cs" />
+    <Compile Include="Migrations\20170425121440_HistoryDateAdd.designer.cs">
+      <DependentUpon>20170425121440_HistoryDateAdd.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
