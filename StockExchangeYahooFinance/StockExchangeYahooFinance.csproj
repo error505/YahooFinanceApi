@@ -207,6 +207,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigData\ConfigManager.cs" />
     <Compile Include="ConfigData\Data.cs" />
     <Compile Include="DbContext\YahooFinanceDbContext.cs" />
     <Compile Include="Mappings\ContainerBootstrapper.cs" />

@@ -43,7 +43,7 @@ namespace StockExchangeYahooFinance.Services
         private const string WhereSimbol = " where symbol ";
         private const string WherePair = " where pair ";
         private const string In = "in ";
-
+        private static readonly ConfigManager _cfgManager = new ConfigManager();
 
         public ApiRequest(StockExchangeRepository repository)
         {
@@ -79,7 +79,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns>List of companies</returns>
         public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = YahooBaseUrl + SelectAll + YahooQuotes + WhereSimbol + In + "(%22" + Tickers + "%22)" + Format + Enviroment + CallBack;
+            var url = _cfgManager.YahooBaseUrl + SelectAll + YahooQuotes + WhereSimbol + In + "(%22" + Tickers + "%22)" + _cfgManager.Format + _cfgManager.Enviroment + _cfgManager.CallBack;
             var financeModel = new List<FinanceModel>();
             while (true)
             {

@@ -1,44 +1,64 @@
-﻿//using Microsoft.Extensions.Configuration;
-//using System;
-//using System.Collections.Generic;
-//using System.Configuration;
-//using System.IO;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//namespace StockExchangeYahooFinance.ConfigData
-//{
+namespace StockExchangeYahooFinance.ConfigData
+{
+    /// <summary>
+    /// Configuration for getting parameters from App.config file
+    /// </summary>
+    internal class ConfigManager
+    {
+        private static IConfigurationRoot Configuration { get; set; }
+        private static string YahooBase = "YahooBaseUrl";
+        private static string YahooQuotes = "YahooQuotes";
+        private static string YahooXchange = "YahooXchange";
+        private static string YahooLookupAll = "YahooLookupAll";
+        private static string YahooFormat = "Format";
+        private static string Diagnostic = "Diagnostic;";
+        private static string YahooEnviroment = "Enviroment";
+        private static string YahooCallBack = "CallBack";
+        private static string Tickers = "Tickers";
+        private static string Curencies = "Curencies";
+        private static string NasdqCompanies = "NasdqCompanies";
+        private static string NasdqRegion = "NasdqRegion";
+        private static string NasdqRegionNormal = "NasdqRegionNormal";
+        private static string NasdqRender = "NasdqRender";
+        private static string IsoCurrencyUrl = "IsoCurrencyUrl";
+        private const string Select = "select ";
+        private const string From = " from";
+        private const string SelectAll = "select * from ";
+        private const string WhereSimbol = " where symbol ";
+        private const string WherePair = " where pair ";
+        private const string In = "in ";
 
-//    /// <summary>
-//    /// Configuration for getting parameters from App.config file
-//    /// </summary>
-//    internal class ConfigManager
-//    {
-//        private static IConfigurationRoot Configuration { get; set; }
-//        private const string FinanceUrl = "financeQueryUrl";
-//        private const string CurrencyUrl = "xchangeUrl";
-//        private const string DataTableEnv = "dataTableEnv";
-//        private const string Csv = "csvUrl";
-//        private const string FormatJ = "formatJson";
+        public string YahooBaseUrl => GetConfigKey(YahooBase);
 
-//        public string FinanceQueryUrl => GetConfigKey(FinanceUrl);
+        public string YahooXchangeUrl => GetConfigKey(YahooXchange);
 
-//        public string XchangeUrl => GetConfigKey(CurrencyUrl);
+        public string Enviroment => GetConfigKey(YahooEnviroment);
+        public string CallBack => GetConfigKey(YahooCallBack);
 
-//        public string Enviroment => GetConfigKey(DataTableEnv);
+        //public string CsvUrl => GetConfigKey(Csv);
 
-//        public string CsvUrl => GetConfigKey(Csv);
+        public string Format => GetConfigKey(YahooFormat);
 
-//        public string FormatJson => GetConfigKey(FormatJ);
+        private string GetConfigKey(string name)
+        {
+            return Configuration.GetSection("Urls")[name];
+        }
 
-//        private string GetConfigKey(string name)
-//        {
-//            var builder = new ConfigurationBuilder()
-//              .SetBasePath(Directory.GetCurrentDirectory())
-//             .AddJsonFile("appsettings.json");
-//            Configuration = builder.Build();
-//            return Configuration.GetSection("ConfigData")[name];
-//        }
-//    }
-//}
+        public ConfigManager()
+        {
+            var builder = new ConfigurationBuilder()
+              .SetBasePath(Directory.GetCurrentDirectory())
+             .AddJsonFile("appsettings.json");
+            Configuration = builder.Build();
+        }
+    }
+}
