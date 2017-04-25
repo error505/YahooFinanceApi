@@ -79,7 +79,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns>List of companies</returns>
         public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = YahooBaseUrl + SelectAll + YahooQuotes + WhereSimbol + In + "(%22" + Tickers + "%22)" + Format + Enviroment;
+            var url = YahooBaseUrl + SelectAll + YahooQuotes + WhereSimbol + In + "(%22" + Tickers + "%22)" + Format + Enviroment + CallBack;
             var financeModel = new List<FinanceModel>();
             while (true)
             {
@@ -174,7 +174,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
         public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = YahooBaseUrl + SelectAll + YahooXchange + WherePair + In + "(%22" + Curencies + "%22)" + Format + Enviroment;
+            var url = YahooBaseUrl + SelectAll + YahooXchange + WherePair + In + "(%22" + Curencies + "%22)" + Format + Enviroment + CallBack;
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
