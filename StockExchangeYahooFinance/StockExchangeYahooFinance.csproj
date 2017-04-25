@@ -262,6 +262,14 @@
     <Compile Include="Migrations\20170419140737_addedCreationDateAndBugFixing.designer.cs">
       <DependentUpon>20170419140737_addedCreationDateAndBugFixing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170425082826_History.cs" />
+    <Compile Include="Migrations\20170425082826_History.designer.cs">
+      <DependentUpon>20170425082826_History.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170425090434_Historys.cs" />
+    <Compile Include="Migrations\20170425090434_Historys.designer.cs">
+      <DependentUpon>20170425090434_Historys.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

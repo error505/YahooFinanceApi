@@ -46,6 +46,7 @@
     <Compile Include="Models\Currencies.cs" />
     <Compile Include="Models\Exchange.cs" />
     <Compile Include="Models\FinanceModel.cs" />
+    <Compile Include="Models\History.cs" />
     <Compile Include="Models\Industry.cs" />
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\Sector.cs" />

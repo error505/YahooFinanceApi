@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170425082826_History")]
+    partial class History
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -326,36 +327,6 @@ namespace StockExchangeYahooFinance.Migrations
                     b.ToTable("FinanceModel");
                 });
 
-            modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.History", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Adj_Close");
-
-                    b.Property<string>("Close");
-
-                    b.Property<string>("CompaniesId");
-
-                    b.Property<DateTime>("CreationTime");
-
-                    b.Property<string>("Date");
-
-                    b.Property<string>("High");
-
-                    b.Property<string>("Low");
-
-                    b.Property<string>("Open");
-
-                    b.Property<string>("Volume");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompaniesId");
-
-                    b.ToTable("History");
-                });
-
             modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.Industry", b =>
                 {
                     b.Property<string>("Id")
@@ -437,13 +408,6 @@ namespace StockExchangeYahooFinance.Migrations
                     b.HasOne("StockExchangeYahooFinance.Data.Models.Currencies", "Currencies")
                         .WithMany()
                         .HasForeignKey("CurrenciesId");
-                });
-
-            modelBuilder.Entity("StockExchangeYahooFinance.Data.Models.History", b =>
-                {
-                    b.HasOne("StockExchangeYahooFinance.Data.Models.Companies", "Companies")
-                        .WithMany()
-                        .HasForeignKey("CompaniesId");
                 });
         }
     }

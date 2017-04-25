@@ -41,5 +41,7 @@ namespace StockExchangeYahooFinance.DbContext
         public DbSet<Exchange> Exchange { get; set; }
 
         public DbSet<Country> Country { get; set; }
+
+        public DbSet<History> History { get; set; }
     }
 }
