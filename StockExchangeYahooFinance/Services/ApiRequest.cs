@@ -28,13 +28,48 @@ namespace StockExchangeYahooFinance.Services
     {
         private readonly StockExchangeRepository _repository;
         private static IConfigurationRoot Configuration { get; set; }
+        private static string YahooBaseUrl { get; set; }
+        private static string YahooQuotes { get; set; }
+        private static string YahooXchange { get; set; }
+        private static string Format { get; set; }
+        private static string Diagnostic { get; set; }
+        private static string Enviroment { get; set; }
+        private static string CallBack { get; set; }
+        private static string Tickers { get; set; }
+        private static string Curencies { get; set; }
+        private static string NasdqCompanies { get; set; }
+        private static string NasdqRegion { get; set; }
+        private static string NasdqRegionNormal { get; set; }
+        private static string NasdqRender { get; set; }
+        private static string IsoCurrencyUrl { get; set; }
+
+        private const string SelectAll = "select * from ";
+        private const string WhereSimbol = " where symbol ";
+        private const string WherePair = " where pair ";
+        private const string In = "in ";
+
+
         public ApiRequest(StockExchangeRepository repository)
         {
             _repository = repository;
             var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-           .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+           .AddJsonFile("appsettings.json");
             Configuration = builder.Build();
+            YahooBaseUrl = Configuration["Urls:YahooBaseUrl"];
+            YahooQuotes = Configuration["Urls:YahooQuotes"];
+            Format = Configuration["Urls:Format"];
+            Diagnostic = Configuration["Urls:Diagnostic"];
+            Enviroment = Configuration["Urls:Enviroment"];
+            CallBack = Configuration["Urls:CallBack"];
+            Tickers = Configuration["Urls:Tickers"];
+            YahooXchange = Configuration["Urls:YahooXchange"];
+            Curencies = Configuration["Urls:Curencies"];
+            NasdqCompanies = Configuration["Urls:NASDQCompaniesCSV"];
+            NasdqRegion = Configuration["Urls:NASDQCompaniesCSVRegion"];
+            NasdqRegionNormal = Configuration["Urls:NASDQRegion"];
+            NasdqRender = Configuration["Urls:NASDQRender"];
+            IsoCurrencyUrl = Configuration["Urls:IsoCurrencyUrl"];
         }
         /// <summary>
         /// Get JSON data from yahoo finance and parse it
@@ -45,9 +80,8 @@ namespace StockExchangeYahooFinance.Services
         /// <returns></returns>
         public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var tickers = Configuration["Urls:Tickers"];
-            var url = Configuration["Urls:FinanceQueryUrl"] + $"(%22{tickers}%22)" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
-            // still not in use anywhere....
+            var url = YahooBaseUrl + SelectAll + YahooQuotes + WhereSimbol + In + "(%22" + Tickers + "%22)" + Format + Enviroment;
+
             var financeModel = new List<FinanceModel>();
             while (true)
             {
@@ -102,8 +136,7 @@ namespace StockExchangeYahooFinance.Services
         public async Task StockExchangeParseCsv()
         {
             var csvData = Configuration["Urls:CsvData"];
-            var tickers = Configuration["Urls:Tickers"];
-            var url = Configuration["Urls:CsvUrl"] + $"{tickers}&f={csvData}";
+            var url = Configuration["Urls:CsvUrl"] + $"{Tickers}&f={csvData}";
             //Call web request
             var request = WebRequest(url);
             //Parse CSV
@@ -146,8 +179,8 @@ namespace StockExchangeYahooFinance.Services
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
         public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var curencies = Configuration["Urls:Curencies"];
-            var url = Configuration["Urls:XchangeUrl"] + $"({curencies})" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
+            var url = YahooBaseUrl + SelectAll + YahooXchange + WherePair + In + "(%22" + Curencies + "%22)" + Format + Enviroment;
+            //var url = Configuration["Urls:XchangeUrl"] + $"({curencies})" + Configuration["Urls:Format"] + Configuration["Urls:Enviroment"];
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
@@ -328,9 +361,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns></returns>
         public async Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = Configuration["Urls:CompaniesCSV"] + Configuration["Urls:CompaniesCSVRegion"] +
-                      Configuration["Urls:ComaniesCSVDownload"];
-            var region = Configuration["Urls:CompaniesRegion"];
+            var url = NasdqCompanies + NasdqRegion + NasdqRender;
             try
             {
                 var csvData = WebRequest(url);
@@ -352,7 +383,7 @@ namespace StockExchangeYahooFinance.Services
                                      Sector = csvSplit[7].ToString(),
                                      Industry = csvSplit[6].ToString()
                                  }).ToList();
-                var reg = new Region { Name = region };
+                var reg = new Region { Name = NasdqRegionNormal };
                 var regId = await _repository.AddRegion(reg);
                 //Write data in console
                 foreach (var comp in companies.Skip(1))
@@ -400,10 +431,9 @@ namespace StockExchangeYahooFinance.Services
         /// <returns></returns>
         public async Task ImportCurrencies()
         {
-            var url = Configuration["Urls:CurrencyUrl"];
             try
             {
-                var csvData = WebRequest(url);
+                var csvData = WebRequest(IsoCurrencyUrl);
                 XDocument currency = XDocument.Parse(csvData);
 
                 //Get data from string

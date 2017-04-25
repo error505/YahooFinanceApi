@@ -89,3 +89,48 @@ r5: PEG Ratio
 r6: Price / EPS Estimate Current Year
 r7: Price / EPS Estimate Next Year
 s7: Short Ratio
+
+http://query.yahooapis.com/v1/public/yql?q=
+select * from   yahoo.finance.historicaldata
+         where  symbol    = "SAP"
+         and    startDate = "2012-09-11"
+         and    endDate   = "2014-02-11"
+&format=json
+&diagnostics=true
+&env=store://datatables.org/alltableswithkeys
+&callback=
+
+http://query.yahooapis.com/v1/public/yql?q=
+select * from yahoo.finance.xchange where pair in ("USDMXN")
+&format=json
+&diagnostics=true
+&env=store://datatables.org/alltableswithkeys
+&callback=
+
+http://query.yahooapis.com/v1/public/yql?q=
+select * from yahoo.finance.quotes where symbol in ("YHOO","AAPL","GOOG","MSFT")
+&format=json
+&diagnostics=true
+&env=store://datatables.org/alltableswithkeys
+&callback=
+
+http://query.yahooapis.com/v1/public/yql?q=
+select * from yahoo.finance.quoteslist where symbol='SAP'
+&format=json
+&diagnostics=false
+&env=store://datatables.org/alltableswithkeys
+&callback=
+
+http://query.yahooapis.com/v1/public/yql?q=
+select * from yahoo.finance.quote where symbol in ("YHOO","AAPL","GOOG","MSFT")
+&format=json
+&diagnostics=false
+&env=store://datatables.org/alltableswithkeys
+&callback=
+
+http://query.yahooapis.com/v1/public/yql?q=
+select * from yahoo.finance.dividendhistory where symbol = "KO" and startDate = "1962-01-01" and endDate = "2013-12-31"
+&format=json
+&diagnostics=false
+&env=store://datatables.org/alltableswithkeys
+&callback=
