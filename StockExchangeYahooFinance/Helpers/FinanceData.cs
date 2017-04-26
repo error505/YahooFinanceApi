@@ -88,5 +88,9 @@
         public string Rate = "Rate";
         public string Date = "Date";
         public string Time = "Time";
+        public string Low = "Low";
+        public string High = "High";
+        public string Adj_Close = "Adj_Close";
+        public string Close = "Close";
     }
 }

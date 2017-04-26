@@ -17,6 +17,7 @@ namespace StockExchangeYahooFinance.ConfigData
         private static IConfigurationRoot Configuration { get; set; }
         private static string YahooBase = "YahooBaseUrl";
         private static string YahooQuotesUrl = "YahooQuotes";
+        private static string YahooHistoricalUrl = "YahooHistoricalData";
         private static string YahooXchangeUrl = "YahooXchange";
         private static string YahooLookup = "AllComp";
         private static string YahooFormat = "Format";
@@ -24,6 +25,7 @@ namespace StockExchangeYahooFinance.ConfigData
         private static string YahooEnviroment = "Enviroment";
         private static string YahooCallBack = "CallBack";
         private static string TickersList = "Tickers";
+        private static string Symbol = "SymbolTicker";
         private static string CurenciesConf = "Curencies";
         private static string NasdqCompaniesConf = "NASDQCompaniesCSV";
         private static string NasdqCompRegionCsv = "NASDQCompaniesCSVRegion";
@@ -44,7 +46,9 @@ namespace StockExchangeYahooFinance.ConfigData
         public string NasdqCompanies => GetConfigKey(NasdqCompaniesConf);
         public string Curencies => GetConfigKey(CurenciesConf);
         public string Tickers => GetConfigKey(TickersList);
+        public string SymbolTicker => GetConfigKey(Symbol);
         public string Enviroment => GetConfigKey(YahooEnviroment);
+        public string YahooHistoricalData => GetConfigKey(YahooHistoricalUrl);
         public string Diagnostic => GetConfigKey(YahooDiagnostic);
         public string CallBack => GetConfigKey(YahooCallBack);
         public string Format => GetConfigKey(YahooFormat);

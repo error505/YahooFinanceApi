@@ -14,6 +14,7 @@ using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Data.Models;
 using StockExchangeYahooFinance.Data.ViewModel;
 using StockExchangeYahooFinance.Helpers;
+using StockExchangeYahooFinance.Models;
 using StockExchangeYahooFinance.Repository;
 
 namespace StockExchangeYahooFinance.Services.ApiRequest
@@ -87,6 +88,47 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 }
             }
         }
+        //TODO
+        //public async Task YahooHistoricalData(RequestModel model)
+        //{
+        //    var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooHistoricalData +
+        //              YqlQuery.WhereSimbol +
+        //              "(%22" + CfgManager.SymbolTicker + "%22)" + YqlQuery.And + YqlQuery.StartDate + "2012-09-11" +
+        //              YqlQuery.And + YqlQuery.EndDate + "2014-02-11" + CfgManager.Format + CfgManager.Enviroment +
+        //              CfgManager.CallBack;
+        //        try
+        //        {
+        //            Console.Clear();
+        //            var json = WebRequest(url);
+        //            dynamic data = JObject.Parse(json);
+        //            var quote = data.query.results.quote;
+        //            foreach (var i in quote)
+        //            {
+        //                var f = new History();
+        //                var symbol = i.SelectToken(FinanceData.Symbol);
+        //                f.Symbol = symbol.ToString();
+        //                var Open = i.SelectToken(FinanceData.Open);
+        //                f.Open = Open.ToString();
+        //                var high = i.SelectToken(FinanceData.High);
+        //                f.High = high.ToString();
+        //                var low = i.SelectToken(FinanceData.Low);
+        //                f.Low = low.ToString();
+        //                var date = i.SelectToken(FinanceData.Date);
+        //                f.StartDate = date.ToString();
+
+        //                    Console.ForegroundColor = ConsoleColor.Red;
+        //                    Console.WriteLine($"{name}:{symbol} : {price} : {lastTime} : {change}");
+
+        //                Console.ForegroundColor = ConsoleColor.Green;
+        //                Console.WriteLine($"{name} : {symbol} : {price} : {lastTime} : {change}");
+        //                await _repository.AddHistory(f);
+        //            }
+        //        }
+        //        catch (TaskCanceledException)
+        //        {
+        //            return;
+        //        }
+        //}
 
         /// <summary>
         /// Get CSV from yahoo finance and parse it

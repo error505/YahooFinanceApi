@@ -12,5 +12,8 @@
         public string WherePair = " where pair ";
         public string Pair = "pair ";
         public string In = "in ";
+        public string And = " and";
+        public string StartDate = " startDate ";
+        public string EndDate = " endDate ";
     }
 }
