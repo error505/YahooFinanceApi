@@ -27,6 +27,10 @@ namespace StockExchangeYahooFinance.Repository
         {
             return _context.FinanceModel.ToList();
         }
+        public IEnumerable<History> GetAllHistories()
+        {
+            return _context.History.ToList();
+        }
         /// <summary>
         ///
         /// </summary>
@@ -38,6 +42,14 @@ namespace StockExchangeYahooFinance.Repository
                 await _context.Industrie
                     .SingleOrDefaultAsync(m => m.Name == name);
             return industry;
+        }
+
+        public IEnumerable<History> GetHistoryByStartEndDate(DateTime startDate, DateTime endDate, string id)
+        {
+            var history =
+                 _context.History
+                    .Where(m => (m.StartDate == startDate) && (m.EndDate == endDate) && (m.CompaniesId == id));
+            return history;
         }
         /// <summary>
         ///
