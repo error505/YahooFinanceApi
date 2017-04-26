@@ -102,20 +102,20 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             var rows = request.Replace("\r", "").Split('\n');
             //Get data from string
             var prices = (from row in rows
-                          where !string.IsNullOrEmpty(row)
-                          select row.Split(',')
+                where !string.IsNullOrEmpty(row)
+                select row.Split(',')
                 into cols
-                          select new FinanceModel
-                          {
-                              Symbol = cols[0],
-                              Name = cols[1],
-                              Bid = (cols[2]),
-                              Ask = (cols[3]),
-                              Open = (cols[4]),
-                              PreviousClose = (cols[5]),
-                              LastTradePriceOnly = (cols[6]),
-                              Change = cols[7]
-                          }).ToList();
+                select new FinanceModel
+                {
+                    Symbol = cols[0],
+                    Name = cols[1],
+                    Bid = (cols[2]),
+                    Ask = (cols[3]),
+                    Open = (cols[4]),
+                    PreviousClose = (cols[5]),
+                    LastTradePriceOnly = (cols[6]),
+                    Change = cols[7]
+                }).ToList();
             //Write data in console
             foreach (var price in prices)
             {
@@ -136,7 +136,9 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
         public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooXchange + YqlQuery.WherePair + YqlQuery.In + "(%22" + CfgManager.Curencies + "%22)" + CfgManager.Format + CfgManager.Enviroment + CfgManager.CallBack;
+            var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooXchange + YqlQuery.WherePair +
+                      YqlQuery.In + "(%22" + CfgManager.Curencies + "%22)" + CfgManager.Format + CfgManager.Enviroment +
+                      CfgManager.CallBack;
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
@@ -234,7 +236,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         };
                         await _repository.AddCompany(companies);
                         //results.Add(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
-                        Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industryN + "\t" + exchangeId);
+                        Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industryN +
+                                          "\t" + exchangeId);
                     }
                 }
             }
@@ -318,20 +321,20 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var rows = csvData.Replace("\r", "").Split('\n');
                 //Get data from string
                 var companies = (from row in rows
-                                 where !string.IsNullOrEmpty(row)
-                                 let csvSplit = new Regex("((?<=\")[^\"]*(?=\"(,|$)+)|(?<=,|^)[^,\"]*(?=,|$))").Matches(row)
-                                 let cols = row.Split(',')
-                                 select new CompaniesViewModel()
-                                 {
-                                     Symbol = csvSplit[0].ToString(),
-                                     Name = csvSplit[1].ToString(),
-                                     LastSale = csvSplit[2].ToString(),
-                                     MarketCap = csvSplit[3].ToString(),
-                                     ADR_TSO = csvSplit[4].ToString(),
-                                     IPOyear = csvSplit[5].ToString(),
-                                     Sector = csvSplit[7].ToString(),
-                                     Industry = csvSplit[6].ToString()
-                                 }).ToList();
+                    where !string.IsNullOrEmpty(row)
+                    let csvSplit = new Regex("((?<=\")[^\"]*(?=\"(,|$)+)|(?<=,|^)[^,\"]*(?=,|$))").Matches(row)
+                    let cols = row.Split(',')
+                    select new CompaniesViewModel()
+                    {
+                        Symbol = csvSplit[0].ToString(),
+                        Name = csvSplit[1].ToString(),
+                        LastSale = csvSplit[2].ToString(),
+                        MarketCap = csvSplit[3].ToString(),
+                        ADR_TSO = csvSplit[4].ToString(),
+                        IPOyear = csvSplit[5].ToString(),
+                        Sector = csvSplit[7].ToString(),
+                        Industry = csvSplit[6].ToString()
+                    }).ToList();
                 var reg = new Region { Name = CfgManager.NasdqRegion };
                 var regId = await _repository.AddRegion(reg);
                 //Write data in console
