@@ -11,16 +11,27 @@ namespace StockExchangeYahooFinance.Repository
     public class StockExchangeRepository : IStockExchangeRepository
     {
         private readonly YahooFinanceDbContext _context;
-
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="context"></param>
         public StockExchangeRepository(YahooFinanceDbContext context)
         {
             _context = context;
         }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<FinanceModel> GetAllFinances()
         {
             return _context.FinanceModel.ToList();
         }
-
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<Industry> GetIndustryByName(string name)
         {
             var industry =
@@ -28,7 +39,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Name == name);
             return industry;
         }
-
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<Country> GetCountryByName(string name)
         {
             var country =
@@ -36,7 +51,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Name == name);
             return country;
         }
-
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<Region> GetRegionByName(string name)
         {
             var region =
@@ -44,7 +63,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleAsync(m => m.Name == name);
             return region;
         }
-
+        /// <summary>
+        /// Check for Sector in DB by its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>Sector model</returns>
         public async Task<Sector> GetSectorByName(string name)
         {
             var sector =
@@ -52,7 +75,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Name == name);
             return sector;
         }
-
+        /// <summary>
+        /// Check for Companies in DB by its symbol
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns>Companies model</returns>
         public async Task<Companies> GetCompanyByName(string symbol)
         {
             var company =
@@ -60,7 +87,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Symbol == symbol);
             return company;
         }
-
+        /// <summary>
+        /// Check for Exchange in DB by its symbol
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns>Exchange model</returns>
         public async Task<Exchange> GetExchangeByName(string symbol)
         {
             var exchange =
@@ -68,7 +99,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.StockExchangeId == symbol);
             return exchange;
         }
-
+        /// <summary>
+        /// Check for Currencies in DB by its code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns>Currency model</returns>
         public async Task<Currencies> GetCurrencyByCode(string code)
         {
             var currency =
@@ -76,6 +111,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Code == code);
             return currency;
         }
+        /// <summary>
+        /// Add FinanceModel to DataBase
+        /// </summary>
+        /// <param name="financeModel"></param>
+        /// <returns></returns>
         public async Task<FinanceModel> AddFinanceModel(FinanceModel financeModel)
         {
             if (financeModel == null)
@@ -101,7 +141,11 @@ namespace StockExchangeYahooFinance.Repository
             }
             return null;
         }
-
+        /// <summary>
+        /// Add Industry to DataBase
+        /// </summary>
+        /// <param name="industry"></param>
+        /// <returns>Id of added Industry</returns>
         public async Task<string> AddIndustry(Industry industry)
         {
             if (industry == null)
@@ -133,7 +177,11 @@ namespace StockExchangeYahooFinance.Repository
             }
             return industry.Id;
         }
-
+        /// <summary>
+        /// Add Country to DataBase
+        /// </summary>
+        /// <param name="country"></param>
+        /// <returns>Id of added Country</returns>
         public async Task<string> AddCountry(Country country)
         {
             if (country == null)
@@ -166,7 +214,11 @@ namespace StockExchangeYahooFinance.Repository
             }
             return country.Id;
         }
-
+        /// <summary>
+        /// Add Sector to DataBase
+        /// </summary>
+        /// <param name="sector"></param>
+        /// <returns>Id of added Sector</returns>
         public async Task<string> AddSector(Sector sector)
         {
             if (sector == null)
@@ -198,7 +250,11 @@ namespace StockExchangeYahooFinance.Repository
             }
             return sector.Id;
         }
-
+        /// <summary>
+        /// Add Region to DataBase
+        /// </summary>
+        /// <param name="region"></param>
+        /// <returns>Id of added Region</returns>
         public async Task<string> AddRegion(Region region)
         {
             if (region == null)
@@ -230,7 +286,11 @@ namespace StockExchangeYahooFinance.Repository
             }
             return region.Id;
         }
-
+        /// <summary>
+        /// Add Companies to DataBase
+        /// </summary>
+        /// <param name="companies"></param>
+        /// <returns>Id of added Companies</returns>
         public async Task<string> AddCompany(Companies companies)
         {
             if (companies == null)
@@ -261,7 +321,11 @@ namespace StockExchangeYahooFinance.Repository
             }
             return companies.Id;
         }
-
+        /// <summary>
+        /// Add Exchange to DataBase
+        /// </summary>
+        /// <param name="exchange"></param>
+        /// <returns>Id of added Exchange</returns>
         public async Task<string> AddExchange(Exchange exchange)
         {
             if (exchange == null)
@@ -292,7 +356,11 @@ namespace StockExchangeYahooFinance.Repository
             }
             return exchange.Id;
         }
-
+        /// <summary>
+        /// Add Currency to database
+        /// </summary>
+        /// <param name="currencies"></param>
+        /// <returns>Id of added Currency</returns>
         public async Task<string> AddCurrency(Currencies currencies)
         {
             if (currencies == null)
@@ -323,42 +391,74 @@ namespace StockExchangeYahooFinance.Repository
             }
             return currencies.Id;
         }
-
+        /// <summary>
+        /// Check if FinanceModel exists by its Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>True or False</returns>
         public bool IdExists(string id)
         {
             return _context.FinanceModel.Any(e => e.Id == id);
         }
-
+        /// <summary>
+        /// Check if Companies exists by its symbol
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns>True or False</returns>
         public bool CompIdExists(string symbol)
         {
             return _context.Companies.Any(e => e.Symbol == symbol);
         }
-
+        /// <summary>
+        /// Check if Exchange exists by its symbol
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns>True or False</returns>
         public bool ExchangeIdExists(string symbol)
         {
             return _context.Exchange.Any(e => e.StockExchangeId == symbol);
         }
-
+        /// <summary>
+        /// Check if Industry exists by its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True or False</returns>
         public bool IndustryIdExists(string name)
         {
             return _context.Industrie.Any(e => e.Name == name);
         }
-
+        /// <summary>
+        /// Check if Country exists by its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True or False</returns>
         public bool CountryIdExists(string name)
         {
             return _context.Country.Any(e => e.Name == name);
         }
-
+        /// <summary>
+        /// Check if Region exists by its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True or False</returns>
         public bool RegionIdExists(string name)
         {
             return _context.Region.Any(e => e.Name == name);
         }
-
+        /// <summary>
+        /// Check if Sector exists by its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True or False</returns>
         public bool SectorIdExists(string name)
         {
             return _context.Sector.Any(e => e.Name == name);
         }
-
+        /// <summary>
+        /// Check if Currency exists by its code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns>True or False</returns>
         public bool CurrencyExists(string code)
         {
             return _context.Currencies.Any(e => e.Code == code);
