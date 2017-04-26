@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -11,51 +12,102 @@ namespace StockExchangeYahooFinance.Repository
     public class StockExchangeRepository : IStockExchangeRepository
     {
         private readonly YahooFinanceDbContext _context;
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="context"></param>
         public StockExchangeRepository(YahooFinanceDbContext context)
         {
             _context = context;
         }
         /// <summary>
-        ///
+        /// List of all finances
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List</returns>
         public IEnumerable<FinanceModel> GetAllFinances()
         {
             return _context.FinanceModel.ToList();
         }
+        /// <summary>
+        /// Get list of all companies
+        /// </summary>
+        /// <returns>List</returns>
+        public IEnumerable<Companies> GetAllCompanies()
+        {
+            try
+            {
+                return _context.Companies.ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+        /// <summary>
+        /// List of all histories
+        /// </summary>
+        /// <returns>List</returns>
         public IEnumerable<History> GetAllHistories()
         {
             return _context.History.ToList();
         }
         /// <summary>
-        ///
+        /// Check for Industry in DB by its name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <returns>Industry</returns>
         public async Task<Industry> GetIndustryByName(string name)
+        {
+            try
+            {
+                var industry =
+                await _context.Industrie
+                    .SingleOrDefaultAsync(m => m.Name == name);
+                return industry;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+        /// <summary>
+        /// Find industry by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Industry</returns>
+        public async Task<Industry> GetIndustryById(string id)
         {
             var industry =
                 await _context.Industrie
-                    .SingleOrDefaultAsync(m => m.Name == name);
+                    .SingleOrDefaultAsync(m => m.Id == id);
             return industry;
         }
-
-        public IEnumerable<History> GetHistoryByStartEndDate(DateTime startDate, DateTime endDate, string id)
+        /// <summary>
+        /// Get history list for selected company by start-date and end-date
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="symbol"></param>
+        /// <returns>List</returns>
+        public async Task<List<History>> GetHistoryByStartEndDate(DateTime startDate, DateTime endDate, string symbol)
         {
-            var history =
+            try
+            {
+                var company = await GetCompanyByName(symbol);
+                var history =
                  _context.History
-                    .Where(m => (m.StartDate == startDate) && (m.EndDate == endDate) && (m.CompaniesId == id));
-            return history;
+                    .Where(m => (m.StartDate == startDate) && (m.EndDate == endDate) && (m.CompaniesId == company.Id)).ToList();
+                return history;
+            }
+            catch (DbException e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
         /// <summary>
-        ///
+        /// Check for Country in DB by its name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <returns>Country</returns>
         public async Task<Country> GetCountryByName(string name)
         {
             var country =
@@ -64,15 +116,27 @@ namespace StockExchangeYahooFinance.Repository
             return country;
         }
         /// <summary>
-        ///
+        /// Check for Region in DB by its name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <returns>Region</returns>
         public async Task<Region> GetRegionByName(string name)
         {
             var region =
                 await _context.Region
                     .SingleAsync(m => m.Name == name);
+            return region;
+        }
+        /// <summary>
+        /// Get Region By Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Region</returns>
+        public async Task<Region> GetRegionById(string id)
+        {
+            var region =
+                await _context.Region
+                    .SingleAsync(m => m.Id == id);
             return region;
         }
         /// <summary>
@@ -88,6 +152,18 @@ namespace StockExchangeYahooFinance.Repository
             return sector;
         }
         /// <summary>
+        /// Get sector by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Sector</returns>
+        public async Task<Sector> GetSectorById(string id)
+        {
+            var sector =
+                await _context.Sector
+                    .SingleOrDefaultAsync(m => m.Id == id);
+            return sector;
+        }
+        /// <summary>
         /// Check for Companies in DB by its symbol
         /// </summary>
         /// <param name="symbol"></param>
@@ -97,6 +173,18 @@ namespace StockExchangeYahooFinance.Repository
             var company =
                 await _context.Companies
                     .SingleOrDefaultAsync(m => m.Symbol == symbol);
+            return company;
+        }
+        /// <summary>
+        /// Get company by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Companies</returns>
+        public async Task<Companies> GetCompanyById(string id)
+        {
+            var company =
+                await _context.Companies
+                    .SingleOrDefaultAsync(m => m.Id == id);
             return company;
         }
         /// <summary>
@@ -121,6 +209,18 @@ namespace StockExchangeYahooFinance.Repository
             var currency =
                 await _context.Currencies
                     .SingleOrDefaultAsync(m => m.Code == code);
+            return currency;
+        }
+        /// <summary>
+        /// Get currency by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Currencies</returns>
+        public async Task<Currencies> GetCurrencyById(string id)
+        {
+            var currency =
+                await _context.Currencies
+                    .SingleOrDefaultAsync(m => m.Id == id);
             return currency;
         }
         /// <summary>
@@ -410,7 +510,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool IdExists(string id)
         {
-            return _context.FinanceModel.Any(e => e.Id == id);
+            return _context.FinanceModel.Count(e => e.Id == id) > 0;
         }
         /// <summary>
         /// Check if Companies exists by its symbol
@@ -419,7 +519,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool CompIdExists(string symbol)
         {
-            return _context.Companies.Any(e => e.Symbol == symbol);
+            return _context.Companies.Count(e => e.Symbol == symbol) > 0;
         }
         /// <summary>
         /// Check if Exchange exists by its symbol
@@ -428,7 +528,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool ExchangeIdExists(string symbol)
         {
-            return _context.Exchange.Any(e => e.StockExchangeId == symbol);
+            return _context.Exchange.Count(e => e.StockExchangeId == symbol) > 0;
         }
         /// <summary>
         /// Check if Industry exists by its name
@@ -437,7 +537,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool IndustryIdExists(string name)
         {
-            return _context.Industrie.Any(e => e.Name == name);
+            return _context.Industrie.Count(e => e.Name == name) > 0;
         }
         /// <summary>
         /// Check if Country exists by its name
@@ -446,7 +546,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool CountryIdExists(string name)
         {
-            return _context.Country.Any(e => e.Name == name);
+            return _context.Country.Count(e => e.Name == name) > 0;
         }
         /// <summary>
         /// Check if Region exists by its name
@@ -455,7 +555,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool RegionIdExists(string name)
         {
-            return _context.Region.Any(e => e.Name == name);
+            return _context.Region.Count(e => e.Name == name) > 0;
         }
         /// <summary>
         /// Check if Sector exists by its name
@@ -464,7 +564,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool SectorIdExists(string name)
         {
-            return _context.Sector.Any(e => e.Name == name);
+            return _context.Sector.Count(e => e.Name == name) > 0;
         }
         /// <summary>
         /// Check if Currency exists by its code
@@ -473,7 +573,122 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>True or False</returns>
         public bool CurrencyExists(string code)
         {
-            return _context.Currencies.Any(e => e.Code == code);
+            return _context.Currencies.Count(e => e.Code == code) > 0;
+        }
+        /// <summary>
+        /// Task to delete company from database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Message</returns>
+        public async Task DeleteCompany(string id)
+        {
+            var company = await GetCompanyById(id);
+            if (company == null)
+            {
+                Console.WriteLine("NotFound");
+            }
+            if (company != null) _context.Companies.Remove(company);
+            try
+            {
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Success: Company deleted!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        /// <summary>
+        /// find and delete industry
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task DeleteIndustry(string id)
+        {
+            var industry = await GetIndustryById(id);
+            if (industry == null)
+            {
+                Console.WriteLine("NotFound");
+            }
+            if (industry != null) _context.Industrie.Remove(industry);
+            try
+            {
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Success: Industry deleted!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Find and Delete region by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Message</returns>
+        public async Task DeleteRegion(string id)
+        {
+            var region = await GetRegionById(id);
+            if (region == null)
+            {
+                Console.WriteLine("NotFound");
+            }
+            if (region != null) _context.Region.Remove(region);
+            try
+            {
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Success: Region deleted!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Find and Delete Sector
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Message</returns>
+        public async Task DeleteSector(string id)
+        {
+            var sector = await GetSectorById(id);
+            if (sector == null)
+            {
+                Console.WriteLine("NotFound");
+            }
+            if (sector != null) _context.Sector.Remove(sector);
+            try
+            {
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Success: Sector deleted!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Find and Delete currency
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Message</returns>
+        public async Task DeleteCurrency(string id)
+        {
+            var currency = await GetCurrencyById(id);
+            if (currency == null)
+            {
+                Console.WriteLine("NotFound");
+            }
+            if (currency != null) _context.Currencies.Remove(currency);
+            try
+            {
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Success: Sector deleted!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
