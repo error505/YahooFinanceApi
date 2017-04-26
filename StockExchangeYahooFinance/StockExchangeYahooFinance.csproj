@@ -208,8 +208,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigData\ConfigManager.cs" />
-    <Compile Include="ConfigData\Data.cs" />
+    <Compile Include="Helpers\FinanceData.cs" />
     <Compile Include="DbContext\YahooFinanceDbContext.cs" />
+    <Compile Include="Helpers\YqlQuery.cs" />
     <Compile Include="Mappings\ContainerBootstrapper.cs" />
     <Compile Include="Migrations\20170411125927_MyFirstMigration.cs" />
     <Compile Include="Migrations\20170411125927_MyFirstMigration.designer.cs">
@@ -293,7 +294,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ConfigData\DataThatCanBeDownloadedInCsv.txt" />
+    <Content Include="Helpers\DataThatCanBeDownloadedInCsv.txt" />
     <Content Include="ConfigData\StockExchanges.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -9,66 +9,28 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using HtmlAgilityPack;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Data.Models;
 using StockExchangeYahooFinance.Repository;
 using StockExchangeYahooFinance.Data.ViewModel;
+using StockExchangeYahooFinance.Helpers;
 
 namespace StockExchangeYahooFinance.Services
 {
     public class ApiRequest : IApiRequest
     {
         private readonly StockExchangeRepository _repository;
-        private static IConfigurationRoot Configuration { get; set; }
-        private static string YahooBaseUrl { get; set; }
-        private static string YahooQuotes { get; set; }
-        private static string YahooXchange { get; set; }
-        private static string YahooLookupAll { get; set; }
-        private static string Format { get; set; }
-        private static string Diagnostic { get; set; }
-        private static string Enviroment { get; set; }
-        private static string CallBack { get; set; }
-        private static string Tickers { get; set; }
-        private static string Curencies { get; set; }
-        private static string NasdqCompanies { get; set; }
-        private static string NasdqRegion { get; set; }
-        private static string NasdqRegionNormal { get; set; }
-        private static string NasdqRender { get; set; }
-        private static string IsoCurrencyUrl { get; set; }
-        private const string Select = "select ";
-        private const string From = " from";
-        private const string SelectAll = "select * from ";
-        private const string WhereSimbol = " where symbol ";
-        private const string WherePair = " where pair ";
-        private const string In = "in ";
-        private static readonly ConfigManager _cfgManager = new ConfigManager();
-
+        //Initialize ConfigManager
+        private static readonly ConfigManager CfgManager = new ConfigManager();
+        //Initialize YqlQuery
+        private static readonly YqlQuery YqlQuery = new YqlQuery();
+        //Initialize FinanceData
+        private static readonly FinanceData FinanceData = new FinanceData();
         public ApiRequest(StockExchangeRepository repository)
         {
             //Get repository
             _repository = repository;
-            //Get configuration parameters
-            var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-           .AddJsonFile("appsettings.json");
-            Configuration = builder.Build();
-            YahooBaseUrl = Configuration["Urls:YahooBaseUrl"];
-            YahooQuotes = Configuration["Urls:YahooQuotes"];
-            Format = Configuration["Urls:Format"];
-            Diagnostic = Configuration["Urls:Diagnostic"];
-            Enviroment = Configuration["Urls:Enviroment"];
-            CallBack = Configuration["Urls:CallBack"];
-            Tickers = Configuration["Urls:Tickers"];
-            YahooXchange = Configuration["Urls:YahooXchange"];
-            Curencies = Configuration["Urls:Curencies"];
-            NasdqCompanies = Configuration["Urls:NASDQCompaniesCSV"];
-            NasdqRegion = Configuration["Urls:NASDQCompaniesCSVRegion"];
-            NasdqRegionNormal = Configuration["Urls:NASDQRegion"];
-            NasdqRender = Configuration["Urls:NASDQRender"];
-            IsoCurrencyUrl = Configuration["Urls:IsoCurrencyUrl"];
-            YahooLookupAll = Configuration["Urls:AllComp"];
         }
         /// <summary>
         /// Get JSON data from yahoo finance and parse it
@@ -79,7 +41,9 @@ namespace StockExchangeYahooFinance.Services
         /// <returns>List of companies</returns>
         public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = _cfgManager.YahooBaseUrl + SelectAll + YahooQuotes + WhereSimbol + In + "(%22" + Tickers + "%22)" + _cfgManager.Format + _cfgManager.Enviroment + _cfgManager.CallBack;
+            var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooQuotes + YqlQuery.WhereSimbol +
+                      YqlQuery.In + "(%22" + CfgManager.Tickers + "%22)" + CfgManager.Format + CfgManager.Enviroment +
+                      CfgManager.CallBack;
             var financeModel = new List<FinanceModel>();
             while (true)
             {
@@ -89,21 +53,20 @@ namespace StockExchangeYahooFinance.Services
                     await task;
                     Console.Clear();
                     var json = WebRequest(url);
-                    var d = new FinanceData();
                     dynamic data = JObject.Parse(json);
                     var quote = data.query.results.quote;
                     foreach (var i in quote)
                     {
                         var f = new FinanceModel();
-                        var symbol = i.SelectToken(d.Symbol);
+                        var symbol = i.SelectToken(FinanceData.Symbol);
                         f.Symbol = symbol.ToString();
-                        var price = i.SelectToken(d.LastTradePriceOnly);
+                        var price = i.SelectToken(FinanceData.LastTradePriceOnly);
                         f.LastTradePriceOnly = price.ToString();
-                        var lastTime = i.SelectToken(d.LastTradeDate);
+                        var lastTime = i.SelectToken(FinanceData.LastTradeDate);
                         f.LastTradeDate = lastTime.ToString();
-                        var change = i.SelectToken(d.Change);
+                        var change = i.SelectToken(FinanceData.Change);
                         f.Change = change.ToString();
-                        var name = i.SelectToken(d.Name);
+                        var name = i.SelectToken(FinanceData.Name);
                         f.Name = name.ToString();
                         financeModel.Add(f);
                         var value = ((JValue)change).Value;
@@ -132,8 +95,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns></returns>
         public async Task StockExchangeParseCsv()
         {
-            var csvData = Configuration["Urls:CsvData"];
-            var url = Configuration["Urls:CsvUrl"] + $"{Tickers}&f={csvData}";
+            var url = CfgManager.CsvUrl + $"{CfgManager.Tickers}&f={CfgManager.CsvData}";
             //Call web request
             var request = WebRequest(url);
             //Parse CSV
@@ -174,7 +136,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
         public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = YahooBaseUrl + SelectAll + YahooXchange + WherePair + In + "(%22" + Curencies + "%22)" + Format + Enviroment + CallBack;
+            var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooXchange + YqlQuery.WherePair + YqlQuery.In + "(%22" + CfgManager.Curencies + "%22)" + CfgManager.Format + CfgManager.Enviroment + CfgManager.CallBack;
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
@@ -238,7 +200,7 @@ namespace StockExchangeYahooFinance.Services
             {
                 for (var i = 0; i <= 2042; i += 20)
                 {
-                    var urlTosend = YahooLookupAll + s + c + t + "s" + m + "ALL" + b + i + bypass;
+                    var urlTosend = CfgManager.YahooLookupAll + s + c + t + "s" + m + "ALL" + b + i + bypass;
                     var data = WebRequest(urlTosend);
                     var doc = new HtmlDocument();
                     doc.LoadHtml(data);
@@ -348,7 +310,7 @@ namespace StockExchangeYahooFinance.Services
         /// <returns></returns>
         public async Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = NasdqCompanies + NasdqRegion + NasdqRender;
+            var url = CfgManager.NasdqCompanies + CfgManager.NasdqRegionCsv + CfgManager.NasdqRender;
             try
             {
                 var csvData = WebRequest(url);
@@ -370,7 +332,7 @@ namespace StockExchangeYahooFinance.Services
                                      Sector = csvSplit[7].ToString(),
                                      Industry = csvSplit[6].ToString()
                                  }).ToList();
-                var reg = new Region { Name = NasdqRegionNormal };
+                var reg = new Region { Name = CfgManager.NasdqRegion };
                 var regId = await _repository.AddRegion(reg);
                 //Write data in console
                 foreach (var comp in companies.Skip(1))
@@ -418,7 +380,7 @@ namespace StockExchangeYahooFinance.Services
         {
             try
             {
-                var csvData = WebRequest(IsoCurrencyUrl);
+                var csvData = WebRequest(CfgManager.IsoCurrencyUrl);
                 var currency = XDocument.Parse(csvData);
                 //Write data in console
                 var query = from c in currency.Descendants("CcyNtry")

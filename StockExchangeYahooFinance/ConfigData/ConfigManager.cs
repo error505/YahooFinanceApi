@@ -16,38 +16,39 @@ namespace StockExchangeYahooFinance.ConfigData
     {
         private static IConfigurationRoot Configuration { get; set; }
         private static string YahooBase = "YahooBaseUrl";
-        private static string YahooQuotes = "YahooQuotes";
-        private static string YahooXchange = "YahooXchange";
-        private static string YahooLookupAll = "YahooLookupAll";
+        private static string YahooQuotesUrl = "YahooQuotes";
+        private static string YahooXchangeUrl = "YahooXchange";
+        private static string YahooLookup = "AllComp";
         private static string YahooFormat = "Format";
-        private static string Diagnostic = "Diagnostic;";
+        private static string YahooDiagnostic = "Diagnostic;";
         private static string YahooEnviroment = "Enviroment";
         private static string YahooCallBack = "CallBack";
-        private static string Tickers = "Tickers";
-        private static string Curencies = "Curencies";
-        private static string NasdqCompanies = "NasdqCompanies";
-        private static string NasdqRegion = "NasdqRegion";
-        private static string NasdqRegionNormal = "NasdqRegionNormal";
-        private static string NasdqRender = "NasdqRender";
-        private static string IsoCurrencyUrl = "IsoCurrencyUrl";
-        private const string Select = "select ";
-        private const string From = " from";
-        private const string SelectAll = "select * from ";
-        private const string WhereSimbol = " where symbol ";
-        private const string WherePair = " where pair ";
-        private const string In = "in ";
-
+        private static string TickersList = "Tickers";
+        private static string CurenciesConf = "Curencies";
+        private static string NasdqCompaniesConf = "NASDQCompaniesCSV";
+        private static string NasdqCompRegionCsv = "NASDQCompaniesCSVRegion";
+        private static string NasdqRegionNormal = "NASDQRegion";
+        private static string NasdqRenderPart = "NASDQRender";
+        private static string IsoCurrency = "IsoCurrencyUrl";
+        private static string Csv = "CsvUrl";
+        private static string CsvDataConf = "CsvData";
         public string YahooBaseUrl => GetConfigKey(YahooBase);
-
-        public string YahooXchangeUrl => GetConfigKey(YahooXchange);
-
+        public string YahooXchange => GetConfigKey(YahooXchangeUrl);
+        public string YahooQuotes => GetConfigKey(YahooQuotesUrl);
+        public string YahooLookupAll => GetConfigKey(YahooLookup);
+        public string IsoCurrencyUrl => GetConfigKey(IsoCurrency);
+        public string NasdqRender => GetConfigKey(NasdqRenderPart);
+        public string NasdqRegion => GetConfigKey(NasdqRegionNormal);
+        public string NasdqRegionCsv => GetConfigKey(NasdqCompRegionCsv);
+        public string NasdqCompanies => GetConfigKey(NasdqCompaniesConf);
+        public string Curencies => GetConfigKey(CurenciesConf);
+        public string Tickers => GetConfigKey(TickersList);
         public string Enviroment => GetConfigKey(YahooEnviroment);
+        public string Diagnostic => GetConfigKey(YahooDiagnostic);
         public string CallBack => GetConfigKey(YahooCallBack);
-
-        //public string CsvUrl => GetConfigKey(Csv);
-
         public string Format => GetConfigKey(YahooFormat);
-
+        public string CsvUrl => GetConfigKey(Csv);
+        public string CsvData => GetConfigKey(CsvDataConf);
         private string GetConfigKey(string name)
         {
             return Configuration.GetSection("Urls")[name];

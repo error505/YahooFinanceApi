@@ -1,4 +1,4 @@
-﻿namespace StockExchangeYahooFinance.ConfigData
+﻿namespace StockExchangeYahooFinance.Helpers
 {
     internal class FinanceData
     {
