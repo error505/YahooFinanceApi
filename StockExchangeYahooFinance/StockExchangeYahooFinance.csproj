@@ -281,10 +281,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\IStockExchangeRepository.cs" />
     <Compile Include="Repository\StockExchangeRepository.cs" />
-    <Compile Include="Services\ApiRequest.cs" />
-    <Compile Include="Services\IApiRequest.cs" />
-    <Compile Include="Services\IMenu.cs" />
-    <Compile Include="Services\Menu.cs" />
+    <Compile Include="Services\ApiRequest\ApiRequest.cs" />
+    <Compile Include="Services\ApiRequest\IApiRequest.cs" />
+    <Compile Include="Services\Menu\IMenu.cs" />
+    <Compile Include="Services\Menu\Menu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

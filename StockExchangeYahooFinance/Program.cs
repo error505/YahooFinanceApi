@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.Practices.Unity;
 using StockExchangeYahooFinance.Mappings;
-using StockExchangeYahooFinance.Services;
+using StockExchangeYahooFinance.Services.ApiRequest;
+using StockExchangeYahooFinance.Services.Menu;
 
 namespace StockExchangeYahooFinance
 {

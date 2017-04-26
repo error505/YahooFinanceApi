@@ -12,11 +12,11 @@ using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Data.Models;
-using StockExchangeYahooFinance.Repository;
 using StockExchangeYahooFinance.Data.ViewModel;
 using StockExchangeYahooFinance.Helpers;
+using StockExchangeYahooFinance.Repository;
 
-namespace StockExchangeYahooFinance.Services
+namespace StockExchangeYahooFinance.Services.ApiRequest
 {
     public class ApiRequest : IApiRequest
     {

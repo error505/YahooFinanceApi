@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
 using StockExchangeYahooFinance.Repository;
-using StockExchangeYahooFinance.Services;
+using StockExchangeYahooFinance.Services.ApiRequest;
 
 namespace StockExchangeYahooFinance.Mappings
 {

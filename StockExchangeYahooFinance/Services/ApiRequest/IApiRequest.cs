@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using StockExchangeYahooFinance.ConfigData;
-using StockExchangeYahooFinance.Data;
-using StockExchangeYahooFinance.Data.Models;
 
-namespace StockExchangeYahooFinance.Services
+namespace StockExchangeYahooFinance.Services.ApiRequest
 {
     public interface IApiRequest
     {
