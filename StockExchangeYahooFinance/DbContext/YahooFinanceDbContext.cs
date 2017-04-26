@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Microsoft.Extensions.Configuration;
+﻿using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Data.Models;
 
 namespace StockExchangeYahooFinance.DbContext
@@ -8,21 +7,15 @@ namespace StockExchangeYahooFinance.DbContext
 
     public class YahooFinanceDbContext : DbContext
     {
-        private static IConfigurationRoot Configuration { get; set; }
+        private static readonly ConfigManager CfgManager = new ConfigManager();
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
         }
-        public YahooFinanceDbContext()
-        {
-            var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-           .AddJsonFile("appsettings.json");
-            Configuration = builder.Build();
-        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlServer(Configuration.GetConnectionString("YFConnection"));
+            builder.UseSqlServer(CfgManager.YahooDbConnectioString);
             base.OnConfiguring(builder);
         }
 

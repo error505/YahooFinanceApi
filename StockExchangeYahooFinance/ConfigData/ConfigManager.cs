@@ -32,6 +32,7 @@ namespace StockExchangeYahooFinance.ConfigData
         private static string IsoCurrency = "IsoCurrencyUrl";
         private static string Csv = "CsvUrl";
         private static string CsvDataConf = "CsvData";
+        private static string GetYahooDbConnection = "YFConnection";
         public string YahooBaseUrl => GetConfigKey(YahooBase);
         public string YahooXchange => GetConfigKey(YahooXchangeUrl);
         public string YahooQuotes => GetConfigKey(YahooQuotesUrl);
@@ -49,17 +50,23 @@ namespace StockExchangeYahooFinance.ConfigData
         public string Format => GetConfigKey(YahooFormat);
         public string CsvUrl => GetConfigKey(Csv);
         public string CsvData => GetConfigKey(CsvDataConf);
-        private string GetConfigKey(string name)
-        {
-            return Configuration.GetSection("Urls")[name];
-        }
-
+        public string YahooDbConnectioString => DbConf(GetYahooDbConnection);
         public ConfigManager()
         {
             var builder = new ConfigurationBuilder()
               .SetBasePath(Directory.GetCurrentDirectory())
              .AddJsonFile("appsettings.json");
             Configuration = builder.Build();
+        }
+        //Get URL Parameters from configuration file
+        private string GetConfigKey(string name)
+        {
+            return Configuration.GetSection("Urls")[name];
+        }
+        //Get ConnectionStrings from configuration file
+        private string DbConf(string name)
+        {
+          return  Configuration.GetSection("ConnectionStrings")[name];
         }
     }
 }
