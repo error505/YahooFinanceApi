@@ -89,46 +89,48 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
         //TODO
-        //public async Task YahooHistoricalData(RequestModel model)
-        //{
-        //    var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooHistoricalData +
-        //              YqlQuery.WhereSimbol +
-        //              "(%22" + CfgManager.SymbolTicker + "%22)" + YqlQuery.And + YqlQuery.StartDate + "2012-09-11" +
-        //              YqlQuery.And + YqlQuery.EndDate + "2014-02-11" + CfgManager.Format + CfgManager.Enviroment +
-        //              CfgManager.CallBack;
-        //    try
-        //    {
-        //        Console.Clear();
-        //        var json = WebRequest(url);
-        //        dynamic data = JObject.Parse(json);
-        //        var quote = data.query.results.quote;
-        //        foreach (var i in quote)
-        //        {
-        //            var f = new History();
-        //            var symbol = i.SelectToken(FinanceData.Symbol);
-        //            f.Symbol = symbol.ToString();
-        //            var Open = i.SelectToken(FinanceData.Open);
-        //            f.Open = Open.ToString();
-        //            var high = i.SelectToken(FinanceData.High);
-        //            f.High = high.ToString();
-        //            var low = i.SelectToken(FinanceData.Low);
-        //            f.Low = low.ToString();
-        //            var date = i.SelectToken(FinanceData.Date);
-        //            f.StartDate = date.ToString();
+        public async Task YahooHistoricalData(RequestModel model)
+        {
+            var url = Cfg.YahooBaseUrl + YQ.SelectAll + Cfg.YahooHistoricalData +
+                      YQ.WhereSimbol +
+                      "(%22" + Cfg.SymbolTicker + "%22)" + YQ.And + YQ.StartDate + "2012-09-11" +
+                      YQ.And + YQ.EndDate + "2014-02-11" + Cfg.Format + Cfg.Enviroment +
+                      Cfg.CallBack;
+            try
+            {
+                Console.Clear();
+                var json = WebRequest(url);
+                dynamic data = JObject.Parse(json);
+                var quote = data.query.results.quote;
+                var symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
+                foreach (var i in quote)
+                {
+                    var h = new History();
+                    h.CompaniesId = symbolId.Id;
+                    var open = i.SelectToken(FinanceData.Open);
+                    h.Open = open.ToString();
+                    var high = i.SelectToken(FinanceData.High);
+                    h.High = high.ToString();
+                    var low = i.SelectToken(FinanceData.Low);
+                    h.Low = low.ToString();
+                    var date = i.SelectToken(FinanceData.Date);
+                    var close = Convert.ToDouble(i.SelectToken(FinanceData.Close));
+                    h.Date = Convert.ToDateTime(date.ToString());
+                    h.Close = close;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {open} : {high} : {low} : {close}");
 
-        //            Console.ForegroundColor = ConsoleColor.Red;
-        //            Console.WriteLine($"{name}:{symbol} : {price} : {lastTime} : {change}");
-
-        //            Console.ForegroundColor = ConsoleColor.Green;
-        //            Console.WriteLine($"{name} : {symbol} : {price} : {lastTime} : {change}");
-        //            await _repository.AddHistory(f);
-        //        }
-        //    }
-        //    catch (TaskCanceledException)
-        //    {
-        //        return;
-        //    }
-        //}
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {open} : {high} : {low} : {close}");
+                    //TODO: Addhisotry in repository
+                    //await _repository.AddHistory(h);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
 
         /// <summary>
         /// Get CSV from yahoo finance and parse it

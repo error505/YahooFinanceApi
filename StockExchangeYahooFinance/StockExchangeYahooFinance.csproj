@@ -276,6 +276,10 @@
     <Compile Include="Migrations\20170425121440_HistoryDateAdd.designer.cs">
       <DependentUpon>20170425121440_HistoryDateAdd.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170427115325_HisotryNameCHange.cs" />
+    <Compile Include="Migrations\20170427115325_HisotryNameCHange.designer.cs">
+      <DependentUpon>20170427115325_HisotryNameCHange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Program.cs" />

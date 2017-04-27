@@ -12,12 +12,12 @@ namespace StockExchangeYahooFinance.Data.Models
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
         public string Date { get; set; }
-        public string Open { get; set; }
-        public string High { get; set; }
-        public string Low { get; set; }
-        public string Close { get; set; }
-        public string Volume { get; set; }
-        public string Adj_Close { get; set; }
+        public Double Open { get; set; }
+        public Double High { get; set; }
+        public Double Low { get; set; }
+        public Double Close { get; set; }
+        public Double Volume { get; set; }
+        public string AdjClose { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
