@@ -23,9 +23,9 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
     {
         private readonly StockExchangeRepository _repository;
         //Initialize ConfigManager
-        private static readonly ConfigManager CfgManager = new ConfigManager();
+        private static readonly ConfigManager Cfg = new ConfigManager();
         //Initialize YqlQuery
-        private static readonly YqlQuery YqlQuery = new YqlQuery();
+        private static readonly YqlQuery YQ = new YqlQuery();
         //Initialize FinanceData
         private static readonly FinanceData FinanceData = new FinanceData();
         public ApiRequest(StockExchangeRepository repository)
@@ -42,9 +42,9 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns>List of companies</returns>
         public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooQuotes + YqlQuery.WhereSimbol +
-                      YqlQuery.In + "(%22" + CfgManager.Tickers + "%22)" + CfgManager.Format + CfgManager.Enviroment +
-                      CfgManager.CallBack;
+            var url = Cfg.YahooBaseUrl + YQ.SelectAll + Cfg.YahooQuotes + YQ.WhereSimbol +
+                      YQ.In + "(%22" + Cfg.Tickers + "%22)" + Cfg.Format + Cfg.Enviroment +
+                      Cfg.CallBack;
             var financeModel = new List<FinanceModel>();
             while (true)
             {
@@ -96,38 +96,38 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         //              "(%22" + CfgManager.SymbolTicker + "%22)" + YqlQuery.And + YqlQuery.StartDate + "2012-09-11" +
         //              YqlQuery.And + YqlQuery.EndDate + "2014-02-11" + CfgManager.Format + CfgManager.Enviroment +
         //              CfgManager.CallBack;
-        //        try
+        //    try
+        //    {
+        //        Console.Clear();
+        //        var json = WebRequest(url);
+        //        dynamic data = JObject.Parse(json);
+        //        var quote = data.query.results.quote;
+        //        foreach (var i in quote)
         //        {
-        //            Console.Clear();
-        //            var json = WebRequest(url);
-        //            dynamic data = JObject.Parse(json);
-        //            var quote = data.query.results.quote;
-        //            foreach (var i in quote)
-        //            {
-        //                var f = new History();
-        //                var symbol = i.SelectToken(FinanceData.Symbol);
-        //                f.Symbol = symbol.ToString();
-        //                var Open = i.SelectToken(FinanceData.Open);
-        //                f.Open = Open.ToString();
-        //                var high = i.SelectToken(FinanceData.High);
-        //                f.High = high.ToString();
-        //                var low = i.SelectToken(FinanceData.Low);
-        //                f.Low = low.ToString();
-        //                var date = i.SelectToken(FinanceData.Date);
-        //                f.StartDate = date.ToString();
+        //            var f = new History();
+        //            var symbol = i.SelectToken(FinanceData.Symbol);
+        //            f.Symbol = symbol.ToString();
+        //            var Open = i.SelectToken(FinanceData.Open);
+        //            f.Open = Open.ToString();
+        //            var high = i.SelectToken(FinanceData.High);
+        //            f.High = high.ToString();
+        //            var low = i.SelectToken(FinanceData.Low);
+        //            f.Low = low.ToString();
+        //            var date = i.SelectToken(FinanceData.Date);
+        //            f.StartDate = date.ToString();
 
-        //                    Console.ForegroundColor = ConsoleColor.Red;
-        //                    Console.WriteLine($"{name}:{symbol} : {price} : {lastTime} : {change}");
+        //            Console.ForegroundColor = ConsoleColor.Red;
+        //            Console.WriteLine($"{name}:{symbol} : {price} : {lastTime} : {change}");
 
-        //                Console.ForegroundColor = ConsoleColor.Green;
-        //                Console.WriteLine($"{name} : {symbol} : {price} : {lastTime} : {change}");
-        //                await _repository.AddHistory(f);
-        //            }
+        //            Console.ForegroundColor = ConsoleColor.Green;
+        //            Console.WriteLine($"{name} : {symbol} : {price} : {lastTime} : {change}");
+        //            await _repository.AddHistory(f);
         //        }
-        //        catch (TaskCanceledException)
-        //        {
-        //            return;
-        //        }
+        //    }
+        //    catch (TaskCanceledException)
+        //    {
+        //        return;
+        //    }
         //}
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns></returns>
         public async Task StockExchangeParseCsv()
         {
-            var url = CfgManager.CsvUrl + $"{CfgManager.Tickers}&f={CfgManager.CsvData}";
+            var url = Cfg.CsvUrl + $"{Cfg.Tickers}&f={Cfg.CsvData}";
             //Call web request
             var request = WebRequest(url);
             //Parse CSV
@@ -178,9 +178,9 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
         public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = CfgManager.YahooBaseUrl + YqlQuery.SelectAll + CfgManager.YahooXchange + YqlQuery.WherePair +
-                      YqlQuery.In + "(%22" + CfgManager.Curencies + "%22)" + CfgManager.Format + CfgManager.Enviroment +
-                      CfgManager.CallBack;
+            var url = Cfg.YahooBaseUrl + YQ.SelectAll + Cfg.YahooXchange + YQ.WherePair +
+                      YQ.In + "(%22" + Cfg.Curencies + "%22)" + Cfg.Format + Cfg.Enviroment +
+                      Cfg.CallBack;
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
@@ -244,7 +244,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             {
                 for (var i = 0; i <= 2042; i += 20)
                 {
-                    var urlTosend = CfgManager.YahooLookupAll + s + c + t + "s" + m + "ALL" + b + i + bypass;
+                    var urlTosend = Cfg.YahooLookupAll + s + c + t + "s" + m + "ALL" + b + i + bypass;
                     var data = WebRequest(urlTosend);
                     var doc = new HtmlDocument();
                     doc.LoadHtml(data);
@@ -355,7 +355,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns></returns>
         public async Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken)
         {
-            var url = CfgManager.NasdqCompanies + CfgManager.NasdqRegionCsv + CfgManager.NasdqRender;
+            var url = Cfg.NasdqCompanies + Cfg.NasdqRegionCsv + Cfg.NasdqRender;
             try
             {
                 var csvData = WebRequest(url);
@@ -377,7 +377,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         Sector = csvSplit[7].ToString(),
                         Industry = csvSplit[6].ToString()
                     }).ToList();
-                var reg = new Region { Name = CfgManager.NasdqRegion };
+                var reg = new Region { Name = Cfg.NasdqRegion };
                 var regId = await _repository.AddRegion(reg);
                 //Write data in console
                 foreach (var comp in companies.Skip(1))
@@ -425,7 +425,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         {
             try
             {
-                var csvData = WebRequest(CfgManager.IsoCurrencyUrl);
+                var csvData = WebRequest(Cfg.IsoCurrencyUrl);
                 var currency = XDocument.Parse(csvData);
                 //Write data in console
                 var query = from c in currency.Descendants("CcyNtry")
