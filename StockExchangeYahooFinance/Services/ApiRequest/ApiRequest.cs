@@ -88,8 +88,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 }
             }
         }
-        //TODO
-        public async Task YahooHistoricalData(RequestModel model)
+
+        public async Task YahooHistoricalDataQuery(RequestModel model)
         {
             var url = Cfg.YahooBaseUrl + YQ.SelectAll + Cfg.YahooHistoricalData +
                       YQ.WhereSimbol +
@@ -119,12 +119,105 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     h.Close = close;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {open} : {high} : {low} : {close}");
-
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {open} : {high} : {low} : {close}");
-                    //TODO: Addhisotry in repository
-                    //await _repository.AddHistory(h);
+                    await _repository.AddHistory(h);
                 }
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
+
+        public async Task YahooHistoricalDataCsv(RequestModel model)
+        {
+            var symbol = "s=";
+            var startDate = "c=";
+            var url = Cfg.YahooHistoryCsv + symbol +  Cfg.SymbolTicker;
+            try
+            {
+                var csvData = WebRequest(url);
+                var rows = csvData.Replace("\r", "").Split('\n');
+                //csvData = csvData.Replace("r", "");
+                //var rows = csvData.Split('n');
+
+
+
+
+
+                var symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
+                if (symbolId == null)
+                {
+                    await YahooCompany(Cfg.SymbolTicker);
+                    symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
+                }
+                var historyCsv = new List<History>();
+                try
+                {
+                    foreach (var row in rows.Skip(1))
+                    {
+                        if (!string.IsNullOrEmpty(row))
+                        {
+                            string[] cols = row.Split(',');
+                            historyCsv.Add(new History()
+                            {
+                                //TODO: Check for conversion exception
+                                CompaniesId = symbolId.Id,
+                                Date = Convert.ToDateTime(cols[0]),
+                                Open = Convert.ToDouble(cols[1]),
+                                High = Convert.ToDouble(cols[2]),
+                                Low = Convert.ToDouble(cols[3]),
+                                Close = Convert.ToDouble(cols[4]),
+                                Volume = Convert.ToInt32(cols[5]),
+                                AdjClose = Convert.ToDouble(cols[6]),
+                            });
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+
+
+                //First row is headers so Ignore it
+                Console.Clear();
+                foreach (var hs in historyCsv)
+                {
+                    var history = new History()
+                    {
+                        CompaniesId = hs.CompaniesId,
+                        Date = hs.Date,
+                        Open = hs.Open,
+                        High = hs.High,
+                        Low = hs.Low,
+                        Close = hs.Close,
+                        Volume = hs.Volume,
+                        AdjClose = hs.AdjClose
+                    };
+                    Console.WriteLine(
+                        $"{symbolId.Name}:{Cfg.SymbolTicker} :{hs.Date} : {hs.Open} : {hs.High} : {hs.Low} : {hs.Close} : {hs.Volume} : {hs.AdjClose}");
+                    await _repository.AddHistory(history);
+                }
+                //for (var i = 1; i < rows.Length; i++)
+                //{
+                //    if (rows[i].Replace("n", "").Trim() == "") continue;
+                //    var cols = rows[i].Split(',');
+                //    var hs = new History();
+                //    hs.Date = Convert.ToDateTime(cols[0]);
+                //    hs.Open = Convert.ToDouble(cols[1]);
+                //    hs.High = Convert.ToDouble(cols[2]);
+                //    hs.Low = Convert.ToDouble(cols[3]);
+                //    hs.Close = Convert.ToDouble(cols[4]);
+                //    hs.Volume = Convert.ToDouble(cols[5]);
+                //    hs.AdjClose = Convert.ToDouble(cols[6]);
+                //    Console.ForegroundColor = ConsoleColor.Red;
+                //    Console.WriteLine(
+                //        $"{symbolId.Name}:{Cfg.SymbolTicker} :{hs.Date} : {hs.Open} : {hs.High} : {hs.Low} : {hs.Close} : {hs.Volume} : {hs.AdjClose}");
+                //    await _repository.AddHistory(hs);
+                //}
             }
             catch (TaskCanceledException)
             {
@@ -255,7 +348,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     if (allRowNodes == null) continue;
                     foreach (var item in allRowNodes)
                     {
-                        if (item == allRowNodes.First()) continue;
+                        //if (item == allRowNodes.First()) continue;
                         var com = item.FirstChild.InnerText;
                         var tickerName = item.ChildNodes[1].InnerText;
                         var lastTrade = item.ChildNodes[2].InnerText;
@@ -288,6 +381,64 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             //SaveData(results);
             //return results;
         }
+
+        public async Task YahooCompany(string symbol)
+        {
+            //Search term
+            const string s = "s=";
+            //All, Stocks, Mutual funds,...
+            const string t = "&t=";
+            //Country
+            const string m = "&m=";
+            //Number of items
+            const string b = "&b=";
+            //To put it in tables
+            const string bypass = "&bypass=true";
+
+            for (var i = 0; i <= 200; i += 20)
+            {
+                var urlTosend = Cfg.YahooLookupAll + s + symbol + t + "s" + m + "ALL" + b + i + bypass;
+                var data = WebRequest(urlTosend);
+                var doc = new HtmlDocument();
+                doc.LoadHtml(data);
+
+                var allRowNodes = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'yui-dt')]");
+                if (allRowNodes == null) continue;
+                foreach (var item in allRowNodes)
+                {
+
+                    var com = item.FirstChild.InnerText;
+                    var tickerName = item.ChildNodes[1].InnerText;
+                    var lastTrade = item.ChildNodes[2].InnerText;
+                    var type = item.ChildNodes[3].InnerText;
+                    var industryN = item.ChildNodes[4].InnerText;
+                    var exchangeId = item.ChildNodes[5].InnerText;
+                    var exc = new Exchange() {StockExchangeId = exchangeId};
+                    var excId = await _repository.AddExchange(exc);
+                    //var sector = new Sector { Name = sec };
+                    var industry = new Industry {Name = industryN};
+                    var indId = await _repository.AddIndustry(industry);
+                    //var secId = await _repository.AddSector(sector);
+                    var companies = new Companies()
+                    {
+                        Symbol = com,
+                        Name = tickerName,
+                        LastSale = lastTrade,
+                        //SectorId = secId,
+                        IndustryId = indId,
+                        //RegionId = regId,
+                        ExchangeId = excId
+                    };
+                    await _repository.AddCompany(companies);
+                    //results.Add(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industry + "\t" + exchange);
+                    Console.WriteLine(com + "\t" + tickerName + "\t" + lastTrade + "\t" + type + "\t" + industryN +
+                                      "\t" + exchangeId);
+                }
+            }
+            //SaveData(results);
+            //return results;
+        }
+
         /// <summary>
         ///
         /// </summary>

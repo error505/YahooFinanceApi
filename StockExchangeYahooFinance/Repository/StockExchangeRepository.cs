@@ -50,7 +50,7 @@ namespace StockExchangeYahooFinance.Repository
         }
         /// <summary>
         /// Check for Industry in DB by its name
-        /// </summary>
+        /// </summary> HisotryIdExists
         /// <param name="name"></param>
         /// <returns>Industry</returns>
         public async Task<Industry> GetIndustryByName(string name)
@@ -94,7 +94,24 @@ namespace StockExchangeYahooFinance.Repository
                 var company = await GetCompanyByName(symbol);
                 var history =
                  _context.History
-                    .Where(m => (m.StartDate == startDate) && (m.EndDate == endDate) && (m.CompaniesId == company.Id)).ToList();
+                    .Where(m => (m.Date == startDate) && (m.Date == endDate) && (m.CompaniesId == company.Id)).ToList();
+                return history;
+            }
+            catch (DbException e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<History> GetHistoryByDate(DateTime date, string symbol)
+        {
+            try
+            {
+                var company = await GetCompanyByName(symbol);
+                var history =
+                await _context.History
+                    .SingleOrDefaultAsync(m => (m.Date == date) && (m.CompaniesId == company.Id));
                 return history;
             }
             catch (DbException e)
@@ -288,6 +305,38 @@ namespace StockExchangeYahooFinance.Repository
 
             }
             return industry.Id;
+        }
+
+        public async Task<string> AddHistory(History history)
+        {
+            if (history == null)
+            {
+                return null;
+            }
+            if (HistoryIdExists(history.CompaniesId, history.Date))
+            {
+                var hist = await GetHistoryByDate(history.Date, history.CompaniesId);
+                Console.WriteLine(hist);
+            }
+            _context.History.Add(history);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (HistoryIdExists(history.CompaniesId, history.Date))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return history.Id;
         }
         /// <summary>
         /// Add Country to DataBase
@@ -538,6 +587,11 @@ namespace StockExchangeYahooFinance.Repository
         public bool IndustryIdExists(string name)
         {
             return _context.Industrie.Count(e => e.Name == name) > 0;
+        }
+
+        public bool HistoryIdExists(string compId, DateTime date)
+        {
+            return _context.History.Count(e => (e.CompaniesId == compId) && (e.Date == date)) > 0;
         }
         /// <summary>
         /// Check if Country exists by its name

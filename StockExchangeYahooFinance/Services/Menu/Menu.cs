@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using StockExchangeYahooFinance.Models;
 
 namespace StockExchangeYahooFinance.Services.Menu
 {
-
     internal class YahooCompanies : IMenu
     {
         public string Description => "Add a list of yahoo companies to database.";
@@ -68,6 +68,26 @@ namespace StockExchangeYahooFinance.Services.Menu
         {
             var cancellation = new CancellationTokenSource(Timeout.Infinite);
             await execTask.StockExchangeParseCsv();
+        }
+    }
+
+    internal class YahooHistoricalDataCsv : IMenu
+    {
+        public string Description => "Check for yahoo historical data for selected company! (Data will be returned in CSV format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask)
+        {
+            var model = new RequestModel();
+            await execTask.YahooHistoricalDataCsv(model);
+        }
+    }
+
+    internal class YahooHistoricalDataQuery : IMenu
+    {
+        public string Description => "Check for yahoo historical data for selected company! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask)
+        {
+            var model = new RequestModel();
+            await execTask.YahooHistoricalDataQuery(model);
         }
     }
 }

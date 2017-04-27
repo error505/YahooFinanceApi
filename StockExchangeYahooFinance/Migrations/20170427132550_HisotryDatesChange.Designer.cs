@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170427132550_HisotryDatesChange")]
+    partial class HisotryDatesChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -331,7 +332,7 @@ namespace StockExchangeYahooFinance.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("AdjClose");
+                    b.Property<string>("AdjClose");
 
                     b.Property<double>("Close");
 

@@ -23,6 +23,8 @@ namespace StockExchangeYahooFinance
                 new ImportCompaniesNasdaq(),
                 new StockExchangeJson(),
                 new StockExchangeTaskParseCsv(),
+                new YahooHistoricalDataCsv(),
+                new YahooHistoricalDataQuery(),
             };
 
             var container = new UnityContainer();
