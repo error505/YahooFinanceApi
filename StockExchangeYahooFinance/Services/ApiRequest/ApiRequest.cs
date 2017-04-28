@@ -134,16 +134,16 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         {
             var symbol = "s=";
             var startDate = "c=";
-            var url = Cfg.YahooHistoryCsv + symbol +  Cfg.SymbolTicker;
+            var url = Cfg.YahooHistoryCsv + symbol + model.Ticker;
             try
             {
                 var csvData = WebRequest(url);
-                var rows = csvData.Replace("\r", "").Split('\n');
-                var symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
+                var rows = ParseCsv(csvData);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 if (symbolId == null)
                 {
-                    await YahooCompany(Cfg.SymbolTicker);
-                    symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
+                    await YahooCompany(model.Ticker);
+                    symbolId = await _repository.GetCompanyByName(model.Ticker);
                 }
                 var historyCsv = new List<History>();
                 try
@@ -193,7 +193,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         CreatedByUser = hs.CreatedByUser
                     };
                     Console.WriteLine(
-                        $"Name {symbolId.Name}: Ticker {Cfg.SymbolTicker} : Date {hs.Date} : Open {hs.Open} : High {hs.High} : Low {hs.Low} : Close {hs.Close} : Volume {hs.Volume} : Adj Close{hs.AdjClose}");
+                        $"Name {symbolId.Name}: Ticker {model.Ticker} : Date {hs.Date} : Open {hs.Open} : High {hs.High} : Low {hs.Low} : Close {hs.Close} : Volume {hs.Volume} : Adj Close{hs.AdjClose}");
                     await _repository.AddHistory(history);
                 }                
             }
@@ -490,8 +490,9 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             try
             {
                 var csvData = WebRequest(url);
+
                 //Parse CSV
-                var rows = csvData.Replace("\r", "").Split('\n');
+                var rows = ParseCsv(csvData);
                 //Get data from string
                 var companies = (from row in rows
                     where !string.IsNullOrEmpty(row)
@@ -609,6 +610,12 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 webResponseData = web.DownloadString(url);
             }
             return webResponseData;
+        }
+
+        private static IEnumerable<string> ParseCsv(string csvData)
+        {
+            var rows = csvData.Replace("\r", "").Split('\n');
+            return rows;
         }
     }
 }

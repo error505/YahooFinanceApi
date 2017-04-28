@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Practices.Unity;
 using StockExchangeYahooFinance.Mappings;
+using StockExchangeYahooFinance.Models;
 using StockExchangeYahooFinance.Services.ApiRequest;
 using StockExchangeYahooFinance.Services.Menu;
 
@@ -14,6 +15,10 @@ namespace StockExchangeYahooFinance
         }
         private static void Run()
         {
+            var container = new UnityContainer();
+            ContainerBootstrapper.RegisterTypes(container);
+            var request = container.Resolve<ApiRequest>();
+            var model = new RequestModel();
             var menu = new IMenu[]
             {
                 new YahooCompanies(),
@@ -27,13 +32,9 @@ namespace StockExchangeYahooFinance
                 new YahooHistoricalDataQuery(),
             };
 
-            var container = new UnityContainer();
-            ContainerBootstrapper.RegisterTypes(container);
-            var request = container.Resolve<ApiRequest>();
-
             while (true)
             {
-                Console.WriteLine("Welcome to YahooFinanceApi.");
+                Console.WriteLine("Welcome to Stock Exchange Scrapper.");
                 Console.WriteLine("What do you want to do?");
 
                 // This loop creates a list of commands:
@@ -50,9 +51,16 @@ namespace StockExchangeYahooFinance
                     selected = Console.ReadLine();
                 }
                 while (!int.TryParse(selected, out commandIndex) || commandIndex > menu.Length);
-
+                //Use request model in services
+                if (commandIndex == 8)
+                {
+                    Console.WriteLine("Please enter the symbol!");
+                    var symbol = Console.ReadLine();
+                    model.Ticker = symbol;
+                    menu[commandIndex - 1].Execute(request, model);
+                }
                 // Execute the command.
-                menu[commandIndex - 1].Execute(request);
+                menu[commandIndex - 1].Execute(request, model);
             }
         }
     }
