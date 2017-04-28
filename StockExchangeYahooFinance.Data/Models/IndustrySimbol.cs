@@ -1,23 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StockExchangeYahooFinance.Data.Models
 {
-    public class Currencies
+    public class IndustrySimbol
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-
-        public string Entity { get; set; }
-
-        public string Currency { get; set; }
-
-        public string Code { get; set; }
-
-        public int NumericCode { get; set; }
-
-        public string MinorUnit { get; set; }
-
+        public string Symbol { get; set; }
+        public string IndustryId { get; set; }
+        public Industry Industry { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
     }
 }

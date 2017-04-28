@@ -42,12 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Companies.cs" />
+    <Compile Include="Models\CompanyOfficers.cs" />
+    <Compile Include="Models\CompanyProfile.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Currencies.cs" />
     <Compile Include="Models\Exchange.cs" />
     <Compile Include="Models\FinanceModel.cs" />
     <Compile Include="Models\History.cs" />
     <Compile Include="Models\Industry.cs" />
+    <Compile Include="Models\IndustrySimbol.cs" />
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\Sector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

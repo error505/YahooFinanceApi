@@ -68,6 +68,72 @@ namespace StockExchangeYahooFinance.Repository
                 throw;
             }
         }
+
+        public async Task<CompanyProfile> GetCompanyProfileByName(string name)
+        {
+            try
+            {
+                var company = await GetCompanyByName(name);
+                var companyProfile =
+                await _context.CompanyProfile
+                    .SingleOrDefaultAsync(m => m.CompaniesId == company.Id);
+                return companyProfile;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<CompanyProfile> GetCompanyProfileById(string id)
+        {
+            try
+            {
+                var companyProfile =
+                await _context.CompanyProfile
+                    .SingleOrDefaultAsync(m => m.Id == id);
+                return companyProfile;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<CompanyOfficers> GetCompanyOfficersByName(string name)
+        {
+            try
+            {
+                var company = await GetCompanyByName(name);
+                var companyOfficers =
+                await _context.CompanyOfficers
+                    .SingleOrDefaultAsync(m => m.CompaniesId == company.Id);
+                return companyOfficers;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<CompanyOfficers> GetCompanyOfficersById(string id)
+        {
+            try
+            {
+                var companyOfficers =
+                await _context.CompanyOfficers
+                    .SingleOrDefaultAsync(m => m.Id == id);
+                return companyOfficers;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
         /// <summary>
         /// Find industry by ID
         /// </summary>
@@ -103,7 +169,12 @@ namespace StockExchangeYahooFinance.Repository
                 throw;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<History> GetHistoryByDate(string date, string id)
         {
             try
@@ -307,6 +378,75 @@ namespace StockExchangeYahooFinance.Repository
             return industry.Id;
         }
 
+        public async Task<string> AddCompanyProfile(CompanyProfile companyProfile)
+        {
+            if (companyProfile == null)
+            {
+                return null;
+            }
+            if (CompanyProfileIdExists(companyProfile.CompaniesId))
+            {
+                var cp = await GetCompanyProfileById(companyProfile.CompaniesId);
+                return cp.Id;
+            }
+            _context.CompanyProfile.Add(companyProfile);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (CompanyProfileIdExists(companyProfile.CompaniesId))
+                {
+                    Console.WriteLine("Company Profile with name: " + companyProfile.Companies.Name + " exists in curent database!");
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return companyProfile.Id;
+        }
+
+        public async Task<string> AddCompanyProfile(CompanyOfficers companyOfficers)
+        {
+            if (companyOfficers == null)
+            {
+                return null;
+            }
+            if (CompanyOfficersNameExists(companyOfficers.Name))
+            {
+                var cp = await GetCompanyOfficersByName(companyOfficers.Name);
+                return cp.Id;
+            }
+            _context.CompanyOfficers.Add(companyOfficers);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (CompanyOfficersNameExists(companyOfficers.Name))
+                {
+                    Console.WriteLine("Company Officer with name: " + companyOfficers.Name + " exists in curent database!");
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return companyOfficers.Id;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="history"></param>
+        /// <returns></returns>
         public async Task<string> AddHistory(History history)
         {
             if (history == null)
@@ -618,6 +758,24 @@ namespace StockExchangeYahooFinance.Repository
         public bool SectorIdExists(string name)
         {
             return _context.Sector.Count(e => e.Name == name) > 0;
+        }
+        public bool CompanyProfileIdExists(string id)
+        {
+            return _context.CompanyProfile.Count(e => e.CompaniesId == id) > 0;
+        }
+        public async Task<bool> CompanyProfileExists(string symbol)
+        {
+            var company = await GetCompanyByName(symbol);
+            return _context.CompanyProfile.Count(e => e.CompaniesId == company.Id) > 0;
+        }
+
+        public bool CompanyOfficersNameExists(string name)
+        {
+            return _context.CompanyOfficers.Count(e => e.Name == name) > 0;
+        }
+        public bool CompanyOfficersIdExists(string id)
+        {
+            return _context.CompanyOfficers.Count(e => e.Id == id) > 0;
         }
         /// <summary>
         /// Check if Currency exists by its code

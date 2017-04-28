@@ -210,6 +210,8 @@
     <Compile Include="ConfigData\ConfigManager.cs" />
     <Compile Include="Helpers\FinanceData.cs" />
     <Compile Include="DbContext\YahooFinanceDbContext.cs" />
+    <Compile Include="Helpers\YahooEvents.cs" />
+    <Compile Include="Helpers\YahooModules.cs" />
     <Compile Include="Helpers\YqlQuery.cs" />
     <Compile Include="Mappings\ContainerBootstrapper.cs" />
     <Compile Include="Migrations\20170411125927_MyFirstMigration.cs" />
@@ -291,6 +293,10 @@
     <Compile Include="Migrations\20170428072620_HistoryChangeDateToString.cs" />
     <Compile Include="Migrations\20170428072620_HistoryChangeDateToString.designer.cs">
       <DependentUpon>20170428072620_HistoryChangeDateToString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170428132218_CompanyProfile_CompanyOfficers.cs" />
+    <Compile Include="Migrations\20170428132218_CompanyProfile_CompanyOfficers.designer.cs">
+      <DependentUpon>20170428132218_CompanyProfile_CompanyOfficers.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Models\RequestModel.cs" />
