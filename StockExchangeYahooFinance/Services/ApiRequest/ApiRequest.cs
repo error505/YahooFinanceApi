@@ -139,13 +139,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             {
                 var csvData = WebRequest(url);
                 var rows = csvData.Replace("\r", "").Split('\n');
-                //csvData = csvData.Replace("r", "");
-                //var rows = csvData.Split('n');
-
-
-
-
-
                 var symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
                 if (symbolId == null)
                 {
@@ -155,34 +148,35 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var historyCsv = new List<History>();
                 try
                 {
-                    foreach (var row in rows.Skip(1))
-                    {
-                        if (!string.IsNullOrEmpty(row))
+                    historyCsv.AddRange(from row in rows.Skip(1)
+                        where !string.IsNullOrEmpty(row)
+                        select row.Split(',')
+                        into cols
+                        let datum = cols[0]
+                        let open = Convert.ToDouble(cols[1])
+                        let high = Convert.ToDouble(cols[2])
+                        let low = Convert.ToDouble(cols[3])
+                        let close = Convert.ToDouble(cols[4])
+                        let volume = Convert.ToInt32(cols[5])
+                        let adjClose = Convert.ToDouble(cols[6])
+                        select new History()
                         {
-                            string[] cols = row.Split(',');
-                            historyCsv.Add(new History()
-                            {
-                                //TODO: Check for conversion exception
-                                CompaniesId = symbolId.Id,
-                                Date = Convert.ToDateTime(cols[0]),
-                                Open = Convert.ToDouble(cols[1]),
-                                High = Convert.ToDouble(cols[2]),
-                                Low = Convert.ToDouble(cols[3]),
-                                Close = Convert.ToDouble(cols[4]),
-                                Volume = Convert.ToInt32(cols[5]),
-                                AdjClose = Convert.ToDouble(cols[6]),
-                            });
-                        }
-                    }
+                            CompaniesId = symbolId.Id,
+                            Date = datum,
+                            Open = open,
+                            High = high,
+                            Low = low,
+                            Close = close,
+                            Volume = volume,
+                            AdjClose = adjClose,
+                            CreatedByUser = Cfg.UserName
+                        });
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     throw;
                 }
-
-
-                //First row is headers so Ignore it
                 Console.Clear();
                 foreach (var hs in historyCsv)
                 {
@@ -195,33 +189,17 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         Low = hs.Low,
                         Close = hs.Close,
                         Volume = hs.Volume,
-                        AdjClose = hs.AdjClose
+                        AdjClose = hs.AdjClose,
+                        CreatedByUser = hs.CreatedByUser
                     };
                     Console.WriteLine(
-                        $"{symbolId.Name}:{Cfg.SymbolTicker} :{hs.Date} : {hs.Open} : {hs.High} : {hs.Low} : {hs.Close} : {hs.Volume} : {hs.AdjClose}");
+                        $"Name {symbolId.Name}: Ticker {Cfg.SymbolTicker} : Date {hs.Date} : Open {hs.Open} : High {hs.High} : Low {hs.Low} : Close {hs.Close} : Volume {hs.Volume} : Adj Close{hs.AdjClose}");
                     await _repository.AddHistory(history);
-                }
-                //for (var i = 1; i < rows.Length; i++)
-                //{
-                //    if (rows[i].Replace("n", "").Trim() == "") continue;
-                //    var cols = rows[i].Split(',');
-                //    var hs = new History();
-                //    hs.Date = Convert.ToDateTime(cols[0]);
-                //    hs.Open = Convert.ToDouble(cols[1]);
-                //    hs.High = Convert.ToDouble(cols[2]);
-                //    hs.Low = Convert.ToDouble(cols[3]);
-                //    hs.Close = Convert.ToDouble(cols[4]);
-                //    hs.Volume = Convert.ToDouble(cols[5]);
-                //    hs.AdjClose = Convert.ToDouble(cols[6]);
-                //    Console.ForegroundColor = ConsoleColor.Red;
-                //    Console.WriteLine(
-                //        $"{symbolId.Name}:{Cfg.SymbolTicker} :{hs.Date} : {hs.Open} : {hs.High} : {hs.Low} : {hs.Close} : {hs.Volume} : {hs.AdjClose}");
-                //    await _repository.AddHistory(hs);
-                //}
+                }                
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException e)
             {
-                return;
+                Console.WriteLine(e.Message);
             }
         }
 

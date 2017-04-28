@@ -11,7 +11,7 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public Double Open { get; set; }
         public Double High { get; set; }
         public Double Low { get; set; }

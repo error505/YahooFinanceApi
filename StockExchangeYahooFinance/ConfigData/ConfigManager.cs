@@ -36,6 +36,7 @@ namespace StockExchangeYahooFinance.ConfigData
         private static string CsvDataConf = "CsvData";
         private static string GetYahooDbConnection = "YFConnection";
         private static string YahooHistoryAllCsv = "YahooHistoryAll";
+        private static string User = "UserName";
         public string YahooBaseUrl => GetConfigKey(YahooBase);
         public string YahooXchange => GetConfigKey(YahooXchangeUrl);
         public string YahooQuotes => GetConfigKey(YahooQuotesUrl);
@@ -57,6 +58,7 @@ namespace StockExchangeYahooFinance.ConfigData
         public string CsvData => GetConfigKey(CsvDataConf);
         public string YahooHistoryCsv => GetConfigKey(YahooHistoryAllCsv);
         public string YahooDbConnectioString => DbConf(GetYahooDbConnection);
+        public string UserName => Credentials(User);
         public ConfigManager()
         {
             var builder = new ConfigurationBuilder()
@@ -73,6 +75,10 @@ namespace StockExchangeYahooFinance.ConfigData
         private string DbConf(string name)
         {
           return  Configuration.GetSection("ConnectionStrings")[name];
+        }
+        private string Credentials(string name)
+        {
+            return Configuration.GetSection("Credentials")[name];
         }
     }
 }

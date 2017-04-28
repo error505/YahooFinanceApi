@@ -288,6 +288,10 @@
     <Compile Include="Migrations\20170427135108_RequestForHistory.designer.cs">
       <DependentUpon>20170427135108_RequestForHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170428072620_HistoryChangeDateToString.cs" />
+    <Compile Include="Migrations\20170428072620_HistoryChangeDateToString.designer.cs">
+      <DependentUpon>20170428072620_HistoryChangeDateToString.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\YahooFinanceDbContextModelSnapshot.cs" />
     <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Program.cs" />

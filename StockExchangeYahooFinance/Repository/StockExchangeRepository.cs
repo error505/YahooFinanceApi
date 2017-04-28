@@ -87,7 +87,7 @@ namespace StockExchangeYahooFinance.Repository
         /// <param name="endDate"></param>
         /// <param name="symbol"></param>
         /// <returns>List</returns>
-        public async Task<List<History>> GetHistoryByStartEndDate(DateTime startDate, DateTime endDate, string symbol)
+        public async Task<List<History>> GetHistoryByStartEndDate(string startDate, string endDate, string symbol)
         {
             try
             {
@@ -104,11 +104,11 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
-        public async Task<History> GetHistoryByDate(DateTime date, string symbol)
+        public async Task<History> GetHistoryByDate(string date, string id)
         {
             try
             {
-                var company = await GetCompanyByName(symbol);
+                var company = await GetCompanyById(id);
                 var history =
                 await _context.History
                     .SingleOrDefaultAsync(m => (m.Date == date) && (m.CompaniesId == company.Id));
@@ -316,7 +316,7 @@ namespace StockExchangeYahooFinance.Repository
             if (HistoryIdExists(history.CompaniesId, history.Date))
             {
                 var hist = await GetHistoryByDate(history.Date, history.CompaniesId);
-                Console.WriteLine(hist);
+                return hist.Id;
             }
             _context.History.Add(history);
             try
@@ -357,7 +357,6 @@ namespace StockExchangeYahooFinance.Repository
             _context.Country.Add(country);
             try
             {
-
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -589,7 +588,7 @@ namespace StockExchangeYahooFinance.Repository
             return _context.Industrie.Count(e => e.Name == name) > 0;
         }
 
-        public bool HistoryIdExists(string compId, DateTime date)
+        public bool HistoryIdExists(string compId, string date)
         {
             return _context.History.Count(e => (e.CompaniesId == compId) && (e.Date == date)) > 0;
         }
