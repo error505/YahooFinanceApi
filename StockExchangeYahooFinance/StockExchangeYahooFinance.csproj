@@ -208,8 +208,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigData\ConfigManager.cs" />
+    <Compile Include="Services\CallWebRequest.cs" />
     <Compile Include="Helpers\FinanceData.cs" />
     <Compile Include="DbContext\YahooFinanceDbContext.cs" />
+    <Compile Include="Helpers\YahooCompProfile.cs" />
     <Compile Include="Helpers\YahooEvents.cs" />
     <Compile Include="Helpers\YahooModules.cs" />
     <Compile Include="Helpers\YqlQuery.cs" />

@@ -9,3 +9,7 @@
 /StockExchangeYahooFinance.Data/bin/Debug
 /StockExchangeYahooFinance.Data/obj/Debug
 /.vs/StockExchangeYahooFinance/v14/.suo
+/StockExchangeYahooFinance/obj/Release
+/StockExchangeYahooFinance.Data/bin/Release
+/StockExchangeYahooFinance.Data/obj/Release
+/.vs/config

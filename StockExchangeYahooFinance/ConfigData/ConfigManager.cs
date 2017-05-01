@@ -17,11 +17,18 @@ namespace StockExchangeYahooFinance.ConfigData
         private static IConfigurationRoot Configuration { get; set; }
         private static string YahooBase = "YahooBaseUrl";
         private static string YahooQuotesUrl = "YahooQuotes";
+        private static string YahooQuoteSummaryUrl = "YahooQuoteSummary";
         private static string YahooHistoricalUrl = "YahooHistoricalData";
         private static string YahooXchangeUrl = "YahooXchange";
         private static string YahooLookup = "AllComp";
         private static string YahooFormat = "Format";
-        private static string YahooDiagnostic = "Diagnostic;";
+        private static string YahooFormated = "Formated";
+        private static string YahooCrumb = "Crumb";
+        private static string YahooLang = "Lang";
+        private static string YahooDiagnostic = "Diagnostic";
+        private static string YahooRegion = "YahooRegion";
+        private static string YahooModulesUrl = "Modules";
+        private static string YahooCorsDomain = "CorsDomain";
         private static string YahooEnviroment = "Enviroment";
         private static string YahooCallBack = "CallBack";
         private static string TickersList = "Tickers";
@@ -40,6 +47,7 @@ namespace StockExchangeYahooFinance.ConfigData
         public string YahooBaseUrl => GetConfigKey(YahooBase);
         public string YahooXchange => GetConfigKey(YahooXchangeUrl);
         public string YahooQuotes => GetConfigKey(YahooQuotesUrl);
+        public string YahooQuoteSummary => GetConfigKey(YahooQuoteSummaryUrl);
         public string YahooLookupAll => GetConfigKey(YahooLookup);
         public string IsoCurrencyUrl => GetConfigKey(IsoCurrency);
         public string NasdqRender => GetConfigKey(NasdqRenderPart);
@@ -54,6 +62,12 @@ namespace StockExchangeYahooFinance.ConfigData
         public string Diagnostic => GetConfigKey(YahooDiagnostic);
         public string CallBack => GetConfigKey(YahooCallBack);
         public string Format => GetConfigKey(YahooFormat);
+        public string YFormated => GetConfigKey(YahooFormated);
+        public string YCrumb => GetConfigKey(YahooCrumb);
+        public string YLang => GetConfigKey(YahooLang);
+        public string YRegion => GetConfigKey(YahooRegion);
+        public string YModules => GetConfigKey(YahooModulesUrl);
+        public string YCorsDomain => GetConfigKey(YahooCorsDomain);
         public string CsvUrl => GetConfigKey(Csv);
         public string CsvData => GetConfigKey(CsvDataConf);
         public string YahooHistoryCsv => GetConfigKey(YahooHistoryAllCsv);

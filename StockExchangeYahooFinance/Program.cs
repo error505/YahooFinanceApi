@@ -30,6 +30,7 @@ namespace StockExchangeYahooFinance
                 new StockExchangeTaskParseCsv(),
                 new YahooHistoricalDataCsv(),
                 new YahooHistoricalDataQuery(),
+                new YahooCompanyProfile(),
             };
 
             while (true)
@@ -53,6 +54,13 @@ namespace StockExchangeYahooFinance
                 while (!int.TryParse(selected, out commandIndex) || commandIndex > menu.Length);
                 //Use request model in services
                 if (commandIndex == 8)
+                {
+                    Console.WriteLine("Please enter the symbol!");
+                    var symbol = Console.ReadLine();
+                    model.Ticker = symbol;
+                    menu[commandIndex - 1].Execute(request, model);
+                }
+                if (commandIndex == 10)
                 {
                     Console.WriteLine("Please enter the symbol!");
                     var symbol = Console.ReadLine();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         private static readonly YqlQuery YQ = new YqlQuery();
         //Initialize FinanceData
         private static readonly FinanceData FinanceData = new FinanceData();
+        private static readonly CallWebRequest CallWebRequest = new CallWebRequest();
+        private static readonly YahooCompProfile YahooCompProfile = new YahooCompProfile();
         public ApiRequest(StockExchangeRepository repository)
         {
             //Get repository
@@ -53,7 +56,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 {
                     await task;
                     Console.Clear();
-                    var json = WebRequest(url);
+                    var json = CallWebRequest.WebRequest(url);
                     dynamic data = JObject.Parse(json);
                     var quote = data.query.results.quote;
                     foreach (var i in quote)
@@ -122,6 +125,57 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {open} : {high} : {low} : {close}");
                     await _repository.AddHistory(h);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
+        /// <summary>
+        /// Get Company Profile from Yahoo finance
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task YahooCompanyProfile(RequestModel model)
+        {
+            var modules = new YahooModules();
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.AssetProfile + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = CallWebRequest.WebRequest(url);
+                dynamic data = JObject.Parse(json);
+                var assetProfile = data.quoteSummary.result.assetProfile;
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                foreach (var i in assetProfile)
+                {
+                    var h = new CompanyProfile();
+                    h.CompaniesId = symbolId.Id;
+                    var address1 = i.SelectToken(YahooCompProfile.Address1);
+                    h.Address1 = address1.ToString();
+                    var city = i.SelectToken(YahooCompProfile.City);
+                    h.City = city.ToString();
+                    var zip = i.SelectToken(YahooCompProfile.Zip);
+                    h.Zip = zip.ToString();
+                    var country = i.SelectToken(YahooCompProfile.Country);
+                    var phone = i.SelectToken(YahooCompProfile.Phone);
+                    var website = i.SelectToken(YahooCompProfile.Website);
+                    var fax = i.SelectToken(YahooCompProfile.Fax);
+                    var industry = i.SelectToken(YahooCompProfile.Industry);
+                    var industrySymbol = i.SelectToken(YahooCompProfile.IndustrySymbol);
+                    var sector = i.SelectToken(YahooCompProfile.Sector);
+                    var longBusinessSummary = i.SelectToken(YahooCompProfile.LongBusinessSummary);
+                    h.Phone = country.ToString();
+                    h.Fax = fax.ToString();
+                    h.Website = website.ToString();
+                    h.IndustryId = industry.ToString();
+                    h.IndustrySymbolId = industrySymbol.ToString();
+                    h.SectorId = sector.ToString();
+                    h.LongBusinessSummary = longBusinessSummary.ToString();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
+                    await _repository.AddCompanyProfile(h);
                 }
             }
             catch (TaskCanceledException)
@@ -603,13 +657,33 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns></returns>
         private static string WebRequest(string url)
         {
-            string webResponseData;
-            //Make web request
-            using (var web = new WebClient())
+            try
             {
-                webResponseData = web.DownloadString(url);
+                using (var web = new WebClient())
+                {
+                    try
+                    {
+                        web.Encoding = Encoding.UTF8;
+                        var urlEncoded = WebUtility.UrlEncode(url);                        
+                        web.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36";
+                        var webResponseData = web.DownloadString(url);
+                        return webResponseData;
+                    }
+                    catch (WebException e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                    
+                }
             }
-            return webResponseData;
+            catch (WebException e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            //Make web request
+            
         }
 
         private static IEnumerable<string> ParseCsv(string csvData)
