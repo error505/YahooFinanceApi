@@ -57,7 +57,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     await task;
                     Console.Clear();
                     var json = CallWebRequest.WebRequest(url);
-                    dynamic data = JObject.Parse(json);
+                    dynamic data = JObject.Parse(json.Result);
                     var quote = data.query.results.quote;
                     foreach (var i in quote)
                     {
@@ -145,7 +145,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             {
                 Console.Clear();
                 var json = CallWebRequest.WebRequest(url);
-                dynamic data = JObject.Parse(json);
+                dynamic data = JObject.Parse(json.Result);
                 var assetProfile = data.quoteSummary.result.assetProfile;
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 foreach (var i in assetProfile)
