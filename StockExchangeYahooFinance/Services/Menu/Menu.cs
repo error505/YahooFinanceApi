@@ -105,4 +105,13 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.AddYahooCompanyByName(model);
         }
     }
+
+    internal class YahooRssByCompanyName : IMenu
+    {
+        public string Description => "Get Yahoo Company RSS Feed! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            await execTask.YahooRssFeed(model);
+        }
+    }
 }

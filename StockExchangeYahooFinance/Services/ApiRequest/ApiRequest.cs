@@ -32,6 +32,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         private static readonly FinanceData FinanceData = new FinanceData();
         private readonly CallWebRequest _callWebRequest = new CallWebRequest();
         private static readonly YahooCompProfile YahooCompProfile = new YahooCompProfile();
+        private static readonly YahooRssFeed _YahooRssFeed = new YahooRssFeed();
         public ApiRequest(StockExchangeRepository repository)
         {
             //Get repository
@@ -92,7 +93,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 }
             }
         }
-
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooHistoricalDataQuery(RequestModel model)
         {
             var url = Cfg.YahooBaseUrl + YQ.SelectAll + Cfg.YahooHistoricalData +
@@ -133,6 +138,41 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 return;
             }
         }
+        //TODO: Finish Rss feed scrapping
+        /// <summary>
+        /// Return Rss feed news for selected ticker
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task YahooRssFeed(RequestModel model)
+        {
+            var url = Cfg.YahooBaseUrl + YQ.SelectAll + YQ.Rss +
+                      YQ.Where + YQ.Url + "=" + "%22" + Cfg.YahooRssUrl +
+                       model.Ticker + "%22" + Cfg.Format + Cfg.Enviroment +
+                      Cfg.CallBack;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                dynamic data = JObject.Parse(json);
+                var quote = data.query.results.item;
+                //var symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
+                foreach (var i in quote)
+                {
+                    var desc = i.SelectToken(_YahooRssFeed.Description).ToString();
+                    var title = i.SelectToken(_YahooRssFeed.Title).ToString();
+                    var link = i.SelectToken(_YahooRssFeed.Link).ToString();
+                    var pubDate = i.SelectToken(_YahooRssFeed.PubDate).ToString();
+                    Console.WriteLine($"{model.Ticker}: {desc} : {title} : {link} : {pubDate}");
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
+
+
         /// <summary>
         /// Get Company Profile from Yahoo finance
         /// </summary>

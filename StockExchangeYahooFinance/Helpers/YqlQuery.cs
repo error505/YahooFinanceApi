@@ -15,5 +15,7 @@
         public string And = " and";
         public string StartDate = " startDate ";
         public string EndDate = " endDate ";
+        public string Rss = " rss ";
+        public string Url = "url";
     }
 }

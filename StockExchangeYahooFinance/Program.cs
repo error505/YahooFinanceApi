@@ -32,6 +32,7 @@ namespace StockExchangeYahooFinance
                 new YahooHistoricalDataQuery(),
                 new YahooCompanyProfile(),
                 new YahooCompanyByName(),
+                new YahooRssByCompanyName(),
             };
 
             while (true)
@@ -69,6 +70,13 @@ namespace StockExchangeYahooFinance
                     menu[commandIndex - 1].Execute(request, model);
                 }
                 if (commandIndex == 11)
+                {
+                    Console.WriteLine("Please enter the symbol!");
+                    var symbol = Console.ReadLine();
+                    model.Ticker = symbol;
+                    menu[commandIndex - 1].Execute(request, model);
+                }
+                if (commandIndex == 12)
                 {
                     Console.WriteLine("Please enter the symbol!");
                     var symbol = Console.ReadLine();

@@ -25,7 +25,7 @@ namespace StockExchangeYahooFinance.Services
                     }
                     catch (WebException e)
                     {
-                        Console.WriteLine(e);
+                        Console.WriteLine(e.Message);
                         throw;
                     }
 
