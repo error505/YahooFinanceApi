@@ -23,6 +23,7 @@ namespace StockExchangeYahooFinance.Data.Models
         public int TotalPay { get; set; }
         public int ExercisedValue { get; set; }
         public int UnexercisedValue { get; set; }
-
+        public DateTime CreationTime { get; set; } = DateTime.Now;
+        public string CreatedByUser { get; set; }
     }
 }

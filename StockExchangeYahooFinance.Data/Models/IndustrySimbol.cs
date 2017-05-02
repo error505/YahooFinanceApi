@@ -15,5 +15,6 @@ namespace StockExchangeYahooFinance.Data.Models
         public string IndustryId { get; set; }
         public Industry Industry { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
+        public string CreatedByUser { get; set; }
     }
 }

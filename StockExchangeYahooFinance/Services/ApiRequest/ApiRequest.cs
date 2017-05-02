@@ -150,6 +150,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                       YQ.Where + YQ.Url + "=" + "%22" + Cfg.YahooRssUrl +
                        model.Ticker + "%22" + Cfg.Format + Cfg.Enviroment +
                       Cfg.CallBack;
+            Console.Clear();
             try
             {
                 Console.Clear();
@@ -185,10 +186,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             try
             {
                 Console.Clear();
-                var json = _callWebRequest.WebRequest(url);
+                var json = await _callWebRequest.WebRequest(url);
                 //dynamic data = JObject.Parse(json.Result);
                 //var profile = data.quoteSummary.result;
-                var d = JObject.Parse(json.Result);
+                var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var assetProfile = d["quoteSummary"]["result"][0];
                 var companyOfficers = (JArray)d["quoteSummary"]["result"][0]["assetProfile"]["companyOfficers"];

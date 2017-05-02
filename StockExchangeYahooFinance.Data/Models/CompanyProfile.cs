@@ -36,6 +36,7 @@ namespace StockExchangeYahooFinance.Data.Models
         public int GovernanceEpochDate { get; set; }
         public int CompensationAsOfEpochDate { get; set; }
         public ICollection<CompanyOfficers> CompanyOfficers { get; set; }
-
+        public DateTime CreationTime { get; set; } = DateTime.Now;
+        public string CreatedByUser { get; set; }
     }
 }
