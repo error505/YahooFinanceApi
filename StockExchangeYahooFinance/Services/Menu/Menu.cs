@@ -96,4 +96,13 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.YahooCompanyProfile(model);
         }
     }
+
+    internal class YahooCompanyByName : IMenu
+    {
+        public string Description => "Get Yahoo Company Profile for selected company! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            await execTask.AddYahooCompanyByName(model);
+        }
+    }
 }

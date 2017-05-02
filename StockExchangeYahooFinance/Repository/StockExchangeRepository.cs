@@ -170,7 +170,7 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="date"></param>
         /// <param name="id"></param>
@@ -237,6 +237,31 @@ namespace StockExchangeYahooFinance.Repository
             var sector =
                 await _context.Sector
                     .SingleOrDefaultAsync(m => m.Name == name);
+            if (sector == null)
+            {
+                var sec = new Sector { Name = name };
+                var sectorAdded = await AddSector(sec);
+                return sec;
+            }
+            return sector;
+        }
+
+        /// <summary>
+        /// Add sector if does not exists
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<Sector> GetSectorByNameAddNonExisting(string name)
+        {
+            var sector =
+                await _context.Sector
+                    .SingleOrDefaultAsync(m => m.Name == name);
+            if (sector == null)
+            {
+                var sec = new Sector { Name = name };
+                var sectorAdded = await AddSector(sec);
+                return sec;
+            }
             return sector;
         }
         /// <summary>
@@ -263,6 +288,7 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Symbol == symbol);
             return company;
         }
+
         /// <summary>
         /// Get company by ID
         /// </summary>
@@ -410,7 +436,7 @@ namespace StockExchangeYahooFinance.Repository
             return companyProfile.Id;
         }
 
-        public async Task<string> AddCompanyProfile(CompanyOfficers companyOfficers)
+        public async Task<string> AddCompanyOfficers(CompanyOfficers companyOfficers)
         {
             if (companyOfficers == null)
             {
@@ -426,7 +452,7 @@ namespace StockExchangeYahooFinance.Repository
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException ex)
+            catch (DbException ex)
             {
                 if (CompanyOfficersNameExists(companyOfficers.Name))
                 {
@@ -435,7 +461,7 @@ namespace StockExchangeYahooFinance.Repository
                 }
                 else
                 {
-                    Console.WriteLine(ex);
+                    Console.WriteLine(ex.Message);
                 }
 
             }
@@ -443,7 +469,7 @@ namespace StockExchangeYahooFinance.Repository
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="history"></param>
         /// <returns></returns>

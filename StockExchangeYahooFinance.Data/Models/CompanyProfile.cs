@@ -33,8 +33,8 @@ namespace StockExchangeYahooFinance.Data.Models
         public int CompensationRisk { get; set; }
         public int ShareHolderRightsRisk { get; set; }
         public int OverallRisk { get; set; }
-        public long GovernanceEpochDate { get; set; }
-        public long CompensationAsOfEpochDate { get; set; }
+        public int GovernanceEpochDate { get; set; }
+        public int CompensationAsOfEpochDate { get; set; }
         public ICollection<CompanyOfficers> CompanyOfficers { get; set; }
 
     }

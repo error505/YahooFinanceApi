@@ -208,6 +208,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigData\ConfigManager.cs" />
+    <Compile Include="Migrations\20170502094558_updateCompOffices.cs" />
+    <Compile Include="Migrations\20170502094558_updateCompOffices.designer.cs">
+      <DependentUpon>20170502094558_updateCompOffices.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\CallWebRequest.cs" />
     <Compile Include="Helpers\FinanceData.cs" />
     <Compile Include="DbContext\YahooFinanceDbContext.cs" />

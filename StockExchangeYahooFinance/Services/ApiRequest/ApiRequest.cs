@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Data.Models;
@@ -29,7 +30,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         private static readonly YqlQuery YQ = new YqlQuery();
         //Initialize FinanceData
         private static readonly FinanceData FinanceData = new FinanceData();
-        private static readonly CallWebRequest CallWebRequest = new CallWebRequest();
+        private readonly CallWebRequest _callWebRequest = new CallWebRequest();
         private static readonly YahooCompProfile YahooCompProfile = new YahooCompProfile();
         public ApiRequest(StockExchangeRepository repository)
         {
@@ -56,7 +57,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 {
                     await task;
                     Console.Clear();
-                    var json = CallWebRequest.WebRequest(url);
+                    var json = _callWebRequest.WebRequest(url);
                     dynamic data = JObject.Parse(json.Result);
                     var quote = data.query.results.quote;
                     foreach (var i in quote)
@@ -144,38 +145,110 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             try
             {
                 Console.Clear();
-                var json = CallWebRequest.WebRequest(url);
-                dynamic data = JObject.Parse(json.Result);
-                var assetProfile = data.quoteSummary.result.assetProfile;
+                var json = _callWebRequest.WebRequest(url);
+                //dynamic data = JObject.Parse(json.Result);
+                //var profile = data.quoteSummary.result;
+                var d = JObject.Parse(json.Result);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
-                foreach (var i in assetProfile)
+                var assetProfile = d["quoteSummary"]["result"][0];
+                var companyOfficers = (JArray)d["quoteSummary"]["result"][0]["assetProfile"]["companyOfficers"];
+                //IList<string> categoriesText = companyOfficers.Select(c => (string)c).ToList();
+                string companyProfileId = null;
+                var companyExists = true;
+                while (companyExists)
                 {
-                    var h = new CompanyProfile();
-                    h.CompaniesId = symbolId.Id;
-                    var address1 = i.SelectToken(YahooCompProfile.Address1);
-                    h.Address1 = address1.ToString();
-                    var city = i.SelectToken(YahooCompProfile.City);
-                    h.City = city.ToString();
-                    var zip = i.SelectToken(YahooCompProfile.Zip);
-                    h.Zip = zip.ToString();
-                    var country = i.SelectToken(YahooCompProfile.Country);
-                    var phone = i.SelectToken(YahooCompProfile.Phone);
-                    var website = i.SelectToken(YahooCompProfile.Website);
-                    var fax = i.SelectToken(YahooCompProfile.Fax);
-                    var industry = i.SelectToken(YahooCompProfile.Industry);
-                    var industrySymbol = i.SelectToken(YahooCompProfile.IndustrySymbol);
-                    var sector = i.SelectToken(YahooCompProfile.Sector);
-                    var longBusinessSummary = i.SelectToken(YahooCompProfile.LongBusinessSummary);
-                    h.Phone = country.ToString();
-                    h.Fax = fax.ToString();
-                    h.Website = website.ToString();
-                    h.IndustryId = industry.ToString();
-                    h.IndustrySymbolId = industrySymbol.ToString();
-                    h.SectorId = sector.ToString();
-                    h.LongBusinessSummary = longBusinessSummary.ToString();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
-                    await _repository.AddCompanyProfile(h);
+                    if (symbolId != null)
+                    {
+                        foreach (var i in assetProfile.First)
+                        {
+                            var h = new CompanyProfile();
+                            var address1 = i.SelectToken(YahooCompProfile.Address1);
+                            var city = i.SelectToken(YahooCompProfile.City);
+                            var zip = i.SelectToken(YahooCompProfile.Zip);
+                            var country = i.SelectToken(YahooCompProfile.Country);
+                            var phone = i.SelectToken(YahooCompProfile.Phone);
+                            var website = i.SelectToken(YahooCompProfile.Website);
+                            var fax = i.SelectToken(YahooCompProfile.Fax);
+                            var industry = i.SelectToken(YahooCompProfile.Industry);
+                            var industrySymbol = i.SelectToken(YahooCompProfile.IndustrySymbol);
+                            var industryId = await _repository.GetIndustryByName(industry.ToString());
+                            var sector = i.SelectToken(YahooCompProfile.Sector);
+                            var sectorId = await _repository.GetSectorByNameAddNonExisting(sector.ToString());
+                            var longBusinessSummary = i.SelectToken(YahooCompProfile.LongBusinessSummary);
+                            var fullTimeEmployees = i.SelectToken(YahooCompProfile.FullTimeEmployees);
+                            var auditRisk = i.SelectToken(YahooCompProfile.AuditRisk);
+                            var boardRisk = i.SelectToken(YahooCompProfile.BoardRisk);
+                            var compensationRisk = i.SelectToken(YahooCompProfile.CompensationRisk);
+                            var shareHolderRightsRisk = i.SelectToken(YahooCompProfile.ShareHolderRightsRisk);
+                            var overallRisk = i.SelectToken(YahooCompProfile.OverallRisk);
+                            var governanceEpochDate = i.SelectToken(YahooCompProfile.GovernanceEpochDate);
+                            var compensationAsOfEpochDate = i.SelectToken(YahooCompProfile.CompensationAsOfEpochDate);
+                            if (symbolId != null) h.CompaniesId = symbolId.Id;
+                            if (address1 != null) h.Address1 = address1.ToString();
+                            if (city != null) h.City = city.ToString();
+                            if (zip != null) h.Zip = zip.ToString();
+                            if (phone != null) h.Phone = phone.ToString();
+                            if (fax != null) h.Fax = fax.ToString();
+                            if (website != null) h.Website = website.ToString();
+                            if (industryId != null) h.IndustryId = industryId.Id;
+                            h.IndustrySymbolId = null;
+                            if (sectorId != null) h.SectorId = sectorId.Id;
+                            if (longBusinessSummary != null) h.LongBusinessSummary = longBusinessSummary.ToString();
+                            if (fullTimeEmployees != null) h.FullTimeEmployees = (int)fullTimeEmployees;
+                            if (auditRisk != null) h.AuditRisk = (int)auditRisk;
+                            if (boardRisk != null) h.BoardRisk = (int)boardRisk;
+                            if (compensationRisk != null) h.CompensationRisk = (int)compensationRisk;
+                            if (shareHolderRightsRisk != null) h.ShareHolderRightsRisk = (int)shareHolderRightsRisk;
+                            if (overallRisk != null) h.OverallRisk = (int)overallRisk;
+                            if (governanceEpochDate != null) h.GovernanceEpochDate = Convert.ToInt32(governanceEpochDate);
+                            if (compensationAsOfEpochDate != null) h.CompensationAsOfEpochDate = Convert.ToInt32(compensationAsOfEpochDate);
+                            Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
+                            await _repository.AddCompanyProfile(h);
+                            companyProfileId = h.Id;
+                        }
+                        foreach (var s in companyOfficers)
+                        {
+                            var compOffices = new CompanyOfficers();
+                            var maxAge = s.SelectToken(YahooCompProfile.MaxAge);
+                            var name = s.SelectToken(YahooCompProfile.Name);
+                            var age = s.SelectToken(YahooCompProfile.Age);
+                            var title = s.SelectToken(YahooCompProfile.Title);
+                            var fiscalYear = s.SelectToken(YahooCompProfile.FiscalYear);
+                            var totalPay = s.SelectToken(YahooCompProfile.TotalPay);
+                            var exercisedValue = s.SelectToken(YahooCompProfile.ExercisedValue);
+                            var unExercisedValue = s.SelectToken(YahooCompProfile.UnexercisedValue);
+                            if (unExercisedValue != null)
+                            {
+                                var unexcValue = s["unexercisedValue"]["raw"];
+                                compOffices.UnexercisedValue = (int)(unexcValue);
+                            }
+                            if (totalPay != null)
+                            {
+                                var row = s["totalPay"]["raw"];
+                                compOffices.TotalPay = (int)(row);
+                            }
+                            if (exercisedValue != null)
+                            {
+                                var longExercisedValue = s["exercisedValue"]["raw"];
+                                compOffices.ExercisedValue = (int)(longExercisedValue);
+                            }
+                            if (companyProfileId != null) compOffices.CompanyProfileId = companyProfileId;
+                            if (symbolId != null) compOffices.CompaniesId = symbolId.Id;
+                            if (maxAge != null) compOffices.MaxAge = Convert.ToInt32(maxAge);
+                            if (name != null) compOffices.Name = name.ToString();
+                            if (age != null) compOffices.Age = Convert.ToInt32(age);
+                            if (title != null) compOffices.Title = title.ToString();
+                            if (fiscalYear != null) compOffices.FiscalYear = fiscalYear.ToString();
+                            await _repository.AddCompanyOfficers(compOffices);
+                            Console.WriteLine($"{name} : {age} : {title} : {fiscalYear}");
+                        }
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
                 }
             }
             catch (TaskCanceledException)
@@ -196,7 +269,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 if (symbolId == null)
                 {
-                    await YahooCompany(model.Ticker);
+                    await AddYahooCompanyByName(model);
                     symbolId = await _repository.GetCompanyByName(model.Ticker);
                 }
                 var historyCsv = new List<History>();
@@ -249,7 +322,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     Console.WriteLine(
                         $"Name {symbolId.Name}: Ticker {model.Ticker} : Date {hs.Date} : Open {hs.Open} : High {hs.High} : Low {hs.Low} : Close {hs.Close} : Volume {hs.Volume} : Adj Close{hs.AdjClose}");
                     await _repository.AddHistory(history);
-                }                
+                }
             }
             catch (TaskCanceledException e)
             {
@@ -414,7 +487,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             //return results;
         }
 
-        public async Task YahooCompany(string symbol)
+        public async Task AddYahooCompanyByName(RequestModel model)
         {
             //Search term
             const string s = "s=";
@@ -429,7 +502,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
 
             for (var i = 0; i <= 200; i += 20)
             {
-                var urlTosend = Cfg.YahooLookupAll + s + symbol + t + "s" + m + "ALL" + b + i + bypass;
+                var urlTosend = Cfg.YahooLookupAll + s + model.Ticker + t + "s" + m + "ALL" + b + i + bypass;
                 var data = WebRequest(urlTosend);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(data);
@@ -664,7 +737,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     try
                     {
                         web.Encoding = Encoding.UTF8;
-                        var urlEncoded = WebUtility.UrlEncode(url);                        
+                        var urlEncoded = WebUtility.UrlEncode(url);
                         web.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36";
                         var webResponseData = web.DownloadString(url);
                         return webResponseData;
@@ -674,7 +747,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         Console.WriteLine(e);
                         throw;
                     }
-                    
+
                 }
             }
             catch (WebException e)
@@ -683,7 +756,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 throw;
             }
             //Make web request
-            
+
         }
 
         private static IEnumerable<string> ParseCsv(string csvData)

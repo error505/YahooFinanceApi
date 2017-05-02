@@ -11,16 +11,18 @@ namespace StockExchangeYahooFinance.Data.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string CompaniesId { get; set; }        
+        public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
+        public string CompanyProfileId { get; set; }
+        public CompanyProfile CompanyProfile { get; set; }
         public int MaxAge { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
         public string Title { get; set; }
         public string FiscalYear { get; set; }
-        public long TotalPay { get; set; }
-        public long ExercisedValue { get; set; }
-        public long UnexercisedValue { get; set; }
+        public int TotalPay { get; set; }
+        public int ExercisedValue { get; set; }
+        public int UnexercisedValue { get; set; }
 
     }
 }
