@@ -9,6 +9,7 @@ namespace StockExchangeYahooFinance.Helpers
     public class YahooModules
     {
         //Separated with ,
+        //TODO: Create model for each modul and create apirequest services
         public string UpgradeDowngradeHistory = "upgradeDowngradeHistory";
         public string RecommendationTrend = "recommendationTrend";
         public string FinancialData = "financialData";

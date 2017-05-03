@@ -217,6 +217,10 @@
     <Compile Include="Migrations\20170502160033_AddUser.designer.cs">
       <DependentUpon>20170502160033_AddUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170503141703_NewYahooModelForModules.cs" />
+    <Compile Include="Migrations\20170503141703_NewYahooModelForModules.designer.cs">
+      <DependentUpon>20170503141703_NewYahooModelForModules.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\CallWebRequest.cs" />
     <Compile Include="Helpers\FinanceData.cs" />
     <Compile Include="DbContext\YahooFinanceDbContext.cs" />

@@ -38,6 +38,36 @@ namespace StockExchangeYahooFinance.DbContext
         public DbSet<History> History { get; set; }
         public DbSet<CompanyProfile> CompanyProfile { get; set; }
         public DbSet<CompanyOfficers> CompanyOfficers { get; set; }
-        //public DbSet<IndustrySimbol> IndustrySimbol { get; set; }
+        public DbSet<IndustrySimbol> IndustrySimbol { get; set; }
+        public DbSet<FinancialData> FinancialData { get; set; }
+        public DbSet<CalendarEvents> CalendarEvents { get; set; }
+        public DbSet<BalanceSheetStatements> BalanceSheetStatements { get; set; }
+        public DbSet<CalendarEarnings> CalendarEarnings { get; set; }
+        public DbSet<CashflowStatement> CashflowStatement { get; set; }
+        public DbSet<DefaultKeyStatistics> DefaultKeyStatistics { get; set; }
+        public DbSet<Earnings> Earnings { get; set; }
+        public DbSet<EarningsChartQuarterly> EarningsChartQuarterly { get; set; }
+        public DbSet<EarningsEstimate> EarningsEstimate { get; set; }
+        public DbSet<EarningsHistory> EarningsHistory { get; set; }
+        public DbSet<EarningsTrend> EarningsTrend { get; set; }
+        public DbSet<EpsRevisions> EpsRevisions { get; set; }
+        public DbSet<EpsTrend> EpsTrend { get; set; }
+        public DbSet<Estimates> Estimates { get; set; }
+        public DbSet<FinancialsChartQuarterly> FinancialsChartQuarterly { get; set; }
+        public DbSet<FinancialsChartYearly> FinancialsChartYearly { get; set; }
+        public DbSet<FundOwnership> FundOwnership { get; set; }
+        public DbSet<IncomeStatementHistory> IncomeStatementHistory { get; set; }
+        public DbSet<IndexTrend> IndexTrend { get; set; }
+        public DbSet<IndustryTrend> IndustryTrend { get; set; }
+        public DbSet<InsiderHolders> InsiderHolders { get; set; }
+        public DbSet<InsiderTransactions> InsiderTransactions { get; set; }
+        public DbSet<InstitutionOwnership> InstitutionOwnership { get; set; }
+        public DbSet<MajorDirectHolders> MajorDirectHolders { get; set; }
+        public DbSet<MajorHoldersBreakdown> MajorHoldersBreakdown { get; set; }
+        public DbSet<NetSharePurchaseActivity> NetSharePurchaseActivity { get; set; }
+        public DbSet<RecommendationTrend> RecommendationTrend { get; set; }
+        public DbSet<RevenueEstimate> RevenueEstimate { get; set; }
+        public DbSet<SectorTrend> SectorTrend { get; set; }
+        public DbSet<UpgradeDowngradeHistory> UpgradeDowngradeHistory { get; set; }
     }
 }
