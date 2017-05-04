@@ -54,35 +54,6 @@ namespace StockExchangeYahooFinance
                     selected = Console.ReadLine();
                 }
                 while (!int.TryParse(selected, out commandIndex) || commandIndex > menu.Length);
-                //Use request model in services
-                if (commandIndex == 8)
-                {
-                    Console.WriteLine("Please enter the symbol!");
-                    var symbol = Console.ReadLine();
-                    model.Ticker = symbol;
-                    menu[commandIndex - 1].Execute(request, model);
-                }
-                if (commandIndex == 10)
-                {
-                    Console.WriteLine("Please enter the symbol!");
-                    var symbol = Console.ReadLine();
-                    model.Ticker = symbol;
-                    menu[commandIndex - 1].Execute(request, model);
-                }
-                if (commandIndex == 11)
-                {
-                    Console.WriteLine("Please enter the symbol!");
-                    var symbol = Console.ReadLine();
-                    model.Ticker = symbol;
-                    menu[commandIndex - 1].Execute(request, model);
-                }
-                if (commandIndex == 12)
-                {
-                    Console.WriteLine("Please enter the symbol!");
-                    var symbol = Console.ReadLine();
-                    model.Ticker = symbol;
-                    menu[commandIndex - 1].Execute(request, model);
-                }
                 // Execute the command.
                 menu[commandIndex - 1].Execute(request, model);
             }

@@ -84,6 +84,9 @@ namespace StockExchangeYahooFinance.Services.Menu
         public string Description => "Check for yahoo historical data for selected company! (Data will be returned in Json format)!";
         public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
         {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
             await execTask.YahooHistoricalDataQuery(model);
         }
     }
@@ -93,6 +96,9 @@ namespace StockExchangeYahooFinance.Services.Menu
         public string Description => "Get Yahoo Company Profile for selected company! (Data will be returned in Json format)!";
         public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
         {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
             await execTask.YahooCompanyProfile(model);
         }
     }
@@ -102,6 +108,9 @@ namespace StockExchangeYahooFinance.Services.Menu
         public string Description => "Get Yahoo Company Profile for selected company! (Data will be returned in Json format)!";
         public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
         {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
             await execTask.AddYahooCompanyByName(model);
         }
     }
@@ -111,6 +120,9 @@ namespace StockExchangeYahooFinance.Services.Menu
         public string Description => "Get Yahoo Company RSS Feed! (Data will be returned in Json format)!";
         public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
         {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
             await execTask.YahooRssFeed(model);
         }
     }

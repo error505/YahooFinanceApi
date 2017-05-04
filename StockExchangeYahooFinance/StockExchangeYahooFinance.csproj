@@ -209,6 +209,7 @@
   <ItemGroup>
     <Compile Include="ConfigData\ConfigManager.cs" />
     <Compile Include="Helpers\YahooRssFeed.cs" />
+    <Compile Include="Helpers\YahooValidRanges.cs" />
     <Compile Include="Migrations\20170502094558_updateCompOffices.cs" />
     <Compile Include="Migrations\20170502094558_updateCompOffices.designer.cs">
       <DependentUpon>20170502094558_updateCompOffices.cs</DependentUpon>

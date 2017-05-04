@@ -69,5 +69,9 @@ namespace StockExchangeYahooFinance.DbContext
         public DbSet<RevenueEstimate> RevenueEstimate { get; set; }
         public DbSet<SectorTrend> SectorTrend { get; set; }
         public DbSet<UpgradeDowngradeHistory> UpgradeDowngradeHistory { get; set; }
+        public DbSet<OptionsStrikes> OptionsStrikes { get; set; }
+        public DbSet<OptionsExpirationDates> OptionsExpirationDates { get; set; }
+        public DbSet<OptionsCalls> OptionsCalls { get; set; }
+        public DbSet<OptionsQuote> OptionsQuote { get; set; }
     }
 }

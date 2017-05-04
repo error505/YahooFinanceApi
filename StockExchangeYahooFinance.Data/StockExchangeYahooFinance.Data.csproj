@@ -77,6 +77,10 @@
     <Compile Include="Models\MajorDirectHolders.cs" />
     <Compile Include="Models\MajorHoldersBreakdown.cs" />
     <Compile Include="Models\NetSharePurchaseActivity.cs" />
+    <Compile Include="Models\OptionsCalls.cs" />
+    <Compile Include="Models\OptionsExpirationDates.cs" />
+    <Compile Include="Models\OptionsQuote.cs" />
+    <Compile Include="Models\OptionsStrikes.cs" />
     <Compile Include="Models\RecommendationTrend.cs" />
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\RevenueEstimate.cs" />
