@@ -28,6 +28,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         private static readonly ConfigManager Cfg = new ConfigManager();
         //Initialize YqlQuery
         private static readonly YqlQuery YQ = new YqlQuery();
+        private static readonly YModulesFields YMF = new YModulesFields();
+        private static readonly YahooModules YM = new YahooModules();
         //Initialize FinanceData
         private static readonly FinanceData FinanceData = new FinanceData();
         private readonly CallWebRequest _callWebRequest = new CallWebRequest();
@@ -311,11 +313,9 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             {
                 Console.Clear();
                 var json = await _callWebRequest.WebRequest(url);
-                //dynamic data = JObject.Parse(json.Result);
-                //var profile = data.quoteSummary.result;
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
-                var assetProfile = d["quoteSummary"]["result"][0]["incomeStatementHistory"]["incomeStatementHistory"];
+                var assetProfile = d["quoteSummary"]["result"][0][YM.IncomeStatementHistory][YM.IncomeStatementHistory];
                 string companyProfileId = null;
                 var companyExists = true;
                 while (companyExists)
@@ -324,14 +324,27 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     {
                         foreach (var i in assetProfile)
                         {
-                            var h = new CompanyProfile();
-                            var endDate = i.SelectToken("endDate");
+                            var h = new IncomeStatementHistory();
+                            var endDate = i.SelectToken(YMF.EndDate);
                             if (endDate != null)
                             {
                                 var formatedEndDate = i["endDate"]["fmt"];
                             }
-                            var city = i.SelectToken(YahooCompProfile.City);
-
+                            var totalRevenue = i.SelectToken(YMF.TotalRevenue);
+                            if (totalRevenue != null)
+                            {
+                                var totalRevenueRaw = i["totalRevenue"]["raw"];
+                            }
+                            var costOfRevenue = i.SelectToken(YMF.CostOfRevenue);
+                            if (costOfRevenue != null)
+                            {
+                                var costOfRevenueRaw = i["costOfRevenue"]["raw"];
+                            }
+                            var grossProfit = i.SelectToken(YMF.GrossProfit);
+                            if (grossProfit != null)
+                            {
+                                var grossProfitRaw = i["grossProfit"]["raw"];
+                            }
                             //Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
                             //companyProfileId = h.Id;
                         }
