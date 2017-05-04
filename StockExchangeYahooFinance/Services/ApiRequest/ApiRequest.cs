@@ -297,6 +297,58 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 return;
             }
         }
+        //TODO: Finish this call and create others for all other modules and create repository functions for each module
+        /// <summary>
+        /// Get Company Profile from Yahoo finance
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task YahooIncomeStatementHistory(RequestModel model)
+        {
+            var modules = new YahooModules();
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.IncomeStatementHistory + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                //dynamic data = JObject.Parse(json.Result);
+                //var profile = data.quoteSummary.result;
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var assetProfile = d["quoteSummary"]["result"][0]["incomeStatementHistory"]["incomeStatementHistory"];
+                string companyProfileId = null;
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in assetProfile)
+                        {
+                            var h = new CompanyProfile();
+                            var endDate = i.SelectToken("endDate");
+                            if (endDate != null)
+                            {
+                                var formatedEndDate = i["endDate"]["fmt"];
+                            }
+                            var city = i.SelectToken(YahooCompProfile.City);
+
+                            //Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
+                            //companyProfileId = h.Id;
+                        }
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
 
         public async Task YahooHistoricalDataCsv(RequestModel model)
         {

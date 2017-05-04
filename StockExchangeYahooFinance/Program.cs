@@ -33,6 +33,7 @@ namespace StockExchangeYahooFinance
                 new YahooCompanyProfile(),
                 new YahooCompanyByName(),
                 new YahooRssByCompanyName(),
+                new YahooCompanyIncomeStatementHistory(),
             };
 
             while (true)
