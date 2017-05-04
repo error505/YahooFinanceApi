@@ -222,6 +222,10 @@
     <Compile Include="Migrations\20170503141703_NewYahooModelForModules.designer.cs">
       <DependentUpon>20170503141703_NewYahooModelForModules.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170504165357_newModules.cs" />
+    <Compile Include="Migrations\20170504165357_newModules.designer.cs">
+      <DependentUpon>20170504165357_newModules.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\IYahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\YahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\CallWebRequest.cs" />
