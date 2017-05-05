@@ -48,6 +48,26 @@ namespace StockExchangeYahooFinance.Repository
         {
             return _context.History.ToList();
         }
+
+        public IEnumerable<IncomeStatementHistory> GetIncomeStatementHistoryByCompanyId(string companiesId)
+        {
+            return _context.IncomeStatementHistory.Where(c => c.CompaniesId == companiesId).ToList();
+        }
+        public async Task<IncomeStatementHistory> GetIncomeStatementHistoryByDate(string endDate)
+        {
+            try
+            {
+                var incomeStatementHistory =
+                await _context.IncomeStatementHistory
+                    .SingleOrDefaultAsync(m => m.EndDate == endDate);
+                return incomeStatementHistory;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
         /// <summary>
         /// Check for Industry in DB by its name
         /// </summary> HisotryIdExists
@@ -404,6 +424,38 @@ namespace StockExchangeYahooFinance.Repository
             return industry.Id;
         }
 
+        public async Task<string> AddIncomeStatementHistory(IncomeStatementHistory incomeStatementHistory)
+        {
+            if (incomeStatementHistory == null)
+            {
+                return null;
+            }
+            if (IndustryIdExists(incomeStatementHistory.EndDate))
+            {
+                var ind = await GetIncomeStatementHistoryByDate(incomeStatementHistory.EndDate);
+                return ind.Id;
+            }
+            _context.IncomeStatementHistory.Add(incomeStatementHistory);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                if (IncomeStatementHistoryIdExists(incomeStatementHistory.EndDate))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return incomeStatementHistory.Id;
+        }
+
         public async Task<string> AddCompanyProfile(CompanyProfile companyProfile)
         {
             if (companyProfile == null)
@@ -752,6 +804,11 @@ namespace StockExchangeYahooFinance.Repository
         public bool IndustryIdExists(string name)
         {
             return _context.Industrie.Count(e => e.Name == name) > 0;
+        }
+
+        public bool IncomeStatementHistoryIdExists(string endDate)
+        {
+            return _context.IncomeStatementHistory.Count(e => e.EndDate == endDate) > 0;
         }
 
         public bool HistoryIdExists(string compId, string date)

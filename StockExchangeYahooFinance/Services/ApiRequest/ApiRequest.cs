@@ -324,29 +324,125 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     {
                         foreach (var i in assetProfile)
                         {
-                            var h = new IncomeStatementHistory();
+                            var iSH = new IncomeStatementHistory();
                             var endDate = i.SelectToken(YMF.EndDate);
+                            string formatedEndDate = null;
                             if (endDate != null)
                             {
-                                var formatedEndDate = i["endDate"]["fmt"];
+                                formatedEndDate = endDate["fmt"].ToString();
+                                iSH.EndDate = formatedEndDate;
                             }
                             var totalRevenue = i.SelectToken(YMF.TotalRevenue);
+                            string totalRevenueRaw = null;
                             if (totalRevenue != null)
                             {
-                                var totalRevenueRaw = i["totalRevenue"]["raw"];
+                                totalRevenueRaw = totalRevenue["raw"].ToString();
+                                iSH.TotalRevenue = totalRevenueRaw;
                             }
                             var costOfRevenue = i.SelectToken(YMF.CostOfRevenue);
                             if (costOfRevenue != null)
                             {
-                                var costOfRevenueRaw = i["costOfRevenue"]["raw"];
+                                var costOfRevenueRaw = costOfRevenue["raw"];
                             }
                             var grossProfit = i.SelectToken(YMF.GrossProfit);
+                            string grossProfitRaw = null;
                             if (grossProfit != null)
                             {
-                                var grossProfitRaw = i["grossProfit"]["raw"];
+                                grossProfitRaw = grossProfit["raw"].ToString();
                             }
-                            //Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
-                            //companyProfileId = h.Id;
+                            var researchDevelopment = i.SelectToken(YMF.ResearchDevelopment);
+                            if (researchDevelopment != null)
+                            {
+                                var researchDevelopmentRaw = researchDevelopment["raw"];
+                            }
+                            var sellingGeneralAdministrative = i.SelectToken(YMF.SellingGeneralAdministrative);
+                            if (sellingGeneralAdministrative != null)
+                            {
+                                var sellingGeneralAdministrativeRaw = sellingGeneralAdministrative["raw"];
+                            }
+                            var nonRecurring = i.SelectToken(YMF.NonRecurring);
+                            if (nonRecurring != null)
+                            {
+                                var nonRecurringRaw = nonRecurring["raw"];
+                            }
+                            var otherOperatingExpenses = i.SelectToken(YMF.OtherOperatingExpenses);
+                            if (otherOperatingExpenses != null)
+                            {
+                                var otherOperatingExpensesRaw = otherOperatingExpenses["raw"];
+                            }
+                            var totalOperatingExpenses = i.SelectToken(YMF.TotalOperatingExpenses);
+                            if (totalOperatingExpenses != null)
+                            {
+                                var totalOperatingExpensesRaw = totalOperatingExpenses["raw"];
+                            }
+                            var operatingIncome = i.SelectToken(YMF.OperatingIncome);
+                            if (operatingIncome != null)
+                            {
+                                var operatingIncomeRaw = operatingIncome["raw"];
+                            }
+                            var totalOtherIncomeExpenseNet = i.SelectToken(YMF.TotalOtherIncomeExpenseNet);
+                            if (totalOtherIncomeExpenseNet != null)
+                            {
+                                var totalOtherIncomeExpenseNetRaw = totalOtherIncomeExpenseNet["raw"];
+                            }
+                            var ebit = i.SelectToken(YMF.Ebit);
+                            if (ebit != null)
+                            {
+                                var ebitRaw = ebit["raw"];
+                            }
+                            var interestExpense = i.SelectToken(YMF.InterestExpense);
+                            if (interestExpense != null)
+                            {
+                                var interestExpenseRaw = interestExpense["raw"];
+                            }
+                            var incomeBeforeTax = i.SelectToken(YMF.IncomeBeforeTax);
+                            if (incomeBeforeTax != null)
+                            {
+                                var incomeBeforeTaxRaw = incomeBeforeTax["raw"];
+                            }
+                            var incomeTaxExpense = i.SelectToken(YMF.IncomeTaxExpense);
+                            if (incomeTaxExpense != null)
+                            {
+                                var incomeTaxExpenseRaw = incomeTaxExpense["raw"];
+                            }
+                            var minorityInterest = i.SelectToken(YMF.MinorityInterest);
+                            if (minorityInterest != null)
+                            {
+                                var minorityInterestRaw = minorityInterest["raw"];
+                            }
+                            var discontinuedOperations = i.SelectToken(YMF.DiscontinuedOperations);
+                            if (discontinuedOperations != null)
+                            {
+                                var discontinuedOperationsRaw = discontinuedOperations["raw"];
+                            }
+                            var extraordinaryItems = i.SelectToken(YMF.ExtraordinaryItems);
+                            if (extraordinaryItems != null)
+                            {
+                                var extraordinaryItemsRaw = extraordinaryItems["raw"];
+                            }
+                            var effectOfAccountingCharges = i.SelectToken(YMF.EffectOfAccountingCharges);
+                            if (effectOfAccountingCharges != null)
+                            {
+                                var effectOfAccountingChargesRaw = effectOfAccountingCharges["raw"];
+                            }
+                            var otherItems = i.SelectToken(YMF.OtherItems);
+                            if (otherItems != null)
+                            {
+                                var otherItemsRaw = otherItems["raw"];
+                            }
+                            var netIncome = i.SelectToken(YMF.NetIncome);
+                            if (netIncome != null)
+                            {
+                                var netIncomeRaw = netIncome["raw"];
+                            }
+                            var netIncomeApplicableToCommonShares = i.SelectToken(YMF.NetIncomeApplicableToCommonShares);
+                            if (netIncomeApplicableToCommonShares != null)
+                            {
+                                var netIncomeApplicableToCommonSharesRaw = netIncomeApplicableToCommonShares["raw"];
+                            }
+                            Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {totalRevenueRaw}");
+                            companyProfileId = iSH.Id;
+                            await _repository.AddIncomeStatementHistory(iSH);
                         }
                         companyExists = false;
                     }
