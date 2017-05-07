@@ -316,7 +316,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var assetProfile = d["quoteSummary"]["result"][0][YM.IncomeStatementHistory][YM.IncomeStatementHistory];
-                string companyProfileId = null;
+                string incomeStatementHistoryId = null;
                 var companyExists = true;
                 while (companyExists)
                 {
@@ -324,20 +324,20 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     {
                         foreach (var i in assetProfile)
                         {
-                            var iSH = new IncomeStatementHistory();
+                            var iSh = new IncomeStatementHistory();
                             var endDate = i.SelectToken(YMF.EndDate);
                             string formatedEndDate = null;
                             if (endDate != null)
                             {
                                 formatedEndDate = endDate["fmt"].ToString();
-                                iSH.EndDate = formatedEndDate;
+                                iSh.EndDate = formatedEndDate;
                             }
                             var totalRevenue = i.SelectToken(YMF.TotalRevenue);
                             string totalRevenueRaw = null;
                             if (totalRevenue != null)
                             {
                                 totalRevenueRaw = totalRevenue["raw"].ToString();
-                                iSH.TotalRevenue = totalRevenueRaw;
+                                iSh.TotalRevenue = totalRevenueRaw;
                             }
                             var costOfRevenue = i.SelectToken(YMF.CostOfRevenue);
                             if (costOfRevenue != null)
@@ -441,8 +441,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                                 var netIncomeApplicableToCommonSharesRaw = netIncomeApplicableToCommonShares["raw"];
                             }
                             Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {totalRevenueRaw}");
-                            companyProfileId = iSH.Id;
-                            await _repository.AddIncomeStatementHistory(iSH);
+                            incomeStatementHistoryId = iSh.Id;
+                            await _repository.AddIncomeStatementHistory(iSh);
                         }
                         companyExists = false;
                     }
