@@ -31,5 +31,6 @@ namespace StockExchangeYahooFinance.Helpers
         public string OtherItems = "otherItems ";
         public string NetIncome = "netIncome ";
         public string NetIncomeApplicableToCommonShares = "netIncomeApplicableToCommonShares ";
+        public string NetIncomeFromContinuingOps = "netIncomeFromContinuingOps ";
     }
 }

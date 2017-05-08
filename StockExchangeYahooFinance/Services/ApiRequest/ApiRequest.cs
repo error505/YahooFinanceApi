@@ -260,17 +260,17 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             var totalPay = s.SelectToken(YahooCompProfile.TotalPay);
                             var exercisedValue = s.SelectToken(YahooCompProfile.ExercisedValue);
                             var unExercisedValue = s.SelectToken(YahooCompProfile.UnexercisedValue);
-                            if (unExercisedValue != null)
+                            if (unExercisedValue.Count() != 0)
                             {
                                 var unexcValue = s["unexercisedValue"]["raw"];
                                 compOffices.UnexercisedValue = (int)(unexcValue);
                             }
-                            if (totalPay != null)
+                            if (totalPay.Count() != 0)
                             {
                                 var row = s["totalPay"]["raw"];
                                 compOffices.TotalPay = (int)(row);
                             }
-                            if (exercisedValue != null)
+                            if (exercisedValue.Count() != 0)
                             {
                                 var longExercisedValue = s["exercisedValue"]["raw"];
                                 compOffices.ExercisedValue = (int)(longExercisedValue);
@@ -327,120 +327,147 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             var iSh = new IncomeStatementHistory();
                             var endDate = i.SelectToken(YMF.EndDate);
                             string formatedEndDate = null;
-                            if (endDate != null)
+                            if (endDate.Count() != 0)
                             {
                                 formatedEndDate = endDate["fmt"].ToString();
                                 iSh.EndDate = formatedEndDate;
                             }
                             var totalRevenue = i.SelectToken(YMF.TotalRevenue);
                             string totalRevenueRaw = null;
-                            if (totalRevenue != null)
+                            if (totalRevenue.Count() != 0)
                             {
                                 totalRevenueRaw = totalRevenue["raw"].ToString();
                                 iSh.TotalRevenue = totalRevenueRaw;
                             }
                             var costOfRevenue = i.SelectToken(YMF.CostOfRevenue);
-                            if (costOfRevenue != null)
+                            if (costOfRevenue.Count() != 0)
                             {
-                                var costOfRevenueRaw = costOfRevenue["raw"];
+                                var costOfRevenueRaw = costOfRevenue["raw"].ToString();
+                                iSh.CostOfRevenue = costOfRevenueRaw;
                             }
                             var grossProfit = i.SelectToken(YMF.GrossProfit);
-                            string grossProfitRaw = null;
-                            if (grossProfit != null)
+                            if (grossProfit.Count() != 0)
                             {
-                                grossProfitRaw = grossProfit["raw"].ToString();
+                                var grossProfitRaw = grossProfit["raw"].ToString();
+                                iSh.GrossProfit = grossProfitRaw;
                             }
                             var researchDevelopment = i.SelectToken(YMF.ResearchDevelopment);
-                            if (researchDevelopment != null)
+                            if (researchDevelopment.Count() != 0)
                             {
-                                var researchDevelopmentRaw = researchDevelopment["raw"];
+                                var researchDevelopmentRaw = researchDevelopment["raw"].ToString();
+                                iSh.ResearchDevelopment = researchDevelopmentRaw;
                             }
                             var sellingGeneralAdministrative = i.SelectToken(YMF.SellingGeneralAdministrative);
-                            if (sellingGeneralAdministrative != null)
+                            if (sellingGeneralAdministrative.Count() != 0)
                             {
-                                var sellingGeneralAdministrativeRaw = sellingGeneralAdministrative["raw"];
+                                var sellingGeneralAdministrativeRaw = sellingGeneralAdministrative["raw"].ToString();
+                                iSh.SellingGeneralAdministrative = sellingGeneralAdministrativeRaw;
                             }
                             var nonRecurring = i.SelectToken(YMF.NonRecurring);
-                            if (nonRecurring != null)
+                            if (nonRecurring.Count() != 0)
                             {
-                                var nonRecurringRaw = nonRecurring["raw"];
+                                var nonRecurringRaw = nonRecurring["raw"].ToString();
+                                iSh.NonRecurring = nonRecurringRaw;
                             }
                             var otherOperatingExpenses = i.SelectToken(YMF.OtherOperatingExpenses);
-                            if (otherOperatingExpenses != null)
+                            if (otherOperatingExpenses.Count() != 0)
                             {
-                                var otherOperatingExpensesRaw = otherOperatingExpenses["raw"];
+                                var otherOperatingExpensesRaw = otherOperatingExpenses["raw"].ToString();
+                                iSh.OtherOperatingExpenses = otherOperatingExpensesRaw;
                             }
                             var totalOperatingExpenses = i.SelectToken(YMF.TotalOperatingExpenses);
-                            if (totalOperatingExpenses != null)
+                            if (totalOperatingExpenses.Count() != 0)
                             {
-                                var totalOperatingExpensesRaw = totalOperatingExpenses["raw"];
+                                var totalOperatingExpensesRaw = totalOperatingExpenses["raw"].ToString();
+                                iSh.TotalOperatingExpenses = totalOperatingExpensesRaw;
                             }
                             var operatingIncome = i.SelectToken(YMF.OperatingIncome);
-                            if (operatingIncome != null)
+                            if (operatingIncome.Count() != 0)
                             {
-                                var operatingIncomeRaw = operatingIncome["raw"];
+                                var operatingIncomeRaw = operatingIncome["raw"].ToString();
+                                iSh.OperatingIncome = operatingIncomeRaw;
                             }
                             var totalOtherIncomeExpenseNet = i.SelectToken(YMF.TotalOtherIncomeExpenseNet);
-                            if (totalOtherIncomeExpenseNet != null)
+                            if (totalOtherIncomeExpenseNet.Count() != 0)
                             {
-                                var totalOtherIncomeExpenseNetRaw = totalOtherIncomeExpenseNet["raw"];
+                                var totalOtherIncomeExpenseNetRaw = totalOtherIncomeExpenseNet["raw"].ToString();
+                                iSh.TotalOtherIncomeExpenseNet = totalOtherIncomeExpenseNetRaw;
                             }
                             var ebit = i.SelectToken(YMF.Ebit);
-                            if (ebit != null)
+                            if (ebit.Count() != 0)
                             {
-                                var ebitRaw = ebit["raw"];
+                                var ebitRaw = ebit["raw"].ToString();
+                                iSh.Ebit = ebitRaw;
                             }
                             var interestExpense = i.SelectToken(YMF.InterestExpense);
-                            if (interestExpense != null)
+                            if (interestExpense.Count() != 0)
                             {
-                                var interestExpenseRaw = interestExpense["raw"];
+                                var interestExpenseRaw = interestExpense["raw"].ToString();
+                                iSh.InterestExpense = interestExpenseRaw;
                             }
                             var incomeBeforeTax = i.SelectToken(YMF.IncomeBeforeTax);
-                            if (incomeBeforeTax != null)
+                            if (incomeBeforeTax.Count() != 0)
                             {
-                                var incomeBeforeTaxRaw = incomeBeforeTax["raw"];
+                                var incomeBeforeTaxRaw = incomeBeforeTax["raw"].ToString();
+                                iSh.IncomeBeforeTax = incomeBeforeTaxRaw;
                             }
                             var incomeTaxExpense = i.SelectToken(YMF.IncomeTaxExpense);
-                            if (incomeTaxExpense != null)
+                            if (incomeTaxExpense.Count() != 0)
                             {
-                                var incomeTaxExpenseRaw = incomeTaxExpense["raw"];
+                                var incomeTaxExpenseRaw = incomeTaxExpense["raw"].ToString();
+                                iSh.IncomeTaxExpense = incomeTaxExpenseRaw;
                             }
                             var minorityInterest = i.SelectToken(YMF.MinorityInterest);
-                            if (minorityInterest != null)
+                            if (minorityInterest.Count() != 0)
                             {
-                                var minorityInterestRaw = minorityInterest["raw"];
+                                var minorityInterestRaw = minorityInterest["raw"].ToString();
+                                iSh.MinorityInterest = minorityInterestRaw;
                             }
                             var discontinuedOperations = i.SelectToken(YMF.DiscontinuedOperations);
-                            if (discontinuedOperations != null)
+                            if (discontinuedOperations.Count() != 0)
                             {
-                                var discontinuedOperationsRaw = discontinuedOperations["raw"];
+                                var discontinuedOperationsRaw = discontinuedOperations["raw"].ToString();
+                                iSh.DiscontinuedOperations = discontinuedOperationsRaw;
                             }
                             var extraordinaryItems = i.SelectToken(YMF.ExtraordinaryItems);
-                            if (extraordinaryItems != null)
+                            if (extraordinaryItems.Count() != 0)
                             {
-                                var extraordinaryItemsRaw = extraordinaryItems["raw"];
+                                var extraordinaryItemsRaw = extraordinaryItems["raw"].ToString();
+                                iSh.ExtraordinaryItems = extraordinaryItemsRaw;
                             }
                             var effectOfAccountingCharges = i.SelectToken(YMF.EffectOfAccountingCharges);
-                            if (effectOfAccountingCharges != null)
+                            if (effectOfAccountingCharges.Count() != 0)
                             {
-                                var effectOfAccountingChargesRaw = effectOfAccountingCharges["raw"];
+                                var effectOfAccountingChargesRaw = effectOfAccountingCharges["raw"].ToString();
+                                iSh.EffectOfAccountingCharges = effectOfAccountingChargesRaw;
                             }
                             var otherItems = i.SelectToken(YMF.OtherItems);
-                            if (otherItems != null)
+                            if (otherItems.Count() != 0)
                             {
-                                var otherItemsRaw = otherItems["raw"];
+                                var otherItemsRaw = otherItems["raw"].ToString();
+                                iSh.OtherItems = otherItemsRaw;
                             }
                             var netIncome = i.SelectToken(YMF.NetIncome);
-                            if (netIncome != null)
+                            if (netIncome.Count() != 0)
                             {
-                                var netIncomeRaw = netIncome["raw"];
+                                var netIncomeRaw = netIncome["raw"].ToString();
+                                iSh.NetIncome = netIncomeRaw;
                             }
                             var netIncomeApplicableToCommonShares = i.SelectToken(YMF.NetIncomeApplicableToCommonShares);
-                            if (netIncomeApplicableToCommonShares != null)
+                            if (netIncomeApplicableToCommonShares.Count() != 0)
                             {
-                                var netIncomeApplicableToCommonSharesRaw = netIncomeApplicableToCommonShares["raw"];
+                                var netIncomeApplicableToCommonSharesRaw = netIncomeApplicableToCommonShares["raw"].ToString();
+                                iSh.NetIncomeApplicableToCommonShares = netIncomeApplicableToCommonSharesRaw;
+                            }
+                            var netIncomeFromContinuingOps = i.SelectToken(YMF.NetIncomeFromContinuingOps);
+                            if (netIncomeFromContinuingOps.Count() != 0)
+                            {
+                                var netIncomeFromContinuingOpsRaw = netIncomeApplicableToCommonShares["raw"].ToString();
+                                iSh.NetIncomeFromContinuingOps = netIncomeFromContinuingOpsRaw;
                             }
                             Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {totalRevenueRaw}");
+                            iSh.CompaniesId = symbolId.Id;
+                            iSh.CreatedByUser = Cfg.UserName;
                             incomeStatementHistoryId = iSh.Id;
                             await _repository.AddIncomeStatementHistory(iSh);
                         }
