@@ -68,6 +68,38 @@ namespace StockExchangeYahooFinance.Repository
                 throw;
             }
         }
+
+        public async Task<CashflowStatement> GetCashflowStatementHistoryByDate(string endDate)
+        {
+            try
+            {
+                var cashflowStatementHistory =
+                await _context.CashflowStatement
+                    .SingleOrDefaultAsync(m => m.EndDate == endDate);
+                return cashflowStatementHistory;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<MajorHoldersBreakdown> GetMajorHoldersBreakdownByInsidersPercentHeld(double insidersPercentHeld)
+        {
+            try
+            {
+                var majorHoldersBreakdown =
+                await _context.MajorHoldersBreakdown
+                    .SingleOrDefaultAsync(m => m.InsidersPercentHeld == insidersPercentHeld);
+                return majorHoldersBreakdown;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
         /// <summary>
         /// Check for Industry in DB by its name
         /// </summary> HisotryIdExists
@@ -430,7 +462,7 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
-            if (IndustryIdExists(incomeStatementHistory.EndDate))
+            if (IncomeStatementHistoryIdExists(incomeStatementHistory.EndDate))
             {
                 var ind = await GetIncomeStatementHistoryByDate(incomeStatementHistory.EndDate);
                 return ind.Id;
@@ -454,6 +486,70 @@ namespace StockExchangeYahooFinance.Repository
 
             }
             return incomeStatementHistory.Id;
+        }
+
+        public async Task<string> AddCashflowStatementHistory(CashflowStatement cashflowStatement)
+        {
+            if (cashflowStatement == null)
+            {
+                return null;
+            }
+            if (CashflowStatementHistoryIdExists(cashflowStatement.EndDate))
+            {
+                var ind = await GetCashflowStatementHistoryByDate(cashflowStatement.EndDate);
+                return ind.Id;
+            }
+            _context.CashflowStatement.Add(cashflowStatement);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                if (CashflowStatementHistoryIdExists(cashflowStatement.EndDate))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return cashflowStatement.Id;
+        }
+
+        public async Task<string> AddMajorHoldersBreakdown(MajorHoldersBreakdown majorHoldersBreakdown)
+        {
+            if (majorHoldersBreakdown == null)
+            {
+                return null;
+            }
+            if (MajorHoldersBreakdownIdExists(majorHoldersBreakdown.InsidersPercentHeld))
+            {
+                var ind = await GetMajorHoldersBreakdownByInsidersPercentHeld(majorHoldersBreakdown.InsidersPercentHeld);
+                return ind.Id;
+            }
+            _context.MajorHoldersBreakdown.Add(majorHoldersBreakdown);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                if (MajorHoldersBreakdownIdExists(majorHoldersBreakdown.InsidersPercentHeld))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return majorHoldersBreakdown.Id;
         }
 
         public async Task<string> AddCompanyProfile(CompanyProfile companyProfile)
@@ -809,6 +905,16 @@ namespace StockExchangeYahooFinance.Repository
         public bool IncomeStatementHistoryIdExists(string endDate)
         {
             return _context.IncomeStatementHistory.Count(e => e.EndDate == endDate) > 0;
+        }
+
+        public bool CashflowStatementHistoryIdExists(string endDate)
+        {
+            return _context.CashflowStatement.Count(e => e.EndDate == endDate) > 0;
+        }
+
+        public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld)
+        {
+            return _context.MajorHoldersBreakdown.Count(e => e.InsidersPercentHeld == insidersPercentHeld) > 0;
         }
 
         public bool HistoryIdExists(string compId, string date)

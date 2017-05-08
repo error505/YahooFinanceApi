@@ -13,10 +13,10 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
-        public string InsidersPercentHeld { get; set; }
-        public string InstitutionsPercentHeld { get; set; }
-        public string InstitutionsFloatPercentHeld { get; set; }
-        public string InstitutionsCount { get; set; }
+        public double InsidersPercentHeld { get; set; }
+        public double InstitutionsPercentHeld { get; set; }
+        public double InstitutionsFloatPercentHeld { get; set; }
+        public int InstitutionsCount { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
         public string CreatedByUser { get; set; }
     }

@@ -137,4 +137,29 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.YahooIncomeStatementHistory(model);
         }
     }
+
+    internal class YahooCompanyCashflowStatementHistory : IMenu
+    {
+        public string Description => "Get Yahoo Company Cash Flow Statement History! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooCashFlowStatementHistory(model);
+        }
+    }
+
+
+    internal class YahooMajorHoldersBreakdownRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Major Holders Breakdown! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooMajorHoldersBreakdown(model);
+        }
+    }
 }
