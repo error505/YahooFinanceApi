@@ -80,12 +80,12 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         f.Name = name.ToString();
                         financeModel.Add(f);
                         var value = ((JValue)change).Value;
-                        if (value != null && (float)change < 0)
+                        if (value != null && Convert.ToDouble(change) < 0)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"{name}:{symbol} : {price} : {lastTime} : {change}");
                         }
-                        if (value == null || (float)change <= 0) continue;
+                        if (value == null || Convert.ToDouble(change <= 0)) continue;
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"{name} : {symbol} : {price} : {lastTime} : {change}");
                         await _repository.AddFinanceModel(f);
@@ -1309,56 +1309,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 throw;
             }
         }
-
-        /// <summary>
-        /// Call web API
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        //private static string WebRequest(string url)
-        //{
-        //    try
-        //    {
-        //        using (var web = new WebClient())
-        //        {
-        //            try
-        //            {
-        //                web.Encoding = Encoding.UTF8;
-        //                var urlEncoded = WebUtility.UrlEncode(url);
-        //                web.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36";
-        //                var webResponseData = web.DownloadString(url);
-        //                return webResponseData;
-        //            }
-        //            catch (WebException e)
-        //            {
-        //                Console.WriteLine(e);
-        //                throw;
-        //            }
-
-        //        }
-        //    }
-        //    catch (WebException e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //        throw;
-        //    }
-        //    //Make web request
-
-        //}
-
-        //public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
-        //{
-        //    // Unix timestamp is seconds past epoch
-        //    DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-        //    dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-        //    return dtDateTime;
-        //}
-
-        //private static IEnumerable<string> ParseCsv(string csvData)
-        //{
-        //    var rows = csvData.Replace("\r", "").Split('\n');
-        //    return rows;
-        //}
     }
 }
 
