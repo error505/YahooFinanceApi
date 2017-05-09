@@ -101,13 +101,13 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
-        public async Task<InstitutionOwnership> GetInstitutionOwnershipByDate(string reportDate, string companyId)
+        public async Task<InstitutionOwnership> GetInstitutionOwnershipByDate(string organisation, string companyId)
         {
             try
             {
                 var institutionOwnership =
                 await _context.InstitutionOwnership
-                    .SingleOrDefaultAsync(m => (m.ReportDate == reportDate && m.CompaniesId == companyId));
+                    .SingleOrDefaultAsync(m => (m.Organization == organisation && m.CompaniesId == companyId));
                 return institutionOwnership;
             }
             catch (Exception e)
@@ -605,9 +605,9 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
-            if (InstitutionOwnershipIdExists(institutionOwnership.ReportDate, institutionOwnership.CompaniesId))
+            if (InstitutionOwnershipIdExists(institutionOwnership.Organization, institutionOwnership.CompaniesId))
             {
-                var ind = await GetInstitutionOwnershipByDate(institutionOwnership.ReportDate, institutionOwnership.CompaniesId);
+                var ind = await GetInstitutionOwnershipByDate(institutionOwnership.Organization, institutionOwnership.CompaniesId);
                 return ind.Id;
             }
             _context.InstitutionOwnership.Add(institutionOwnership);
@@ -617,7 +617,7 @@ namespace StockExchangeYahooFinance.Repository
             }
             catch (DbException ex)
             {
-                if (InstitutionOwnershipIdExists(institutionOwnership.ReportDate, institutionOwnership.CompaniesId))
+                if (InstitutionOwnershipIdExists(institutionOwnership.Organization, institutionOwnership.CompaniesId))
                 {
                     Console.WriteLine(ex.Message);
                     Console.Read();
@@ -1058,9 +1058,9 @@ namespace StockExchangeYahooFinance.Repository
             return _context.MajorHoldersBreakdown.Count(e => (Math.Abs(e.InsidersPercentHeld - insidersPercentHeld) < 0.01 && e.CompaniesId == companyId)) > 0;
         }
 
-        public bool InstitutionOwnershipIdExists(string reportDate, string companyId)
+        public bool InstitutionOwnershipIdExists(string organisation, string companyId)
         {
-            return _context.InstitutionOwnership.Count(e => (e.ReportDate == reportDate && e.CompaniesId == companyId)) > 0;
+            return _context.InstitutionOwnership.Count(e => (e.Organization == organisation && e.CompaniesId == companyId)) > 0;
         }
 
         public bool RecommendationTrendIdExists(string period, string companyId)

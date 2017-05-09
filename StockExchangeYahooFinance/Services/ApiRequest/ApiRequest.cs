@@ -736,7 +736,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         public async Task YahooInstitutionOwnership(RequestModel model)
         {
             var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.MajorHoldersBreakdown + Cfg.YCorsDomain;
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.InstitutionOwnership + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
@@ -750,40 +750,43 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 {
                     if (symbolId != null)
                     {
-                        var cfsh = new InstitutionOwnership();
-                        var reportDate = institutionOwnership.SelectToken(YMF.ReportDate);
-                        if (reportDate != null && reportDate.Count() != 0)
+                        foreach (var i in institutionOwnership)
                         {
-                            var reportDateFmt = reportDate["fmt"].ToString();
-                            cfsh.ReportDate = reportDateFmt;
-                        }
-                        var organization = institutionOwnership.SelectToken(YMF.Organization);
-                        if (organization != null ) cfsh.Organization = organization.ToString();
+                            var cfsh = new InstitutionOwnership();
+                            var reportDate = i.SelectToken(YMF.ReportDate);
+                            if (reportDate != null && reportDate.Count() != 0)
+                            {
+                                var reportDateFmt = reportDate["fmt"].ToString();
+                                cfsh.ReportDate = reportDateFmt;
+                            }
+                            var organization = i.SelectToken(YMF.Organization);
+                            if (organization != null) cfsh.Organization = organization.ToString();
 
-                        var pctHeld = institutionOwnership.SelectToken(YMF.PctHeld);
-                        if (pctHeld != null && pctHeld.Count() != 0)
-                        {
-                            var pctHeldRaw = (double)pctHeld["raw"];
-                            cfsh.PctHeld = pctHeldRaw;
-                        }
-                        var position = institutionOwnership.SelectToken(YMF.Position);
-                        if (position != null && position.Count() != 0)
-                        {
-                            var positionRaw = (double)position["raw"];
-                            cfsh.Position = positionRaw;
-                        }
-                        var value = institutionOwnership.SelectToken(YMF.Value);
-                        if (value != null && value.Count() != 0)
-                        {
-                            var valueRaw = (double)value["raw"];
-                            cfsh.Value = valueRaw;
-                        }
+                            var pctHeld = i.SelectToken(YMF.PctHeld);
+                            if (pctHeld != null && pctHeld.Count() != 0)
+                            {
+                                var pctHeldRaw = (double) pctHeld["raw"];
+                                cfsh.PctHeld = pctHeldRaw;
+                            }
+                            var position = i.SelectToken(YMF.Position);
+                            if (position != null && position.Count() != 0)
+                            {
+                                var positionRaw = (double) position["raw"];
+                                cfsh.Position = positionRaw;
+                            }
+                            var value = i.SelectToken(YMF.Value);
+                            if (value != null && value.Count() != 0)
+                            {
+                                var valueRaw = (double) value["raw"];
+                                cfsh.Value = valueRaw;
+                            }
 
-                        Console.WriteLine($"{model.Ticker}");
-                        cfsh.CompaniesId = symbolId.Id;
-                        cfsh.CreatedByUser = Cfg.UserName;
-                        await _repository.AddInstitutionOwnership(cfsh);
-                        companyExists = false;
+                            Console.WriteLine($"{model.Ticker}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddInstitutionOwnership(cfsh);
+                            companyExists = false;
+                        }
                     }
                     else
                     {
