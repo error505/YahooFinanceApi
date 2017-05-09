@@ -733,6 +733,71 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        public async Task YahooInstitutionOwnership(RequestModel model)
+        {
+            var modules = new YahooModules();
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.MajorHoldersBreakdown + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var institutionOwnership = d["quoteSummary"]["result"][0][YM.InstitutionOwnership]["ownershipList"];
+                string majorHoldersBreakdownId = null;
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        var cfsh = new InstitutionOwnership();
+                        var reportDate = institutionOwnership.SelectToken(YMF.ReportDate);
+                        if (reportDate != null && reportDate.Count() != 0)
+                        {
+                            var reportDateFmt = reportDate["fmt"].ToString();
+                            cfsh.ReportDate = reportDateFmt;
+                        }
+                        var organization = institutionOwnership.SelectToken(YMF.Organization);
+                        if (organization != null ) cfsh.Organization = organization.ToString();
+
+                        var pctHeld = institutionOwnership.SelectToken(YMF.PctHeld);
+                        if (pctHeld != null && pctHeld.Count() != 0)
+                        {
+                            var pctHeldRaw = (double)pctHeld["raw"];
+                            cfsh.PctHeld = pctHeldRaw;
+                        }
+                        var position = institutionOwnership.SelectToken(YMF.Position);
+                        if (position != null && position.Count() != 0)
+                        {
+                            var positionRaw = (double)position["raw"];
+                            cfsh.Position = positionRaw;
+                        }
+                        var value = institutionOwnership.SelectToken(YMF.Value);
+                        if (value != null && value.Count() != 0)
+                        {
+                            var valueRaw = (double)value["raw"];
+                            cfsh.Value = valueRaw;
+                        }
+
+                        Console.WriteLine($"{model.Ticker}");
+                        cfsh.CompaniesId = symbolId.Id;
+                        cfsh.CreatedByUser = Cfg.UserName;
+                        await _repository.AddInstitutionOwnership(cfsh);
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
 
         public async Task YahooRecommendationTrend(RequestModel model)
         {

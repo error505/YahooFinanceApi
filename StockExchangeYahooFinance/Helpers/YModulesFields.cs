@@ -69,5 +69,10 @@ namespace StockExchangeYahooFinance.Helpers
         public string ToGrade = "toGrade";
         public string FromGrade = "fromGrade";
         public string Action = "action";
+        public string ReportDate = "reportDate";
+        public string Organization = "organization";
+        public string PctHeld = "pctHeld";
+        public string Position = "position";
+        public string Value = "value";
     }
 }

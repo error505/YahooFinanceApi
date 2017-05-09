@@ -37,7 +37,8 @@ namespace StockExchangeYahooFinance
                 new YahooCompanyCashflowStatementHistory(),
                 new YahooMajorHoldersBreakdownRequest(),
                 new YahooRecommendationTrendRequest(), 
-                new YahooUpgradeDowngradeHistoryRequest(), 
+                new YahooUpgradeDowngradeHistoryRequest(),
+                new YahooInstitutionOwnershipRequest(),  
             };
 
             while (true)

@@ -101,6 +101,21 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
+        public async Task<InstitutionOwnership> GetInstitutionOwnershipByDate(string reportDate, string companyId)
+        {
+            try
+            {
+                var institutionOwnership =
+                await _context.InstitutionOwnership
+                    .SingleOrDefaultAsync(m => (m.ReportDate == reportDate && m.CompaniesId == companyId));
+                return institutionOwnership;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
         public async Task<RecommendationTrend> GetRecommendationTrendByPeriod(string period, string companyId)
         {
             try
@@ -584,6 +599,38 @@ namespace StockExchangeYahooFinance.Repository
             return majorHoldersBreakdown.Id;
         }
 
+        public async Task<string> AddInstitutionOwnership(InstitutionOwnership institutionOwnership)
+        {
+            if (institutionOwnership == null)
+            {
+                return null;
+            }
+            if (InstitutionOwnershipIdExists(institutionOwnership.ReportDate, institutionOwnership.CompaniesId))
+            {
+                var ind = await GetInstitutionOwnershipByDate(institutionOwnership.ReportDate, institutionOwnership.CompaniesId);
+                return ind.Id;
+            }
+            _context.InstitutionOwnership.Add(institutionOwnership);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                if (InstitutionOwnershipIdExists(institutionOwnership.ReportDate, institutionOwnership.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return institutionOwnership.Id;
+        }
+
         public async Task<string> AddRecommendationTrend(RecommendationTrend recommendationTrend)
         {
             if (recommendationTrend == null)
@@ -1009,6 +1056,11 @@ namespace StockExchangeYahooFinance.Repository
         public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld,string companyId)
         {
             return _context.MajorHoldersBreakdown.Count(e => (Math.Abs(e.InsidersPercentHeld - insidersPercentHeld) < 0.01 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool InstitutionOwnershipIdExists(string reportDate, string companyId)
+        {
+            return _context.InstitutionOwnership.Count(e => (e.ReportDate == reportDate && e.CompaniesId == companyId)) > 0;
         }
 
         public bool RecommendationTrendIdExists(string period, string companyId)

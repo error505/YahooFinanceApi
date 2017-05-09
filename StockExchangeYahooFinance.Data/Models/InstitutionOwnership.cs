@@ -15,8 +15,9 @@ namespace StockExchangeYahooFinance.Data.Models
         public Companies Companies { get; set; }
         public string ReportDate { get; set; }
         public string Organization { get; set; }
-        public string Position { get; set; }
-        public string Value { get; set; }
+        public double PctHeld { get; set; }
+        public double Position { get; set; }
+        public double Value { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
         public string CreatedByUser { get; set; }
     }
