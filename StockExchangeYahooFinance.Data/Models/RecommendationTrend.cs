@@ -14,11 +14,11 @@ namespace StockExchangeYahooFinance.Data.Models
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
         public string Period { get; set; }
-        public string StrongBuy { get; set; }
-        public string Buy { get; set; }
-        public string Hold { get; set; }
-        public string Sell { get; set; }
-        public string StrongSell { get; set; }
+        public double StrongBuy { get; set; }
+        public double Buy { get; set; }
+        public double Hold { get; set; }
+        public double Sell { get; set; }
+        public double StrongSell { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
         public string CreatedByUser { get; set; }
     }

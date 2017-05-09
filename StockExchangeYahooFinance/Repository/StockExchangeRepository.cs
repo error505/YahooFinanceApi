@@ -53,13 +53,13 @@ namespace StockExchangeYahooFinance.Repository
         {
             return _context.IncomeStatementHistory.Where(c => c.CompaniesId == companiesId).ToList();
         }
-        public async Task<IncomeStatementHistory> GetIncomeStatementHistoryByDate(string endDate)
+        public async Task<IncomeStatementHistory> GetIncomeStatementHistoryByDate(string endDate, string companyId)
         {
             try
             {
                 var incomeStatementHistory =
                 await _context.IncomeStatementHistory
-                    .SingleOrDefaultAsync(m => m.EndDate == endDate);
+                    .SingleOrDefaultAsync(m => (m.EndDate == endDate && m.CompaniesId == companyId));
                 return incomeStatementHistory;
             }
             catch (Exception e)
@@ -69,13 +69,13 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
-        public async Task<CashflowStatement> GetCashflowStatementHistoryByDate(string endDate)
+        public async Task<CashflowStatement> GetCashflowStatementHistoryByDate(string endDate, string companyId)
         {
             try
             {
                 var cashflowStatementHistory =
                 await _context.CashflowStatement
-                    .SingleOrDefaultAsync(m => m.EndDate == endDate);
+                    .SingleOrDefaultAsync(m => (m.EndDate == endDate && m.CompaniesId == companyId));
                 return cashflowStatementHistory;
             }
             catch (Exception e)
@@ -85,14 +85,30 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
-        public async Task<MajorHoldersBreakdown> GetMajorHoldersBreakdownByInsidersPercentHeld(double insidersPercentHeld)
+        public async Task<MajorHoldersBreakdown> GetMajorHoldersBreakdownByInsidersPercentHeld(double insidersPercentHeld, string companyId)
         {
             try
             {
                 var majorHoldersBreakdown =
                 await _context.MajorHoldersBreakdown
-                    .SingleOrDefaultAsync(m => m.InsidersPercentHeld == insidersPercentHeld);
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.InsidersPercentHeld - insidersPercentHeld) < 0.01 && m.CompaniesId == companyId));
                 return majorHoldersBreakdown;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<RecommendationTrend> GetCashflowStatementByPeriod(string period, string companyId)
+        {
+            try
+            {
+                var recommendationTrend =
+                await _context.RecommendationTrend
+                    .SingleOrDefaultAsync(m => (m.Period == period && m.CompaniesId == companyId));
+                return recommendationTrend;
             }
             catch (Exception e)
             {
@@ -225,13 +241,13 @@ namespace StockExchangeYahooFinance.Repository
         ///
         /// </summary>
         /// <param name="date"></param>
-        /// <param name="id"></param>
+        /// <param name="companyId"></param>
         /// <returns></returns>
-        public async Task<History> GetHistoryByDate(string date, string id)
+        public async Task<History> GetHistoryByDate(string date, string companyId)
         {
             try
             {
-                var company = await GetCompanyById(id);
+                var company = await GetCompanyById(companyId);
                 var history =
                 await _context.History
                     .SingleOrDefaultAsync(m => (m.Date == date) && (m.CompaniesId == company.Id));
@@ -462,9 +478,9 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
-            if (IncomeStatementHistoryIdExists(incomeStatementHistory.EndDate))
+            if (IncomeStatementHistoryIdExists(incomeStatementHistory.EndDate, incomeStatementHistory.CompaniesId))
             {
-                var ind = await GetIncomeStatementHistoryByDate(incomeStatementHistory.EndDate);
+                var ind = await GetIncomeStatementHistoryByDate(incomeStatementHistory.EndDate, incomeStatementHistory.CompaniesId);
                 return ind.Id;
             }
             _context.IncomeStatementHistory.Add(incomeStatementHistory);
@@ -474,7 +490,7 @@ namespace StockExchangeYahooFinance.Repository
             }
             catch (DbException ex)
             {
-                if (IncomeStatementHistoryIdExists(incomeStatementHistory.EndDate))
+                if (IncomeStatementHistoryIdExists(incomeStatementHistory.EndDate, incomeStatementHistory.CompaniesId))
                 {
                     Console.WriteLine(ex.Message);
                     Console.Read();
@@ -494,9 +510,9 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
-            if (CashflowStatementHistoryIdExists(cashflowStatement.EndDate))
+            if (CashflowStatementHistoryIdExists(cashflowStatement.EndDate, cashflowStatement.CompaniesId))
             {
-                var ind = await GetCashflowStatementHistoryByDate(cashflowStatement.EndDate);
+                var ind = await GetCashflowStatementHistoryByDate(cashflowStatement.EndDate, cashflowStatement.CompaniesId);
                 return ind.Id;
             }
             _context.CashflowStatement.Add(cashflowStatement);
@@ -506,7 +522,7 @@ namespace StockExchangeYahooFinance.Repository
             }
             catch (DbException ex)
             {
-                if (CashflowStatementHistoryIdExists(cashflowStatement.EndDate))
+                if (CashflowStatementHistoryIdExists(cashflowStatement.EndDate, cashflowStatement.CompaniesId))
                 {
                     Console.WriteLine(ex.Message);
                     Console.Read();
@@ -526,9 +542,9 @@ namespace StockExchangeYahooFinance.Repository
             {
                 return null;
             }
-            if (MajorHoldersBreakdownIdExists(majorHoldersBreakdown.InsidersPercentHeld))
+            if (MajorHoldersBreakdownIdExists(majorHoldersBreakdown.InsidersPercentHeld, majorHoldersBreakdown.CompaniesId))
             {
-                var ind = await GetMajorHoldersBreakdownByInsidersPercentHeld(majorHoldersBreakdown.InsidersPercentHeld);
+                var ind = await GetMajorHoldersBreakdownByInsidersPercentHeld(majorHoldersBreakdown.InsidersPercentHeld, majorHoldersBreakdown.CompaniesId);
                 return ind.Id;
             }
             _context.MajorHoldersBreakdown.Add(majorHoldersBreakdown);
@@ -538,7 +554,7 @@ namespace StockExchangeYahooFinance.Repository
             }
             catch (DbException ex)
             {
-                if (MajorHoldersBreakdownIdExists(majorHoldersBreakdown.InsidersPercentHeld))
+                if (MajorHoldersBreakdownIdExists(majorHoldersBreakdown.InsidersPercentHeld, majorHoldersBreakdown.CompaniesId))
                 {
                     Console.WriteLine(ex.Message);
                     Console.Read();
@@ -550,6 +566,37 @@ namespace StockExchangeYahooFinance.Repository
 
             }
             return majorHoldersBreakdown.Id;
+        }
+
+        public async Task<string> AddRecommendationTrend(RecommendationTrend recommendationTrend)
+        {
+            if (recommendationTrend == null)
+            {
+                return null;
+            }
+            if (RecommendationTrendIdExists(recommendationTrend.Period, recommendationTrend.CompaniesId))
+            {
+                var ind = await GetCashflowStatementByPeriod(recommendationTrend.Period, recommendationTrend.CompaniesId);
+                return ind.Id;
+            }
+            _context.RecommendationTrend.Add(recommendationTrend);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                if (RecommendationTrendIdExists(recommendationTrend.Period, recommendationTrend.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return recommendationTrend.Id;
         }
 
         public async Task<string> AddCompanyProfile(CompanyProfile companyProfile)
@@ -902,19 +949,24 @@ namespace StockExchangeYahooFinance.Repository
             return _context.Industrie.Count(e => e.Name == name) > 0;
         }
 
-        public bool IncomeStatementHistoryIdExists(string endDate)
+        public bool IncomeStatementHistoryIdExists(string endDate, string companyId)
         {
-            return _context.IncomeStatementHistory.Count(e => e.EndDate == endDate) > 0;
+            return _context.IncomeStatementHistory.Count(e => (e.EndDate == endDate && e.CompaniesId == companyId)) > 0;
         }
 
-        public bool CashflowStatementHistoryIdExists(string endDate)
+        public bool CashflowStatementHistoryIdExists(string endDate, string companyId)
         {
-            return _context.CashflowStatement.Count(e => e.EndDate == endDate) > 0;
+            return _context.CashflowStatement.Count(e => (e.EndDate == endDate && e.CompaniesId == companyId)) > 0;
         }
 
-        public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld)
+        public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld,string companyId)
         {
-            return _context.MajorHoldersBreakdown.Count(e => e.InsidersPercentHeld == insidersPercentHeld) > 0;
+            return _context.MajorHoldersBreakdown.Count(e => (Math.Abs(e.InsidersPercentHeld - insidersPercentHeld) < 0.01 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool RecommendationTrendIdExists(string period, string companyId)
+        {
+            return _context.RecommendationTrend.Count(e => (e.Period == period && e.CompaniesId == companyId)) > 0;
         }
 
         public bool HistoryIdExists(string compId, string date)

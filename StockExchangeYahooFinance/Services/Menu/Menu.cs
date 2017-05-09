@@ -162,4 +162,16 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.YahooMajorHoldersBreakdown(model);
         }
     }
+
+    internal class YahooRecommendationTrendRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Recommendation Trend! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooRecommendationTrend(model);
+        }
+    }
 }

@@ -231,6 +231,10 @@
     <Compile Include="Migrations\20170508133636_ChangeTypeOnMayorHolders.designer.cs">
       <DependentUpon>20170508133636_ChangeTypeOnMayorHolders.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170509132244_RecommendationTRendChange.cs" />
+    <Compile Include="Migrations\20170509132244_RecommendationTRendChange.designer.cs">
+      <DependentUpon>20170509132244_RecommendationTRendChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\IYahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\YahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\CallWebRequest.cs" />

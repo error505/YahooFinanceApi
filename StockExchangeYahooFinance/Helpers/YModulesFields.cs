@@ -54,5 +54,15 @@ namespace StockExchangeYahooFinance.Helpers
         public string InstitutionsPercentHeld = "institutionsPercentHeld";
         public string InstitutionsFloatPercentHeld = "institutionsFloatPercentHeld";
         public string InstitutionsCount = "institutionsCount";
+        public string PeRatio = "peRatio";
+        public string PegRatio = "pegRatio";
+        public string Estimates = "estimates";
+        public string Period = "period";
+        public string Growth = "growth";
+        public string StrongBuy = "strongBuy";
+        public string Buy = "buy";
+        public string Hold = "hold";
+        public string Sell = "sell";
+        public string StrongSell = "strongSell";
     }
 }
