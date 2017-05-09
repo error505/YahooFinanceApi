@@ -780,8 +780,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                                 var valueRaw = (double) value["raw"];
                                 cfsh.Value = valueRaw;
                             }
-
-                            Console.WriteLine($"{model.Ticker}");
+                            Console.WriteLine($"{model.Ticker} : {cfsh.ReportDate} : {cfsh.Organization} : {cfsh.PctHeld} : {cfsh.Position} : {cfsh.Value}");
                             cfsh.CompaniesId = symbolId.Id;
                             cfsh.CreatedByUser = Cfg.UserName;
                             await _repository.AddInstitutionOwnership(cfsh);
