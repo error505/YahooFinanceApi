@@ -174,4 +174,16 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.YahooRecommendationTrend(model);
         }
     }
+
+    internal class YahooUpgradeDowngradeHistoryRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Upgrade Downgrade History! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooUpgradeDowngradeHistory(model);
+        }
+    }
 }

@@ -339,6 +339,7 @@
     <Compile Include="Services\ApiRequest\IApiRequest.cs" />
     <Compile Include="Services\Menu\IMenu.cs" />
     <Compile Include="Services\Menu\Menu.cs" />
+    <Compile Include="Services\ParsersConverters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

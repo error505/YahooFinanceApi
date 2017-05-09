@@ -64,5 +64,10 @@ namespace StockExchangeYahooFinance.Helpers
         public string Hold = "hold";
         public string Sell = "sell";
         public string StrongSell = "strongSell";
+        public string EpochGradeDate = "epochGradeDate";
+        public string Firm = "firm";
+        public string ToGrade = "toGrade";
+        public string FromGrade = "fromGrade";
+        public string Action = "action";
     }
 }

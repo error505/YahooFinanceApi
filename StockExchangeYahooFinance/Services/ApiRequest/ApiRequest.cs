@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,6 +34,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         //Initialize FinanceData
         private static readonly FinanceData FinanceData = new FinanceData();
         private readonly CallWebRequest _callWebRequest = new CallWebRequest();
+        private readonly ParsersConverters _parsersConvertert = new ParsersConverters();
         private static readonly YahooCompProfile YahooCompProfile = new YahooCompProfile();
         private static readonly YahooRssFeed _YahooRssFeed = new YahooRssFeed();
         public ApiRequest(StockExchangeRepository repository)
@@ -89,9 +91,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         await _repository.AddFinanceModel(f);
                     }
                 }
-                catch (TaskCanceledException)
+                catch (TaskCanceledException ex)
                 {
-                    return;
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
                 }
             }
         }
@@ -104,13 +107,13 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         {
             var url = Cfg.YahooBaseUrl + YQ.SelectAll + Cfg.YahooHistoricalData +
                       YQ.WhereSimbol +
-                      "(%22" + Cfg.SymbolTicker + "%22)" + YQ.And + YQ.StartDate + "2012-09-11" +
+                      "(%22" + model.Ticker + "%22)" + YQ.And + YQ.StartDate + "2012-09-11" +
                       YQ.And + YQ.EndDate + "2014-02-11" + Cfg.Format + Cfg.Enviroment +
                       Cfg.CallBack;
             try
             {
                 Console.Clear();
-                var json = WebRequest(url);
+                var json = await _callWebRequest.WebRequest(url);
                 dynamic data = JObject.Parse(json);
                 var quote = data.query.results.quote;
                 var symbolId = await _repository.GetCompanyByName(Cfg.SymbolTicker);
@@ -135,9 +138,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     await _repository.AddHistory(h);
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                return;
+                Console.WriteLine(ex.Message);
+                Console.Read();
             }
         }
         //TODO: Finish Rss feed scrapping
@@ -169,9 +173,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     Console.WriteLine($"{model.Ticker}: {desc} : {title} : {link} : {pubDate}");
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                return;
+                Console.WriteLine(ex.Message);
+                Console.Read();
             }
         }
 
@@ -294,9 +299,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     }
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                return;
+                Console.WriteLine(ex.Message);
+                Console.Read();
             }
         }
         //TODO: Finish this call and create others for all other modules and create repository functions for each module
@@ -480,9 +486,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     }
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                return;
+                Console.WriteLine(ex.Message);
+                Console.Read();
             }
         }
 
@@ -649,9 +656,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     }
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                return;
+                Console.WriteLine(ex.Message);
+                Console.Read();
             }
         }
 
@@ -718,9 +726,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     }
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                return;
+                Console.WriteLine(ex.Message);
+                Console.Read();
             }
         }
 
@@ -770,9 +779,62 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     }
                 }
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                return;
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooUpgradeDowngradeHistory(RequestModel model)
+        {
+            var modules = new YahooModules();
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.UpgradeDowngradeHistory + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var upgradeDowngradeHistory = d["quoteSummary"]["result"][0][YM.UpgradeDowngradeHistory]["history"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in upgradeDowngradeHistory)
+                        {
+                            var cfsh = new UpgradeDowngradeHistory();
+                            var epochGradeDate = i.SelectToken(YMF.EpochGradeDate);
+                            DateTime grandDateNormal = new DateTime();
+                            if (epochGradeDate != null) grandDateNormal = _parsersConvertert.UnixTimeStampToDateTime(Convert.ToDouble(epochGradeDate));
+                            if (epochGradeDate != null) cfsh.EpochGradeDate = grandDateNormal.ToString(CultureInfo.InvariantCulture);
+                            var firm = i.SelectToken(YMF.Firm);
+                            if (firm != null) cfsh.Firm = firm.ToString();
+                            var toGrade = i.SelectToken(YMF.ToGrade);
+                            if (toGrade != null) cfsh.ToGrade = toGrade.ToString();
+                            var fromGrade = i.SelectToken(YMF.FromGrade);
+                            if (fromGrade != null) cfsh.FromGrade = fromGrade.ToString();
+                            var action = i.SelectToken(YMF.Action);
+                            if (action != null) cfsh.Action = action.ToString();                            
+                            Console.WriteLine($"{model.Ticker} : {grandDateNormal} : {firm} : {toGrade} : {action}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddUpgradeDowngradeHistory(cfsh);
+                            companyExists = false;
+                        }
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
             }
         }
 
@@ -788,8 +850,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             var url = Cfg.YahooHistoryCsv + symbol + model.Ticker;
             try
             {
-                var csvData = WebRequest(url);
-                var rows = ParseCsv(csvData);
+                var csvData = await _callWebRequest.WebRequest(url);
+                var rows = _parsersConvertert.ParseCsv(csvData);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 if (symbolId == null)
                 {
@@ -863,7 +925,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         {
             var url = Cfg.CsvUrl + $"{Cfg.Tickers}&f={Cfg.CsvData}";
             //Call web request
-            var request = WebRequest(url);
+            var request = await _callWebRequest.WebRequest(url);
             //Parse CSV
             var rows = request.Replace("\r", "").Split('\n');
             //Get data from string
@@ -912,7 +974,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 {
                     await task;
                     Console.Clear();
-                    var json = WebRequest(url);
+                    var json = await _callWebRequest.WebRequest(url);
                     var d = new FinanceData();
                     dynamic data = JObject.Parse(json);
                     var quote = data.query.results.rate;
@@ -938,9 +1000,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         Console.WriteLine($"{name} : {id} : {rate} : {date + time} : {ask} : {bid}");
                     }
                 }
-                catch (TaskCanceledException)
+                catch (TaskCanceledException ex)
                 {
-                    return;
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
                 }
             }
         }
@@ -969,7 +1032,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 for (var i = 0; i <= 2042; i += 20)
                 {
                     var urlTosend = Cfg.YahooLookupAll + s + c + t + "s" + m + "ALL" + b + i + bypass;
-                    var data = WebRequest(urlTosend);
+                    var data = await _callWebRequest.WebRequest(urlTosend);
                     var doc = new HtmlDocument();
                     doc.LoadHtml(data);
 
@@ -1027,7 +1090,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             for (var i = 0; i <= 200; i += 20)
             {
                 var urlTosend = Cfg.YahooLookupAll + s + model.Ticker + t + "s" + m + "ALL" + b + i + bypass;
-                var data = WebRequest(urlTosend);
+                var data = await _callWebRequest.WebRequest(urlTosend);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(data);
 
@@ -1140,10 +1203,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             var url = Cfg.NasdqCompanies + Cfg.NasdqRegionCsv + Cfg.NasdqRender;
             try
             {
-                var csvData = WebRequest(url);
+                var csvData = await _callWebRequest.WebRequest(url);
 
                 //Parse CSV
-                var rows = ParseCsv(csvData);
+                var rows = _parsersConvertert.ParseCsv(csvData);
                 //Get data from string
                 var companies = (from row in rows
                     where !string.IsNullOrEmpty(row)
@@ -1208,7 +1271,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         {
             try
             {
-                var csvData = WebRequest(Cfg.IsoCurrencyUrl);
+                var csvData = await _callWebRequest.WebRequest(Cfg.IsoCurrencyUrl);
                 var currency = XDocument.Parse(csvData);
                 //Write data in console
                 var query = from c in currency.Descendants("CcyNtry")
@@ -1252,42 +1315,50 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private static string WebRequest(string url)
-        {
-            try
-            {
-                using (var web = new WebClient())
-                {
-                    try
-                    {
-                        web.Encoding = Encoding.UTF8;
-                        var urlEncoded = WebUtility.UrlEncode(url);
-                        web.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36";
-                        var webResponseData = web.DownloadString(url);
-                        return webResponseData;
-                    }
-                    catch (WebException e)
-                    {
-                        Console.WriteLine(e);
-                        throw;
-                    }
+        //private static string WebRequest(string url)
+        //{
+        //    try
+        //    {
+        //        using (var web = new WebClient())
+        //        {
+        //            try
+        //            {
+        //                web.Encoding = Encoding.UTF8;
+        //                var urlEncoded = WebUtility.UrlEncode(url);
+        //                web.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36";
+        //                var webResponseData = web.DownloadString(url);
+        //                return webResponseData;
+        //            }
+        //            catch (WebException e)
+        //            {
+        //                Console.WriteLine(e);
+        //                throw;
+        //            }
 
-                }
-            }
-            catch (WebException e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
-            //Make web request
+        //        }
+        //    }
+        //    catch (WebException e)
+        //    {
+        //        Console.WriteLine(e.Message);
+        //        throw;
+        //    }
+        //    //Make web request
 
-        }
+        //}
 
-        private static IEnumerable<string> ParseCsv(string csvData)
-        {
-            var rows = csvData.Replace("\r", "").Split('\n');
-            return rows;
-        }
+        //public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        //{
+        //    // Unix timestamp is seconds past epoch
+        //    DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+        //    dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+        //    return dtDateTime;
+        //}
+
+        //private static IEnumerable<string> ParseCsv(string csvData)
+        //{
+        //    var rows = csvData.Replace("\r", "").Split('\n');
+        //    return rows;
+        //}
     }
 }
 

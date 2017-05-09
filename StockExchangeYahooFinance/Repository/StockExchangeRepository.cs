@@ -101,7 +101,7 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
-        public async Task<RecommendationTrend> GetCashflowStatementByPeriod(string period, string companyId)
+        public async Task<RecommendationTrend> GetRecommendationTrendByPeriod(string period, string companyId)
         {
             try
             {
@@ -109,6 +109,22 @@ namespace StockExchangeYahooFinance.Repository
                 await _context.RecommendationTrend
                     .SingleOrDefaultAsync(m => (m.Period == period && m.CompaniesId == companyId));
                 return recommendationTrend;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<UpgradeDowngradeHistory> GetUpgradeDowngradeHistoryByEpochGradeDate(string epochGradeDate, string companyId)
+        {
+            try
+            {
+                var upgradeDowngradeHistory =
+                await _context.UpgradeDowngradeHistory
+                    .SingleOrDefaultAsync(m => (m.EpochGradeDate == epochGradeDate && m.CompaniesId == companyId));
+                return upgradeDowngradeHistory;
             }
             catch (Exception e)
             {
@@ -576,7 +592,7 @@ namespace StockExchangeYahooFinance.Repository
             }
             if (RecommendationTrendIdExists(recommendationTrend.Period, recommendationTrend.CompaniesId))
             {
-                var ind = await GetCashflowStatementByPeriod(recommendationTrend.Period, recommendationTrend.CompaniesId);
+                var ind = await GetRecommendationTrendByPeriod(recommendationTrend.Period, recommendationTrend.CompaniesId);
                 return ind.Id;
             }
             _context.RecommendationTrend.Add(recommendationTrend);
@@ -597,6 +613,37 @@ namespace StockExchangeYahooFinance.Repository
                 }
             }
             return recommendationTrend.Id;
+        }
+
+        public async Task<string> AddUpgradeDowngradeHistory(UpgradeDowngradeHistory upgradeDowngradeHistory)
+        {
+            if (upgradeDowngradeHistory == null)
+            {
+                return null;
+            }
+            if (UpgradeDowngradeHistoryIdExists(upgradeDowngradeHistory.EpochGradeDate, upgradeDowngradeHistory.CompaniesId))
+            {
+                var ind = await GetUpgradeDowngradeHistoryByEpochGradeDate(upgradeDowngradeHistory.EpochGradeDate, upgradeDowngradeHistory.CompaniesId);
+                return ind.Id;
+            }
+            _context.UpgradeDowngradeHistory.Add(upgradeDowngradeHistory);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                if (UpgradeDowngradeHistoryIdExists(upgradeDowngradeHistory.EpochGradeDate, upgradeDowngradeHistory.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return upgradeDowngradeHistory.Id;
         }
 
         public async Task<string> AddCompanyProfile(CompanyProfile companyProfile)
@@ -967,6 +1014,11 @@ namespace StockExchangeYahooFinance.Repository
         public bool RecommendationTrendIdExists(string period, string companyId)
         {
             return _context.RecommendationTrend.Count(e => (e.Period == period && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool UpgradeDowngradeHistoryIdExists(string epochGradeDate, string companyId)
+        {
+            return _context.UpgradeDowngradeHistory.Count(e => (e.EpochGradeDate == epochGradeDate && e.CompaniesId == companyId)) > 0;
         }
 
         public bool HistoryIdExists(string compId, string date)
