@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StockExchangeYahooFinance.ConfigData;
 using StockExchangeYahooFinance.Data.Models;
@@ -47,14 +44,12 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// </summary>
         /// <param name="interval"></param>
         /// <param name="cancellationToken"></param>
-        /// <param name="url"></param>
         /// <returns>List of companies</returns>
         public async Task StockExchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
             var url = Cfg.YahooBaseUrl + Yq.SelectAll + Cfg.YahooQuotes + Yq.WhereSimbol +
                       Yq.In + "(%22" + Cfg.Tickers + "%22)" + Cfg.Format + Cfg.Enviroment +
                       Cfg.CallBack;
-            var financeModel = new List<FinanceModel>();
             while (true)
             {
                 var task = Task.Delay(interval, cancellationToken);
@@ -78,7 +73,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         f.Change = change.ToString();
                         var name = i.SelectToken(FinanceData.Name);
                         f.Name = name.ToString();
-                        financeModel.Add(f);
                         var value = ((JValue)change).Value;
                         if (value != null && Convert.ToDouble(change) < 0)
                         {
@@ -144,7 +138,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 Console.Read();
             }
         }
-        //TODO: Finish Rss feed scrapping
         /// <summary>
         /// Return Rss feed news for selected ticker
         /// </summary>
@@ -188,19 +181,15 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns></returns>
         public async Task YahooCompanyProfile(RequestModel model)
         {
-            var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.AssetProfile + Cfg.YCorsDomain;
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.AssetProfile + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
                 var json = await _callWebRequest.WebRequest(url);
-                //dynamic data = JObject.Parse(json.Result);
-                //var profile = data.quoteSummary.result;
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var assetProfile = d["quoteSummary"]["result"][0];
                 var companyOfficers = (JArray)d["quoteSummary"]["result"][0]["assetProfile"]["companyOfficers"];
-                //IList<string> categoriesText = companyOfficers.Select(c => (string)c).ToList();
                 string companyProfileId = null;
                 var companyExists = true;
                 while (companyExists)
@@ -305,7 +294,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 Console.Read();
             }
         }
-        //TODO: Finish this call and create others for all other modules and create repository functions for each module
         /// <summary>
         /// Get Company Profile from Yahoo finance
         /// </summary>
@@ -313,8 +301,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns></returns>
         public async Task YahooIncomeStatementHistory(RequestModel model)
         {
-            var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.IncomeStatementHistory + Cfg.YCorsDomain;
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.IncomeStatementHistory + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
@@ -322,7 +309,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var incomeStatementHistory = d["quoteSummary"]["result"][0][Ym.IncomeStatementHistory][Ym.IncomeStatementHistory];
-                string incomeStatementHistoryId = null;
                 var companyExists = true;
                 while (companyExists)
                 {
@@ -474,7 +460,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {totalRevenueRaw}");
                             iSh.CompaniesId = symbolId.Id;
                             iSh.CreatedByUser = Cfg.UserName;
-                            incomeStatementHistoryId = iSh.Id;
                             await _repository.AddIncomeStatementHistory(iSh);
                         }
                         companyExists = false;
@@ -500,8 +485,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns></returns>
         public async Task YahooCashFlowStatementHistory(RequestModel model)
         {
-            var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.CashflowStatementHistory + Cfg.YCorsDomain;
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.CashflowStatementHistory + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
@@ -509,7 +493,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var cashflowStatement = d["quoteSummary"]["result"][0][Ym.CashflowStatementHistory]["cashflowStatements"];
-                string incomeStatementHistoryId = null;
                 var companyExists = true;
                 while (companyExists)
                 {
@@ -644,7 +627,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {depreciationRaw}");
                             cfsh.CompaniesId = symbolId.Id;
                             cfsh.CreatedByUser = Cfg.UserName;
-                            incomeStatementHistoryId = cfsh.Id;
                             await _repository.AddCashflowStatementHistory(cfsh);
                         }
                         companyExists = false;
@@ -670,8 +652,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <returns></returns>
         public async Task YahooMajorHoldersBreakdown(RequestModel model)
         {
-            var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.MajorHoldersBreakdown + Cfg.YCorsDomain;
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.MajorHoldersBreakdown + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
@@ -679,7 +660,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var majorHoldersBreakdown = d["quoteSummary"]["result"][0][Ym.MajorHoldersBreakdown];
-                string majorHoldersBreakdownId = null;
                 var companyExists = true;
                 while (companyExists)
                 {
@@ -714,7 +694,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             Console.WriteLine($"{model.Ticker}");
                             cfsh.CompaniesId = symbolId.Id;
                             cfsh.CreatedByUser = Cfg.UserName;
-                            majorHoldersBreakdownId = cfsh.Id;
                             await _repository.AddMajorHoldersBreakdown(cfsh);
                         
                         companyExists = false;
@@ -735,8 +714,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
 
         public async Task YahooInstitutionOwnership(RequestModel model)
         {
-            var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.InstitutionOwnership + Cfg.YCorsDomain;
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.InstitutionOwnership + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
@@ -744,7 +722,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var institutionOwnership = d["quoteSummary"]["result"][0][Ym.InstitutionOwnership]["ownershipList"];
-                string majorHoldersBreakdownId = null;
                 var companyExists = true;
                 while (companyExists)
                 {
@@ -802,9 +779,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         }
 
         public async Task YahooRecommendationTrend(RequestModel model)
-        {
-            var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.RecommendationTrend + Cfg.YCorsDomain;
+        {            
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.RecommendationTrend + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
@@ -855,8 +831,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
 
         public async Task YahooUpgradeDowngradeHistory(RequestModel model)
         {
-            var modules = new YahooModules();
-            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + modules.UpgradeDowngradeHistory + Cfg.YCorsDomain;
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.UpgradeDowngradeHistory + Cfg.YCorsDomain;
             try
             {
                 Console.Clear();
@@ -986,7 +961,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <summary>
         /// Get CSV from yahoo finance and parse it
         /// </summary>
-        /// <param name="url"></param>
         /// <returns></returns>
         public async Task StockExchangeParseCsv()
         {
@@ -1027,7 +1001,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// </summary>
         /// <param name="interval"></param>
         /// <param name="cancellationToken"></param>
-        /// <param name="url"></param>
         /// <returns>List of Currencies with id, bid, name, rate, date....</returns>
         public async Task XchangeTask(TimeSpan interval, CancellationToken cancellationToken)
         {
@@ -1078,7 +1051,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <summary>
         ///
         /// </summary>
-        /// <param name="url"></param>
         /// <returns></returns>
         public async Task YahooCompanies()
         {
@@ -1212,58 +1184,47 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             doc.Load(xmlFilePath);
             var nsmgrDoc = new XmlNamespaceManager(doc.NameTable);
             var companyElements = doc.SelectNodes("StockExchanges/StockExchange", nsmgrDoc);
-            foreach (XmlElement item in companyElements)
-            {
-                var id = item.Attributes[0].Value;
-                var suffix = item.Attributes[1].Value;
-                var delayMinutes = item.Attributes[2].Value;
-                var openingTimeLocal = item.Attributes[3].Value;
-                var closingTimeLocal = item.Attributes[4].Value;
-                var utcOffsetStandardTime = item.Attributes[5].Value;
-                var country = item.Attributes[6].Value;
-                var name = item.Attributes[7].Value;
-                var tradingDays = item.Attributes[8].Value;
-
-                //var reg = new Region { Name = region };
-                //var regId = await _repository.AddRegion(reg);
-                //var sector = new Sector { Name = sec };
-                var countryAdd = new Country() {Name = country };
-                var countryId = await _repository.AddCountry(countryAdd);
-                //var secId = await _repository.AddSector(sector);
-                var exchange = new Exchange()
+            if (companyElements != null)
+                foreach (XmlElement item in companyElements)
                 {
-                    StockExchangeId = id,
-                    Suffix = suffix,
-                    Delay = delayMinutes,
-                    OpeningTimeLocal = openingTimeLocal,
-                    ClosingTimeLocal = closingTimeLocal,
-                    UtcOffsetStandardTime = utcOffsetStandardTime,
-                    CountryId = countryId,
-                    Name = name,
-                    TradingDays = tradingDays,
-                };
-                await _repository.AddExchange(exchange);
-            }
+                    var id = item.Attributes[0].Value;
+                    var suffix = item.Attributes[1].Value;
+                    var delayMinutes = item.Attributes[2].Value;
+                    var openingTimeLocal = item.Attributes[3].Value;
+                    var closingTimeLocal = item.Attributes[4].Value;
+                    var utcOffsetStandardTime = item.Attributes[5].Value;
+                    var country = item.Attributes[6].Value;
+                    var name = item.Attributes[7].Value;
+                    var tradingDays = item.Attributes[8].Value;
 
-            //SaveData(results);
-            //return results;
+                    //var reg = new Region { Name = region };
+                    //var regId = await _repository.AddRegion(reg);
+                    //var sector = new Sector { Name = sec };
+                    var countryAdd = new Country() {Name = country };
+                    var countryId = await _repository.AddCountry(countryAdd);
+                    //var secId = await _repository.AddSector(sector);
+                    var exchange = new Exchange()
+                    {
+                        StockExchangeId = id,
+                        Suffix = suffix,
+                        Delay = delayMinutes,
+                        OpeningTimeLocal = openingTimeLocal,
+                        ClosingTimeLocal = closingTimeLocal,
+                        UtcOffsetStandardTime = utcOffsetStandardTime,
+                        CountryId = countryId,
+                        Name = name,
+                        TradingDays = tradingDays,
+                    };
+                    await _repository.AddExchange(exchange);
+                }
+
         }
-        /// <summary>
-        /// test
-        /// </summary>
-        /// <param name="results"></param>
-        //private static void SaveData(IEnumerable<string> results)
-        //{
-        //    File.AppendAllLines(@"C:\Users\Igor\Desktop\stocks.txt", results);
-        //}
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="interval"></param>
         /// <param name="cancellationToken"></param>
-        /// <param name="url"></param>
-        /// <param name="region"></param>
         /// <returns></returns>
         public async Task ImportCompanies(TimeSpan interval, CancellationToken cancellationToken)
         {
@@ -1332,7 +1293,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         /// <summary>
         ///
         /// </summary>
-        /// <param name="url"></param>
         /// <returns></returns>
         public async Task ImportCurrencies()
         {
