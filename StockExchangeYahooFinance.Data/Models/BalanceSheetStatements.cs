@@ -14,31 +14,31 @@ namespace StockExchangeYahooFinance.Data.Models
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
         public string EndDate { get; set; }
-        public string Cash { get; set; }
-        public string ShortTermInvestments { get; set; }
-        public string NetReceivables { get; set; }
-        public string Inventory { get; set; }
-        public string OtherCurrentAssets { get; set; }
-        public string TotalCurrentAssets { get; set; }
-        public string LongTermInvestments { get; set; }
-        public string PropertyPlantEquipment { get; set; }
-        public string GoodWill { get; set; }
-        public string IntangibleAssets { get; set; }
-        public string OtherAssets { get; set; }
-        public string TotalAssets { get; set; }
-        public string AccountsPayable { get; set; }
-        public string ShortLongTermDebt { get; set; }
-        public string OtherCurrentLiab { get; set; }
-        public string LongTermDebt { get; set; }
-        public string OtherLiab { get; set; }
-        public string DeferredLongTermLiab { get; set; }
-        public string TotalCurrentLiabilities { get; set; }
-        public string TotalLiab { get; set; }
-        public string CommonStock { get; set; }
-        public string RetainedEarnings { get; set; }
-        public string OtherStockholderEquity { get; set; }
-        public string TotalStockholderEquity { get; set; }
-        public string NetTangibleAssets { get; set; }
+        public double Cash { get; set; }
+        public double ShortTermInvestments { get; set; }
+        public double NetReceivables { get; set; }
+        public double Inventory { get; set; }
+        public double OtherCurrentAssets { get; set; }
+        public double TotalCurrentAssets { get; set; }
+        public double LongTermInvestments { get; set; }
+        public double PropertyPlantEquipment { get; set; }
+        public double GoodWill { get; set; }
+        public double IntangibleAssets { get; set; }
+        public double OtherAssets { get; set; }
+        public double TotalAssets { get; set; }
+        public double AccountsPayable { get; set; }
+        public double ShortLongTermDebt { get; set; }
+        public double OtherCurrentLiab { get; set; }
+        public double LongTermDebt { get; set; }
+        public double OtherLiab { get; set; }
+        public double DeferredLongTermLiab { get; set; }
+        public double TotalCurrentLiabilities { get; set; }
+        public double TotalLiab { get; set; }
+        public double CommonStock { get; set; }
+        public double RetainedEarnings { get; set; }
+        public double OtherStockholderEquity { get; set; }
+        public double TotalStockholderEquity { get; set; }
+        public double NetTangibleAssets { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
         public string CreatedByUser { get; set; }
     }

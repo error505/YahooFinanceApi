@@ -243,6 +243,22 @@
     <Compile Include="Migrations\20170511083703_FinancialDataCHange.designer.cs">
       <DependentUpon>20170511083703_FinancialDataCHange.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170511094653_MajorHolderChange.cs" />
+    <Compile Include="Migrations\20170511094653_MajorHolderChange.designer.cs">
+      <DependentUpon>20170511094653_MajorHolderChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170511110904_InsiderTransactionsChange.cs" />
+    <Compile Include="Migrations\20170511110904_InsiderTransactionsChange.designer.cs">
+      <DependentUpon>20170511110904_InsiderTransactionsChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170511111919_InsiderHoldersChange.cs" />
+    <Compile Include="Migrations\20170511111919_InsiderHoldersChange.designer.cs">
+      <DependentUpon>20170511111919_InsiderHoldersChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170511124944_BalanceSheetHistoryChange.cs" />
+    <Compile Include="Migrations\20170511124944_BalanceSheetHistoryChange.designer.cs">
+      <DependentUpon>20170511124944_BalanceSheetHistoryChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\IYahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\YahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\CallWebRequest.cs" />

@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170511110904_InsiderTransactionsChange")]
+    partial class InsiderTransactionsChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -21,11 +22,11 @@ namespace StockExchangeYahooFinance.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("AccountsPayable");
+                    b.Property<string>("AccountsPayable");
 
-                    b.Property<double>("Cash");
+                    b.Property<string>("Cash");
 
-                    b.Property<double>("CommonStock");
+                    b.Property<string>("CommonStock");
 
                     b.Property<string>("CompaniesId");
 
@@ -33,51 +34,51 @@ namespace StockExchangeYahooFinance.Migrations
 
                     b.Property<DateTime>("CreationTime");
 
-                    b.Property<double>("DeferredLongTermLiab");
+                    b.Property<string>("DeferredLongTermLiab");
 
                     b.Property<string>("EndDate");
 
-                    b.Property<double>("GoodWill");
+                    b.Property<string>("GoodWill");
 
-                    b.Property<double>("IntangibleAssets");
+                    b.Property<string>("IntangibleAssets");
 
-                    b.Property<double>("Inventory");
+                    b.Property<string>("Inventory");
 
-                    b.Property<double>("LongTermDebt");
+                    b.Property<string>("LongTermDebt");
 
-                    b.Property<double>("LongTermInvestments");
+                    b.Property<string>("LongTermInvestments");
 
-                    b.Property<double>("NetReceivables");
+                    b.Property<string>("NetReceivables");
 
-                    b.Property<double>("NetTangibleAssets");
+                    b.Property<string>("NetTangibleAssets");
 
-                    b.Property<double>("OtherAssets");
+                    b.Property<string>("OtherAssets");
 
-                    b.Property<double>("OtherCurrentAssets");
+                    b.Property<string>("OtherCurrentAssets");
 
-                    b.Property<double>("OtherCurrentLiab");
+                    b.Property<string>("OtherCurrentLiab");
 
-                    b.Property<double>("OtherLiab");
+                    b.Property<string>("OtherLiab");
 
-                    b.Property<double>("OtherStockholderEquity");
+                    b.Property<string>("OtherStockholderEquity");
 
-                    b.Property<double>("PropertyPlantEquipment");
+                    b.Property<string>("PropertyPlantEquipment");
 
-                    b.Property<double>("RetainedEarnings");
+                    b.Property<string>("RetainedEarnings");
 
-                    b.Property<double>("ShortLongTermDebt");
+                    b.Property<string>("ShortLongTermDebt");
 
-                    b.Property<double>("ShortTermInvestments");
+                    b.Property<string>("ShortTermInvestments");
 
-                    b.Property<double>("TotalAssets");
+                    b.Property<string>("TotalAssets");
 
-                    b.Property<double>("TotalCurrentAssets");
+                    b.Property<string>("TotalCurrentAssets");
 
-                    b.Property<double>("TotalCurrentLiabilities");
+                    b.Property<string>("TotalCurrentLiabilities");
 
-                    b.Property<double>("TotalLiab");
+                    b.Property<string>("TotalLiab");
 
-                    b.Property<double>("TotalStockholderEquity");
+                    b.Property<string>("TotalStockholderEquity");
 
                     b.HasKey("Id");
 
@@ -1325,15 +1326,15 @@ namespace StockExchangeYahooFinance.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<double>("PositionDirect");
+                    b.Property<string>("PositionDirect");
 
                     b.Property<string>("PositionDirectDate");
 
-                    b.Property<double>("PositionIndirect");
+                    b.Property<string>("PositionIndirect");
 
                     b.Property<string>("PositionIndirectDate");
 
-                    b.Property<double>("PositionSummary");
+                    b.Property<string>("PositionSummary");
 
                     b.Property<string>("PositionSummaryDate");
 

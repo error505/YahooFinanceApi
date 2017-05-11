@@ -13,8 +13,8 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
-        public string Shares { get; set; }
-        public string Value { get; set; }
+        public double Shares { get; set; }
+        public double Value { get; set; }
         public string FilerUrl { get; set; }
         public string TransactionText { get; set; }
         public string FilerName { get; set; }

@@ -196,89 +196,176 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 {
                     if (symbolId != null)
                     {
-                        foreach (var i in assetProfile.First)
+                        if (assetProfile != null)
                         {
-                            var h = new CompanyProfile();
-                            var address1 = i.SelectToken(YahooCompProfile.Address1);
-                            var city = i.SelectToken(YahooCompProfile.City);
-                            var zip = i.SelectToken(YahooCompProfile.Zip);
-                            var country = i.SelectToken(YahooCompProfile.Country);
-                            var phone = i.SelectToken(YahooCompProfile.Phone);
-                            var website = i.SelectToken(YahooCompProfile.Website);
-                            var fax = i.SelectToken(YahooCompProfile.Fax);
-                            var industry = i.SelectToken(YahooCompProfile.Industry);
-                            var industrySymbol = i.SelectToken(YahooCompProfile.IndustrySymbol);
-                            var industryId = await _repository.GetIndustryByName(industry.ToString());
-                            var sector = i.SelectToken(YahooCompProfile.Sector);
-                            var sectorId = await _repository.GetSectorByNameAddNonExisting(sector.ToString());
-                            var longBusinessSummary = i.SelectToken(YahooCompProfile.LongBusinessSummary);
-                            var fullTimeEmployees = i.SelectToken(YahooCompProfile.FullTimeEmployees);
-                            var auditRisk = i.SelectToken(YahooCompProfile.AuditRisk);
-                            var boardRisk = i.SelectToken(YahooCompProfile.BoardRisk);
-                            var compensationRisk = i.SelectToken(YahooCompProfile.CompensationRisk);
-                            var shareHolderRightsRisk = i.SelectToken(YahooCompProfile.ShareHolderRightsRisk);
-                            var overallRisk = i.SelectToken(YahooCompProfile.OverallRisk);
-                            var governanceEpochDate = i.SelectToken(YahooCompProfile.GovernanceEpochDate);
-                            var compensationAsOfEpochDate = i.SelectToken(YahooCompProfile.CompensationAsOfEpochDate);
-                            if (symbolId != null) h.CompaniesId = symbolId.Id;
-                            if (address1 != null) h.Address1 = address1.ToString();
-                            if (city != null) h.City = city.ToString();
-                            if (zip != null) h.Zip = zip.ToString();
-                            if (phone != null) h.Phone = phone.ToString();
-                            if (fax != null) h.Fax = fax.ToString();
-                            if (website != null) h.Website = website.ToString();
-                            if (industryId != null) h.IndustryId = industryId.Id;
-                            h.IndustrySymbolId = null;
-                            if (sectorId != null) h.SectorId = sectorId.Id;
-                            if (longBusinessSummary != null) h.LongBusinessSummary = longBusinessSummary.ToString();
-                            if (fullTimeEmployees != null) h.FullTimeEmployees = (int)fullTimeEmployees;
-                            if (auditRisk != null) h.AuditRisk = (int)auditRisk;
-                            if (boardRisk != null) h.BoardRisk = (int)boardRisk;
-                            if (compensationRisk != null) h.CompensationRisk = (int)compensationRisk;
-                            if (shareHolderRightsRisk != null) h.ShareHolderRightsRisk = (int)shareHolderRightsRisk;
-                            if (overallRisk != null) h.OverallRisk = (int)overallRisk;
-                            if (governanceEpochDate != null) h.GovernanceEpochDate = Convert.ToInt32(governanceEpochDate);
-                            if (compensationAsOfEpochDate != null) h.CompensationAsOfEpochDate = Convert.ToInt32(compensationAsOfEpochDate);
-                            Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
-                            await _repository.AddCompanyProfile(h);
-                            companyProfileId = h.Id;
-                        }
-                        foreach (var s in companyOfficers)
+                            foreach (var i in assetProfile.First)
+                            {
+                                var h = new CompanyProfile();
+                                var address1 = i.SelectToken(YahooCompProfile.Address1);
+                                var city = i.SelectToken(YahooCompProfile.City);
+                                var zip = i.SelectToken(YahooCompProfile.Zip);
+                                var country = i.SelectToken(YahooCompProfile.Country);
+                                var phone = i.SelectToken(YahooCompProfile.Phone);
+                                var website = i.SelectToken(YahooCompProfile.Website);
+                                var fax = i.SelectToken(YahooCompProfile.Fax);
+                                var industry = i.SelectToken(YahooCompProfile.Industry);
+                                var industrySymbol = i.SelectToken(YahooCompProfile.IndustrySymbol);
+                                var industryId = await _repository.GetIndustryByName(industry.ToString());
+                                var sector = i.SelectToken(YahooCompProfile.Sector);
+                                var sectorId = await _repository.GetSectorByNameAddNonExisting(sector.ToString());
+                                var longBusinessSummary = i.SelectToken(YahooCompProfile.LongBusinessSummary);
+                                var fullTimeEmployees = i.SelectToken(YahooCompProfile.FullTimeEmployees);
+                                var auditRisk = i.SelectToken(YahooCompProfile.AuditRisk);
+                                var boardRisk = i.SelectToken(YahooCompProfile.BoardRisk);
+                                var compensationRisk = i.SelectToken(YahooCompProfile.CompensationRisk);
+                                var shareHolderRightsRisk = i.SelectToken(YahooCompProfile.ShareHolderRightsRisk);
+                                var overallRisk = i.SelectToken(YahooCompProfile.OverallRisk);
+                                var governanceEpochDate = i.SelectToken(YahooCompProfile.GovernanceEpochDate);
+                                var compensationAsOfEpochDate = i.SelectToken(YahooCompProfile.CompensationAsOfEpochDate);
+                                if (symbolId != null) h.CompaniesId = symbolId.Id;
+                                if (address1 != null) h.Address1 = address1.ToString();
+                                if (city != null) h.City = city.ToString();
+                                if (zip != null) h.Zip = zip.ToString();
+                                if (phone != null) h.Phone = phone.ToString();
+                                if (fax != null) h.Fax = fax.ToString();
+                                if (website != null) h.Website = website.ToString();
+                                if (industryId != null) h.IndustryId = industryId.Id;
+                                h.IndustrySymbolId = null;
+                                if (sectorId != null) h.SectorId = sectorId.Id;
+                                if (longBusinessSummary != null) h.LongBusinessSummary = longBusinessSummary.ToString();
+                                if (fullTimeEmployees != null) h.FullTimeEmployees = (int)fullTimeEmployees;
+                                if (auditRisk != null) h.AuditRisk = (int)auditRisk;
+                                if (boardRisk != null) h.BoardRisk = (int)boardRisk;
+                                if (compensationRisk != null) h.CompensationRisk = (int)compensationRisk;
+                                if (shareHolderRightsRisk != null) h.ShareHolderRightsRisk = (int)shareHolderRightsRisk;
+                                if (overallRisk != null) h.OverallRisk = (int)overallRisk;
+                                if (governanceEpochDate != null) h.GovernanceEpochDate = Convert.ToInt32(governanceEpochDate);
+                                if (compensationAsOfEpochDate != null) h.CompensationAsOfEpochDate = Convert.ToInt32(compensationAsOfEpochDate);
+                                Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
+                                await _repository.AddCompanyProfile(h);
+                                companyProfileId = h.Id;
+                            }
+                        }                        
+                        if (companyOfficers != null)
                         {
-                            var compOffices = new CompanyOfficers();
-                            var maxAge = s.SelectToken(YahooCompProfile.MaxAge);
-                            var name = s.SelectToken(YahooCompProfile.Name);
-                            var age = s.SelectToken(YahooCompProfile.Age);
-                            var title = s.SelectToken(YahooCompProfile.Title);
-                            var fiscalYear = s.SelectToken(YahooCompProfile.FiscalYear);
-                            var totalPay = s.SelectToken(YahooCompProfile.TotalPay);
-                            var exercisedValue = s.SelectToken(YahooCompProfile.ExercisedValue);
-                            var unExercisedValue = s.SelectToken(YahooCompProfile.UnexercisedValue);
-                            if (unExercisedValue != null && unExercisedValue.Count() != 0)
+                            foreach (var s in companyOfficers)
                             {
-                                var unexcValue = s["unexercisedValue"]["raw"];
-                                compOffices.UnexercisedValue = (int)(unexcValue);
+                                var compOffices = new CompanyOfficers();
+                                var maxAge = s.SelectToken(YahooCompProfile.MaxAge);
+                                var name = s.SelectToken(YahooCompProfile.Name);
+                                var age = s.SelectToken(YahooCompProfile.Age);
+                                var title = s.SelectToken(YahooCompProfile.Title);
+                                var fiscalYear = s.SelectToken(YahooCompProfile.FiscalYear);
+                                var totalPay = s.SelectToken(YahooCompProfile.TotalPay);
+                                var exercisedValue = s.SelectToken(YahooCompProfile.ExercisedValue);
+                                var unExercisedValue = s.SelectToken(YahooCompProfile.UnexercisedValue);
+                                if (unExercisedValue != null && unExercisedValue.Count() != 0)
+                                {
+                                    var unexcValue = s["unexercisedValue"]["raw"];
+                                    compOffices.UnexercisedValue = (int)(unexcValue);
+                                }
+                                if (totalPay != null && totalPay.Count() != 0)
+                                {
+                                    var row = s["totalPay"]["raw"];
+                                    compOffices.TotalPay = (int)(row);
+                                }
+                                if (exercisedValue != null && exercisedValue.Count() != 0)
+                                {
+                                    var longExercisedValue = s["exercisedValue"]["raw"];
+                                    compOffices.ExercisedValue = (int)(longExercisedValue);
+                                }
+                                if (companyProfileId != null) compOffices.CompanyProfileId = companyProfileId;
+                                if (symbolId != null) compOffices.CompaniesId = symbolId.Id;
+                                if (maxAge != null) compOffices.MaxAge = Convert.ToInt32(maxAge);
+                                if (name != null) compOffices.Name = name.ToString();
+                                if (age != null) compOffices.Age = Convert.ToInt32(age);
+                                if (title != null) compOffices.Title = title.ToString();
+                                if (fiscalYear != null) compOffices.FiscalYear = fiscalYear.ToString();
+                                await _repository.AddCompanyOfficers(compOffices);
+                                Console.WriteLine($"{name} : {age} : {title} : {fiscalYear}");
                             }
-                            if (totalPay != null && totalPay.Count() != 0)
-                            {
-                                var row = s["totalPay"]["raw"];
-                                compOffices.TotalPay = (int)(row);
-                            }
-                            if (exercisedValue != null && exercisedValue.Count() != 0)
-                            {
-                                var longExercisedValue = s["exercisedValue"]["raw"];
-                                compOffices.ExercisedValue = (int)(longExercisedValue);
-                            }
-                            if (companyProfileId != null) compOffices.CompanyProfileId = companyProfileId;
-                            if (symbolId != null) compOffices.CompaniesId = symbolId.Id;
-                            if (maxAge != null) compOffices.MaxAge = Convert.ToInt32(maxAge);
-                            if (name != null) compOffices.Name = name.ToString();
-                            if (age != null) compOffices.Age = Convert.ToInt32(age);
-                            if (title != null) compOffices.Title = title.ToString();
-                            if (fiscalYear != null) compOffices.FiscalYear = fiscalYear.ToString();
-                            await _repository.AddCompanyOfficers(compOffices);
-                            Console.WriteLine($"{name} : {age} : {title} : {fiscalYear}");
                         }
+                        
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooCompanyProfileSummary(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.SummaryProfile + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var assetProfile = d["quoteSummary"]["result"][0];
+                string companyProfileId = null;
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        if (assetProfile != null)
+                        {
+                            foreach (var i in assetProfile.First)
+                            {
+                                var h = new CompanyProfile();
+                                var address1 = i.SelectToken(YahooCompProfile.Address1);
+                                var city = i.SelectToken(YahooCompProfile.City);
+                                var zip = i.SelectToken(YahooCompProfile.Zip);
+                                var country = i.SelectToken(YahooCompProfile.Country);
+                                var phone = i.SelectToken(YahooCompProfile.Phone);
+                                var website = i.SelectToken(YahooCompProfile.Website);
+                                var fax = i.SelectToken(YahooCompProfile.Fax);
+                                var industry = i.SelectToken(YahooCompProfile.Industry);
+                                var industryId = await _repository.GetIndustryByName(industry.ToString());
+                                var sector = i.SelectToken(YahooCompProfile.Sector);
+                                var sectorId = await _repository.GetSectorByNameAddNonExisting(sector.ToString());
+                                var longBusinessSummary = i.SelectToken(YahooCompProfile.LongBusinessSummary);
+                                var fullTimeEmployees = i.SelectToken(YahooCompProfile.FullTimeEmployees);
+                                var auditRisk = i.SelectToken(YahooCompProfile.AuditRisk);
+                                var boardRisk = i.SelectToken(YahooCompProfile.BoardRisk);
+                                var compensationRisk = i.SelectToken(YahooCompProfile.CompensationRisk);
+                                var shareHolderRightsRisk = i.SelectToken(YahooCompProfile.ShareHolderRightsRisk);
+                                var overallRisk = i.SelectToken(YahooCompProfile.OverallRisk);
+                                var governanceEpochDate = i.SelectToken(YahooCompProfile.GovernanceEpochDate);
+                                var compensationAsOfEpochDate = i.SelectToken(YahooCompProfile.CompensationAsOfEpochDate);
+                                if (symbolId != null) h.CompaniesId = symbolId.Id;
+                                if (address1 != null) h.Address1 = address1.ToString();
+                                if (city != null) h.City = city.ToString();
+                                if (zip != null) h.Zip = zip.ToString();
+                                if (phone != null) h.Phone = phone.ToString();
+                                if (fax != null) h.Fax = fax.ToString();
+                                if (website != null) h.Website = website.ToString();
+                                if (industryId != null) h.IndustryId = industryId.Id;
+                                h.IndustrySymbolId = null;
+                                if (sectorId != null) h.SectorId = sectorId.Id;
+                                if (longBusinessSummary != null) h.LongBusinessSummary = longBusinessSummary.ToString();
+                                if (fullTimeEmployees != null) h.FullTimeEmployees = (int)fullTimeEmployees;
+                                if (auditRisk != null) h.AuditRisk = (int)auditRisk;
+                                if (boardRisk != null) h.BoardRisk = (int)boardRisk;
+                                if (compensationRisk != null) h.CompensationRisk = (int)compensationRisk;
+                                if (shareHolderRightsRisk != null) h.ShareHolderRightsRisk = (int)shareHolderRightsRisk;
+                                if (overallRisk != null) h.OverallRisk = (int)overallRisk;
+                                if (governanceEpochDate != null) h.GovernanceEpochDate = Convert.ToInt32(governanceEpochDate);
+                                if (compensationAsOfEpochDate != null) h.CompensationAsOfEpochDate = Convert.ToInt32(compensationAsOfEpochDate);
+                                Console.WriteLine($"{symbolId.Name}:{Cfg.SymbolTicker} : {address1} : {city} : {zip} : {phone}");
+                                await _repository.AddCompanyProfile(h);
+                            }
+                        }                        
                         companyExists = false;
                     }
                     else
@@ -309,6 +396,185 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var d = JObject.Parse(json);
                 var symbolId = await _repository.GetCompanyByName(model.Ticker);
                 var incomeStatementHistory = d["quoteSummary"]["result"][0][Ym.IncomeStatementHistory][Ym.IncomeStatementHistory];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in incomeStatementHistory)
+                        {
+                            var iSh = new IncomeStatementHistory();
+                            var endDate = i.SelectToken(Ymf.EndDate);
+                            string formatedEndDate = null;
+                            if (endDate != null && endDate.Count() != 0)
+                            {
+                                formatedEndDate = endDate["fmt"].ToString();
+                                iSh.EndDate = formatedEndDate;
+                            }
+                            var totalRevenue = i.SelectToken(Ymf.TotalRevenue);
+                            string totalRevenueRaw = null;
+                            if (totalRevenue != null && totalRevenue.Count() != 0)
+                            {
+                                totalRevenueRaw = totalRevenue["raw"].ToString();
+                                iSh.TotalRevenue = totalRevenueRaw;
+                            }
+                            var costOfRevenue = i.SelectToken(Ymf.CostOfRevenue);
+                            if (costOfRevenue != null && costOfRevenue.Count() != 0)
+                            {
+                                var costOfRevenueRaw = costOfRevenue["raw"].ToString();
+                                iSh.CostOfRevenue = costOfRevenueRaw;
+                            }
+                            var grossProfit = i.SelectToken(Ymf.GrossProfit);
+                            if (grossProfit != null && grossProfit.Count() != 0)
+                            {
+                                var grossProfitRaw = grossProfit["raw"].ToString();
+                                iSh.GrossProfit = grossProfitRaw;
+                            }
+                            var researchDevelopment = i.SelectToken(Ymf.ResearchDevelopment);
+                            if (researchDevelopment != null && researchDevelopment.Count() != 0)
+                            {
+                                var researchDevelopmentRaw = researchDevelopment["raw"].ToString();
+                                iSh.ResearchDevelopment = researchDevelopmentRaw;
+                            }
+                            var sellingGeneralAdministrative = i.SelectToken(Ymf.SellingGeneralAdministrative);
+                            if (sellingGeneralAdministrative != null && sellingGeneralAdministrative.Count() != 0)
+                            {
+                                var sellingGeneralAdministrativeRaw = sellingGeneralAdministrative["raw"].ToString();
+                                iSh.SellingGeneralAdministrative = sellingGeneralAdministrativeRaw;
+                            }
+                            var nonRecurring = i.SelectToken(Ymf.NonRecurring);
+                            if (nonRecurring != null && nonRecurring.Count() != 0)
+                            {
+                                var nonRecurringRaw = nonRecurring["raw"].ToString();
+                                iSh.NonRecurring = nonRecurringRaw;
+                            }
+                            var otherOperatingExpenses = i.SelectToken(Ymf.OtherOperatingExpenses);
+                            if (otherOperatingExpenses != null && otherOperatingExpenses.Count() != 0)
+                            {
+                                var otherOperatingExpensesRaw = otherOperatingExpenses["raw"].ToString();
+                                iSh.OtherOperatingExpenses = otherOperatingExpensesRaw;
+                            }
+                            var totalOperatingExpenses = i.SelectToken(Ymf.TotalOperatingExpenses);
+                            if (totalOperatingExpenses != null && totalOperatingExpenses.Count() != 0)
+                            {
+                                var totalOperatingExpensesRaw = totalOperatingExpenses["raw"].ToString();
+                                iSh.TotalOperatingExpenses = totalOperatingExpensesRaw;
+                            }
+                            var operatingIncome = i.SelectToken(Ymf.OperatingIncome);
+                            if (operatingIncome != null && operatingIncome.Count() != 0)
+                            {
+                                var operatingIncomeRaw = operatingIncome["raw"].ToString();
+                                iSh.OperatingIncome = operatingIncomeRaw;
+                            }
+                            var totalOtherIncomeExpenseNet = i.SelectToken(Ymf.TotalOtherIncomeExpenseNet);
+                            if (totalOtherIncomeExpenseNet != null && totalOtherIncomeExpenseNet.Count() != 0)
+                            {
+                                var totalOtherIncomeExpenseNetRaw = totalOtherIncomeExpenseNet["raw"].ToString();
+                                iSh.TotalOtherIncomeExpenseNet = totalOtherIncomeExpenseNetRaw;
+                            }
+                            var ebit = i.SelectToken(Ymf.Ebit);
+                            if (ebit != null && ebit.Count() != 0)
+                            {
+                                var ebitRaw = ebit["raw"].ToString();
+                                iSh.Ebit = ebitRaw;
+                            }
+                            var interestExpense = i.SelectToken(Ymf.InterestExpense);
+                            if (interestExpense != null && interestExpense.Count() != 0)
+                            {
+                                var interestExpenseRaw = interestExpense["raw"].ToString();
+                                iSh.InterestExpense = interestExpenseRaw;
+                            }
+                            var incomeBeforeTax = i.SelectToken(Ymf.IncomeBeforeTax);
+                            if (incomeBeforeTax != null && incomeBeforeTax.Count() != 0)
+                            {
+                                var incomeBeforeTaxRaw = incomeBeforeTax["raw"].ToString();
+                                iSh.IncomeBeforeTax = incomeBeforeTaxRaw;
+                            }
+                            var incomeTaxExpense = i.SelectToken(Ymf.IncomeTaxExpense);
+                            if (incomeTaxExpense != null && incomeTaxExpense.Count() != 0)
+                            {
+                                var incomeTaxExpenseRaw = incomeTaxExpense["raw"].ToString();
+                                iSh.IncomeTaxExpense = incomeTaxExpenseRaw;
+                            }
+                            var minorityInterest = i.SelectToken(Ymf.MinorityInterest);
+                            if (minorityInterest != null && minorityInterest.Count() != 0)
+                            {
+                                var minorityInterestRaw = minorityInterest["raw"].ToString();
+                                iSh.MinorityInterest = minorityInterestRaw;
+                            }
+                            var discontinuedOperations = i.SelectToken(Ymf.DiscontinuedOperations);
+                            if (discontinuedOperations != null && discontinuedOperations.Count() != 0)
+                            {
+                                var discontinuedOperationsRaw = discontinuedOperations["raw"].ToString();
+                                iSh.DiscontinuedOperations = discontinuedOperationsRaw;
+                            }
+                            var extraordinaryItems = i.SelectToken(Ymf.ExtraordinaryItems);
+                            if (extraordinaryItems != null && extraordinaryItems.Count() != 0)
+                            {
+                                var extraordinaryItemsRaw = extraordinaryItems["raw"].ToString();
+                                iSh.ExtraordinaryItems = extraordinaryItemsRaw;
+                            }
+                            var effectOfAccountingCharges = i.SelectToken(Ymf.EffectOfAccountingCharges);
+                            if (effectOfAccountingCharges != null && effectOfAccountingCharges.Count() != 0)
+                            {
+                                var effectOfAccountingChargesRaw = effectOfAccountingCharges["raw"].ToString();
+                                iSh.EffectOfAccountingCharges = effectOfAccountingChargesRaw;
+                            }
+                            var otherItems = i.SelectToken(Ymf.OtherItems);
+                            if (otherItems != null && otherItems.Count() != 0)
+                            {
+                                var otherItemsRaw = otherItems["raw"].ToString();
+                                iSh.OtherItems = otherItemsRaw;
+                            }
+                            var netIncome = i.SelectToken(Ymf.NetIncome);
+                            if (netIncome != null && netIncome.Count() != 0)
+                            {
+                                var netIncomeRaw = netIncome["raw"].ToString();
+                                iSh.NetIncome = netIncomeRaw;
+                            }
+                            var netIncomeApplicableToCommonShares = i.SelectToken(Ymf.NetIncomeApplicableToCommonShares);
+                            if (netIncomeApplicableToCommonShares != null && netIncomeApplicableToCommonShares.Count() != 0)
+                            {
+                                var netIncomeApplicableToCommonSharesRaw = netIncomeApplicableToCommonShares["raw"].ToString();
+                                iSh.NetIncomeApplicableToCommonShares = netIncomeApplicableToCommonSharesRaw;
+                            }
+                            var netIncomeFromContinuingOps = i.SelectToken(Ymf.NetIncomeFromContinuingOps);
+                            if (netIncomeFromContinuingOps != null && netIncomeFromContinuingOps.Count() != 0)
+                            {
+                                var netIncomeFromContinuingOpsRaw = netIncomeApplicableToCommonShares["raw"].ToString();
+                                iSh.NetIncomeFromContinuingOps = netIncomeFromContinuingOpsRaw;
+                            }
+                            Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {totalRevenueRaw}");
+                            iSh.CompaniesId = symbolId.Id;
+                            iSh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddIncomeStatementHistory(iSh);
+                        }
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooIncomeStatementHistoryQuarterly(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.IncomeStatementHistoryQuarterly + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var incomeStatementHistory = d["quoteSummary"]["result"][0][Ym.IncomeStatementHistoryQuarterly][Ym.IncomeStatementHistory];
                 var companyExists = true;
                 while (companyExists)
                 {
@@ -628,6 +894,366 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             cfsh.CompaniesId = symbolId.Id;
                             cfsh.CreatedByUser = Cfg.UserName;
                             await _repository.AddCashflowStatementHistory(cfsh);
+                        }
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooCashflowStatementHistoryQuarterly(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.CashflowStatementHistoryQuarterly + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var cashflowStatement = d["quoteSummary"]["result"][0][Ym.CashflowStatementHistoryQuarterly]["cashflowStatements"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in cashflowStatement)
+                        {
+                            var cfsh = new CashflowStatement();
+                            var endDate = i.SelectToken(Ymf.EndDate);
+                            string formatedEndDate = null;
+                            if (endDate != null && endDate.Count() != 0)
+                            {
+                                formatedEndDate = endDate["fmt"].ToString();
+                                cfsh.EndDate = formatedEndDate;
+                            }
+                            var depreciation = i.SelectToken(Ymf.Depreciation);
+                            string depreciationRaw = null;
+                            if (depreciation != null && depreciation.Count() != 0)
+                            {
+                                depreciationRaw = depreciation["raw"].ToString();
+                                cfsh.Depreciation = depreciationRaw;
+                            }
+
+                            var otherCashflowsFromFinancingActivities = i.SelectToken(Ymf.OtherCashflowsFromFinancingActivities);
+                            if (otherCashflowsFromFinancingActivities != null && otherCashflowsFromFinancingActivities.Count() != 0)
+                            {
+                                var otherCashflowsFromFinancingActivitiesRaw = otherCashflowsFromFinancingActivities["raw"].ToString();
+                                cfsh.OtherCashflowsFromFinancingActivities = otherCashflowsFromFinancingActivitiesRaw;
+                            }
+                            var changeToInventory = i.SelectToken(Ymf.ChangeToInventory);
+                            if (changeToInventory != null && changeToInventory.Count() != 0)
+                            {
+                                var changeToInventoryRaw = changeToInventory["raw"].ToString();
+                                cfsh.ChangeToInventory = changeToInventoryRaw;
+                            }
+                            var capitalExpenditures = i.SelectToken(Ymf.CapitalExpenditures);
+                            if (capitalExpenditures != null && capitalExpenditures.Count() != 0)
+                            {
+                                var capitalExpendituresRaw = capitalExpenditures["raw"].ToString();
+                                cfsh.CapitalExpenditures = capitalExpendituresRaw;
+                            }
+                            var netIncome = i.SelectToken(Ymf.NetIncome);
+                            if (netIncome != null && netIncome.Count() != 0)
+                            {
+                                var netIncomeRaw = netIncome["raw"].ToString();
+                                cfsh.NetIncome = netIncomeRaw;
+                            }
+                            var changeToNetincome = i.SelectToken(Ymf.ChangeToNetincome);
+                            if (changeToNetincome != null && changeToNetincome.Count() != 0)
+                            {
+                                var changeToNetincomeRaw = changeToNetincome["raw"].ToString();
+                                cfsh.ChangeToNetincome = changeToNetincomeRaw;
+                            }
+                            var changeToAccountReceivables = i.SelectToken(Ymf.ChangeToAccountReceivables);
+                            if (changeToAccountReceivables != null && changeToAccountReceivables.Count() != 0)
+                            {
+                                var changeToAccountReceivablesRaw = changeToAccountReceivables["raw"].ToString();
+                                cfsh.ChangeToAccountReceivables = changeToAccountReceivablesRaw;
+                            }
+                            var changeToLiabilities = i.SelectToken(Ymf.ChangeToLiabilities);
+                            if (changeToLiabilities != null && changeToLiabilities.Count() != 0)
+                            {
+                                var changeToLiabilitiesRaw = changeToLiabilities["raw"].ToString();
+                                cfsh.ChangeToLiabilities = changeToLiabilitiesRaw;
+                            }
+                            var changeToOperatingActivities = i.SelectToken(Ymf.ChangeToOperatingActivities);
+                            if (changeToOperatingActivities != null && changeToOperatingActivities.Count() != 0)
+                            {
+                                var changeToOperatingActivitiesRaw = changeToOperatingActivities["raw"].ToString();
+                                cfsh.ChangeToOperatingActivities = changeToOperatingActivitiesRaw;
+                            }
+                            var totalCashFromOperatingActivities = i.SelectToken(Ymf.TotalCashFromOperatingActivities);
+                            if (totalCashFromOperatingActivities != null && totalCashFromOperatingActivities.Count() != 0)
+                            {
+                                var totalCashFromOperatingActivitiesRaw = totalCashFromOperatingActivities["raw"].ToString();
+                                cfsh.TotalCashFromOperatingActivities = totalCashFromOperatingActivitiesRaw;
+                            }
+                            var investments = i.SelectToken(Ymf.Investments);
+                            if (investments != null && investments.Count() != 0)
+                            {
+                                var investmentsRaw = investments["raw"].ToString();
+                                cfsh.Investments = investmentsRaw;
+                            }
+                            var otherCashflowsFromInvestingActivities = i.SelectToken(Ymf.OtherCashflowsFromInvestingActivities);
+                            if (otherCashflowsFromInvestingActivities != null && otherCashflowsFromInvestingActivities.Count() != 0)
+                            {
+                                var otherCashflowsFromInvestingActivitiesRaw = otherCashflowsFromInvestingActivities["raw"].ToString();
+                                cfsh.OtherCashflowsFromInvestingActivities = otherCashflowsFromInvestingActivitiesRaw;
+                            }
+                            var totalCashflowsFromInvestingActivities = i.SelectToken(Ymf.TotalCashflowsFromInvestingActivities);
+                            if (totalCashflowsFromInvestingActivities != null && totalCashflowsFromInvestingActivities.Count() != 0)
+                            {
+                                var totalCashflowsFromInvestingActivitiesRaw = totalCashflowsFromInvestingActivities["raw"].ToString();
+                                cfsh.TotalCashflowsFromInvestingActivities = totalCashflowsFromInvestingActivitiesRaw;
+                            }
+                            var dividendsPaid = i.SelectToken(Ymf.DividendsPaid);
+                            if (dividendsPaid != null && dividendsPaid.Count() != 0)
+                            {
+                                var dividendsPaidRaw = dividendsPaid["raw"].ToString();
+                                cfsh.DividendsPaid = dividendsPaidRaw;
+                            }
+                            var salePurchaseOfStock = i.SelectToken(Ymf.SalePurchaseOfStock);
+                            if (salePurchaseOfStock != null && salePurchaseOfStock.Count() != 0)
+                            {
+                                var salePurchaseOfStockRaw = salePurchaseOfStock["raw"].ToString();
+                                cfsh.SalePurchaseOfStock = salePurchaseOfStockRaw;
+                            }
+                            var netBorrowings = i.SelectToken(Ymf.NetBorrowings);
+                            if (netBorrowings != null && netBorrowings.Count() != 0)
+                            {
+                                var netBorrowingsRaw = netBorrowings["raw"].ToString();
+                                cfsh.NetBorrowings = netBorrowingsRaw;
+                            }
+                            var totalCashFromFinancingActivities = i.SelectToken(Ymf.TotalCashFromFinancingActivities);
+                            if (totalCashFromFinancingActivities != null && totalCashFromFinancingActivities.Count() != 0)
+                            {
+                                var totalCashFromFinancingActivitiesRaw = totalCashFromFinancingActivities["raw"].ToString();
+                                cfsh.TotalCashFromFinancingActivities = totalCashFromFinancingActivitiesRaw;
+                            }
+                            var effectOfExchangeRate = i.SelectToken(Ymf.EffectOfExchangeRate);
+                            if (effectOfExchangeRate != null && effectOfExchangeRate.Count() != 0)
+                            {
+                                var effectOfExchangeRateRaw = effectOfExchangeRate["raw"].ToString();
+                                cfsh.EffectOfExchangeRate = effectOfExchangeRateRaw;
+                            }
+                            var changeInCash = i.SelectToken(Ymf.ChangeInCash);
+                            if (changeInCash != null && changeInCash.Count() != 0)
+                            {
+                                var changeInCashRaw = changeInCash["raw"].ToString();
+                                cfsh.ChangeInCash = changeInCashRaw;
+                            }
+                            Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {depreciationRaw}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddCashflowStatementHistory(cfsh);
+                        }
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooBalanceSheetHistory(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.BalanceSheetHistory + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var balanceSheetHistory = d["quoteSummary"]["result"][0][Ym.BalanceSheetHistory]["balanceSheetStatements"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in balanceSheetHistory)
+                        {
+                            var cfsh = new BalanceSheetStatements();
+                            var endDate = i.SelectToken(Ymf.EndDate);
+                            string formatedEndDate = null;
+                            if (endDate != null && endDate.Count() != 0)
+                            {
+                                formatedEndDate = endDate["fmt"].ToString();
+                                cfsh.EndDate = formatedEndDate;
+                            }
+                            var cash = i.SelectToken(Ymf.Cash);
+                            double cashRaw = 0;
+                            if (cash != null && cash.Count() != 0)
+                            {
+                                cashRaw = (double)cash["raw"];
+                                cfsh.Cash = cashRaw;
+                            }
+
+                            var shortTermInvestments = i.SelectToken(Ymf.ShortTermInvestments);
+                            if (shortTermInvestments != null && shortTermInvestments.Count() != 0)
+                            {
+                                var shortTermInvestmentsRaw = (double)shortTermInvestments["raw"];
+                                cfsh.ShortTermInvestments = shortTermInvestmentsRaw;
+                            }
+                            var netReceivables = i.SelectToken(Ymf.NetReceivables);
+                            if (netReceivables != null && netReceivables.Count() != 0)
+                            {
+                                var netReceivablesRaw = (double)netReceivables["raw"];
+                                cfsh.NetReceivables = netReceivablesRaw;
+                            }
+                            var inventory = i.SelectToken(Ymf.Inventory);
+                            if (inventory != null && inventory.Count() != 0)
+                            {
+                                var inventoryRaw = (double)inventory["raw"];
+                                cfsh.Inventory = inventoryRaw;
+                            }
+                            var otherCurrentAssets = i.SelectToken(Ymf.OtherCurrentAssets);
+                            if (otherCurrentAssets != null && otherCurrentAssets.Count() != 0)
+                            {
+                                var otherCurrentAssetsRaw = (double)otherCurrentAssets["raw"];
+                                cfsh.OtherCurrentAssets = otherCurrentAssetsRaw;
+                            }
+                            var totalCurrentAssets = i.SelectToken(Ymf.TotalCurrentAssets);
+                            if (totalCurrentAssets != null && totalCurrentAssets.Count() != 0)
+                            {
+                                var totalCurrentAssetsRaw = (double)totalCurrentAssets["raw"];
+                                cfsh.TotalCurrentAssets = totalCurrentAssetsRaw;
+                            }
+                            var longTermInvestments = i.SelectToken(Ymf.LongTermInvestments);
+                            if (longTermInvestments != null && longTermInvestments.Count() != 0)
+                            {
+                                var longTermInvestmentsRaw = (double)longTermInvestments["raw"];
+                                cfsh.LongTermInvestments = longTermInvestmentsRaw;
+                            }
+                            var propertyPlantEquipment = i.SelectToken(Ymf.PropertyPlantEquipment);
+                            if (propertyPlantEquipment != null && propertyPlantEquipment.Count() != 0)
+                            {
+                                var propertyPlantEquipmentRaw = (double)propertyPlantEquipment["raw"];
+                                cfsh.PropertyPlantEquipment = propertyPlantEquipmentRaw;
+                            }
+                            var goodWill = i.SelectToken(Ymf.GoodWill);
+                            if (goodWill != null && goodWill.Count() != 0)
+                            {
+                                var goodWillRaw = (double)goodWill["raw"];
+                                cfsh.GoodWill = goodWillRaw;
+                            }
+                            var intangibleAssets = i.SelectToken(Ymf.IntangibleAssets);
+                            if (intangibleAssets != null && intangibleAssets.Count() != 0)
+                            {
+                                var intangibleAssetsRaw = (double)intangibleAssets["raw"];
+                                cfsh.IntangibleAssets = intangibleAssetsRaw;
+                            }
+                            var otherAssets = i.SelectToken(Ymf.OtherAssets);
+                            if (otherAssets != null && otherAssets.Count() != 0)
+                            {
+                                var otherAssetsRaw = (double)otherAssets["raw"];
+                                cfsh.OtherAssets = otherAssetsRaw;
+                            }
+                            var totalAssets = i.SelectToken(Ymf.TotalAssets);
+                            if (totalAssets != null && totalAssets.Count() != 0)
+                            {
+                                var totalAssetsRaw = (double)totalAssets["raw"];
+                                cfsh.TotalAssets = totalAssetsRaw;
+                            }
+                            var accountsPayable = i.SelectToken(Ymf.AccountsPayable);
+                            if (accountsPayable != null && accountsPayable.Count() != 0)
+                            {
+                                var accountsPayableRaw = (double)accountsPayable["raw"];
+                                cfsh.AccountsPayable = accountsPayableRaw;
+                            }
+                            var shortLongTermDebt = i.SelectToken(Ymf.ShortLongTermDebt);
+                            if (shortLongTermDebt != null && shortLongTermDebt.Count() != 0)
+                            {
+                                var shortLongTermDebtRaw = (double)shortLongTermDebt["raw"];
+                                cfsh.ShortLongTermDebt = shortLongTermDebtRaw;
+                            }
+                            var otherCurrentLiab = i.SelectToken(Ymf.OtherCurrentLiab);
+                            if (otherCurrentLiab != null && otherCurrentLiab.Count() != 0)
+                            {
+                                var otherCurrentLiabRaw = (double)otherCurrentLiab["raw"];
+                                cfsh.OtherCurrentLiab = otherCurrentLiabRaw;
+                            }
+                            var longTermDebt = i.SelectToken(Ymf.LongTermDebt);
+                            if (longTermDebt != null && longTermDebt.Count() != 0)
+                            {
+                                var longTermDebtRaw = (double)longTermDebt["raw"];
+                                cfsh.LongTermDebt = longTermDebtRaw;
+                            }
+                            var otherLiab = i.SelectToken(Ymf.OtherLiab);
+                            if (otherLiab != null && otherLiab.Count() != 0)
+                            {
+                                var otherLiabRaw = (double)otherLiab["raw"];
+                                cfsh.OtherLiab = otherLiabRaw;
+                            }
+                            var deferredLongTermLiab = i.SelectToken(Ymf.DeferredLongTermLiab);
+                            if (deferredLongTermLiab != null && deferredLongTermLiab.Count() != 0)
+                            {
+                                var deferredLongTermLiabRaw = (double)deferredLongTermLiab["raw"];
+                                cfsh.DeferredLongTermLiab = deferredLongTermLiabRaw;
+                            }
+                            var totalCurrentLiabilities = i.SelectToken(Ymf.TotalCurrentLiabilities);
+                            if (totalCurrentLiabilities != null && totalCurrentLiabilities.Count() != 0)
+                            {
+                                var totalCurrentLiabilitiesRaw = (double)totalCurrentLiabilities["raw"];
+                                cfsh.TotalCurrentLiabilities = totalCurrentLiabilitiesRaw;
+                            }
+                            var totalLiab = i.SelectToken(Ymf.TotalLiab);
+                            if (totalLiab != null && totalLiab.Count() != 0)
+                            {
+                                var totalLiabRaw = (double)totalLiab["raw"];
+                                cfsh.TotalLiab = totalLiabRaw;
+                            }
+                            var commonStock = i.SelectToken(Ymf.CommonStock);
+                            if (commonStock != null && commonStock.Count() != 0)
+                            {
+                                var commonStockRaw = (double)commonStock["raw"];
+                                cfsh.CommonStock = commonStockRaw;
+                            }
+                            var retainedEarnings = i.SelectToken(Ymf.RetainedEarnings);
+                            if (retainedEarnings != null && retainedEarnings.Count() != 0)
+                            {
+                                var retainedEarningsRaw = (double)retainedEarnings["raw"];
+                                cfsh.RetainedEarnings = retainedEarningsRaw;
+                            }
+                            var otherStockholderEquity = i.SelectToken(Ymf.OtherStockholderEquity);
+                            if (otherStockholderEquity != null && otherStockholderEquity.Count() != 0)
+                            {
+                                var otherStockholderEquityRaw = (double)otherStockholderEquity["raw"];
+                                cfsh.OtherStockholderEquity = otherStockholderEquityRaw;
+                            }
+                            var totalStockholderEquity = i.SelectToken(Ymf.TotalStockholderEquity);
+                            if (totalStockholderEquity != null && totalStockholderEquity.Count() != 0)
+                            {
+                                var totalStockholderEquityRaw = (double)totalStockholderEquity["raw"];
+                                cfsh.TotalStockholderEquity = totalStockholderEquityRaw;
+                            }
+                            var netTangibleAssets = i.SelectToken(Ymf.NetTangibleAssets);
+                            if (netTangibleAssets != null && netTangibleAssets.Count() != 0)
+                            {
+                                var netTangibleAssetsRaw = (double)netTangibleAssets["raw"];
+                                cfsh.NetTangibleAssets = netTangibleAssetsRaw;
+                            }
+                            Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {cashRaw}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddBalanceSheetStatements(cfsh);
                         }
                         companyExists = false;
                     }
@@ -969,6 +1595,334 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             cfsh.CompaniesId = symbolId.Id;
                             cfsh.CreatedByUser = Cfg.UserName;
                             await _repository.AddInstitutionOwnership(cfsh);
+                            companyExists = false;
+                        }
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooFundOwnership(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.FundOwnership + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var institutionOwnership = d["quoteSummary"]["result"][0][Ym.FundOwnership]["ownershipList"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in institutionOwnership)
+                        {
+                            var cfsh = new FundOwnership();
+                            var reportDate = i.SelectToken(Ymf.ReportDate);
+                            if (reportDate != null && reportDate.Count() != 0)
+                            {
+                                var reportDateFmt = reportDate["fmt"].ToString();
+                                cfsh.ReportDate = reportDateFmt;
+                            }
+                            var organization = i.SelectToken(Ymf.Organization);
+                            if (organization != null) cfsh.Organization = organization.ToString();
+
+                            var pctHeld = i.SelectToken(Ymf.PctHeld);
+                            if (pctHeld != null && pctHeld.Count() != 0)
+                            {
+                                var pctHeldRaw = (double)pctHeld["raw"];
+                                cfsh.PctHeld = pctHeldRaw;
+                            }
+                            var position = i.SelectToken(Ymf.Position);
+                            if (position != null && position.Count() != 0)
+                            {
+                                var positionRaw = (double)position["raw"];
+                                cfsh.Position = positionRaw;
+                            }
+                            var value = i.SelectToken(Ymf.Value);
+                            if (value != null && value.Count() != 0)
+                            {
+                                var valueRaw = (double)value["raw"];
+                                cfsh.Value = valueRaw;
+                            }
+                            Console.WriteLine($"{model.Ticker} : {cfsh.ReportDate} : {cfsh.Organization} : {cfsh.PctHeld} : {cfsh.Position} : {cfsh.Value}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddFundOwnership(cfsh);
+                            companyExists = false;
+                        }
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooMajorDirectHolders(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.MajorDirectHolders + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var institutionOwnership = d["quoteSummary"]["result"][0][Ym.MajorDirectHolders]["holders"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in institutionOwnership)
+                        {
+                            var cfsh = new MajorDirectHolders();
+                            var name = i.SelectToken(Ymf.Name);
+                            if (name != null) cfsh.Name = name.ToString();
+                            var relation = i.SelectToken(Ymf.Relation);
+                            if (relation != null) cfsh.Relation = relation.ToString();
+
+                            var holderUrl = i.SelectToken(Ymf.Url);
+                            if (holderUrl != null) cfsh.Url = holderUrl.ToString();
+
+                            var transactionDescription = i.SelectToken(Ymf.TransactionDescription);
+                            if (transactionDescription != null) cfsh.TransactionDescription = transactionDescription.ToString();
+
+                            var latestTransDate = i.SelectToken(Ymf.LatestTransDate);
+                            if (latestTransDate != null && latestTransDate.Count() != 0)
+                            {
+                                var latestTransDateFmt = latestTransDate["fmt"].ToString();
+                                cfsh.LatestTransDate = latestTransDateFmt;
+                            }
+                            var positionDirect = i.SelectToken(Ymf.PositionDirect);
+                            if (positionDirect != null && positionDirect.Count() != 0)
+                            {
+                                var positionDirectRaw = (double)positionDirect["raw"];
+                                cfsh.PositionDirect = positionDirectRaw;
+                            }
+                            var positionDirectDate = i.SelectToken(Ymf.PositionDirectDate);
+                            if (positionDirectDate != null && positionDirectDate.Count() != 0)
+                            {
+                                var positionDirectDateFmt = positionDirectDate["fmt"].ToString();
+                                cfsh.PositionDirectDate = positionDirectDateFmt;
+                            }
+                            var positionIndirectDate = i.SelectToken(Ymf.PositionIndirectDate);
+                            if (positionIndirectDate != null && positionIndirectDate.Count() != 0)
+                            {
+                                var positionIndirectDateFmt = positionIndirectDate["fmt"].ToString();
+                                cfsh.PositionIndirectDate = positionIndirectDateFmt;
+                            }
+                            var positionSummaryDate = i.SelectToken(Ymf.PositionSummaryDate);
+                            if (positionSummaryDate != null && positionSummaryDate.Count() != 0)
+                            {
+                                var positionSummaryDateFmt = positionSummaryDate["fmt"].ToString();
+                                cfsh.PositionSummaryDate = positionSummaryDateFmt;
+                            }
+                            var positionIndirect = i.SelectToken(Ymf.PositionIndirect);
+                            if (positionIndirect != null && positionIndirect.Count() != 0)
+                            {
+                                var positionIndirectRaw = (double)positionIndirect["raw"];
+                                cfsh.PositionIndirect = positionIndirectRaw;
+                            }
+                            var positionSummary = i.SelectToken(Ymf.PositionSummary);
+                            if (positionSummary != null && positionSummary.Count() != 0)
+                            {
+                                var positionSummaryRaw = (double)positionSummary["raw"];
+                                cfsh.PositionSummary = positionSummaryRaw;
+                            }
+                            Console.WriteLine($"{model.Ticker} : {cfsh.Name} : {cfsh.Relation} : {cfsh.Url} : {cfsh.TransactionDescription} : {cfsh.PositionDirect}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddMajorDirectHolders(cfsh);
+                            companyExists = false;
+                        }
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        public async Task YahooInsiderHolders(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.InsiderHolders + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var institutionOwnership = d["quoteSummary"]["result"][0][Ym.InsiderHolders]["holders"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in institutionOwnership)
+                        {
+                            var cfsh = new InsiderHolders();
+                            var name = i.SelectToken(Ymf.Name);
+                            if (name != null) cfsh.Name = name.ToString();
+                            var relation = i.SelectToken(Ymf.Relation);
+                            if (relation != null) cfsh.Relation = relation.ToString();
+
+                            var holderUrl = i.SelectToken(Ymf.Url);
+                            if (holderUrl != null) cfsh.Url = holderUrl.ToString();
+
+                            var transactionDescription = i.SelectToken(Ymf.TransactionDescription);
+                            if (transactionDescription != null) cfsh.TransactionDescription = transactionDescription.ToString();
+
+                            var latestTransDate = i.SelectToken(Ymf.LatestTransDate);
+                            if (latestTransDate != null && latestTransDate.Count() != 0)
+                            {
+                                var latestTransDateFmt = latestTransDate["fmt"].ToString();
+                                cfsh.LatestTransDate = latestTransDateFmt;
+                            }
+                            var positionDirect = i.SelectToken(Ymf.PositionDirect);
+                            if (positionDirect != null && positionDirect.Count() != 0)
+                            {
+                                var positionDirectRaw = (double)positionDirect["raw"];
+                                cfsh.PositionDirect = positionDirectRaw;
+                            }
+                            var positionDirectDate = i.SelectToken(Ymf.PositionDirectDate);
+                            if (positionDirectDate != null && positionDirectDate.Count() != 0)
+                            {
+                                var positionDirectDateFmt = positionDirectDate["fmt"].ToString();
+                                cfsh.PositionDirectDate = positionDirectDateFmt;
+                            }
+                            var positionIndirectDate = i.SelectToken(Ymf.PositionIndirectDate);
+                            if (positionIndirectDate != null && positionIndirectDate.Count() != 0)
+                            {
+                                var positionIndirectDateFmt = positionIndirectDate["fmt"].ToString();
+                                cfsh.PositionIndirectDate = positionIndirectDateFmt;
+                            }
+                            var positionSummaryDate = i.SelectToken(Ymf.PositionSummaryDate);
+                            if (positionSummaryDate != null && positionSummaryDate.Count() != 0)
+                            {
+                                var positionSummaryDateFmt = positionSummaryDate["fmt"].ToString();
+                                cfsh.PositionSummaryDate = positionSummaryDateFmt;
+                            }
+                            var positionIndirect = i.SelectToken(Ymf.PositionIndirect);
+                            if (positionIndirect != null && positionIndirect.Count() != 0)
+                            {
+                                var positionIndirectRaw = (double)positionIndirect["raw"];
+                                cfsh.PositionIndirect = positionIndirectRaw;
+                            }
+                            var positionSummary = i.SelectToken(Ymf.PositionSummary);
+                            if (positionSummary != null && positionSummary.Count() != 0)
+                            {
+                                var positionSummaryRaw = (double)positionSummary["raw"];
+                                cfsh.PositionSummary = positionSummaryRaw;
+                            }
+                            Console.WriteLine($"{model.Ticker} : {cfsh.Name} : {cfsh.Relation} : {cfsh.Url} : {cfsh.TransactionDescription} : {cfsh.PositionDirect}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddInsiderHolders(cfsh);
+                            companyExists = false;
+                        }
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+
+        public async Task YahooInsiderTransactions(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.InsiderTransactions + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var insiderTransactions = d["quoteSummary"]["result"][0][Ym.InsiderTransactions]["transactions"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in insiderTransactions)
+                        {
+                            var cfsh = new InsiderTransactions();
+                            var filerUrl = i.SelectToken(Ymf.FilerUrl);
+                            if (filerUrl != null) cfsh.FilerUrl = filerUrl.ToString();
+
+                            var transactionText = i.SelectToken(Ymf.TransactionText);
+                            if (transactionText != null) cfsh.TransactionText = transactionText.ToString();
+
+                            var filerName = i.SelectToken(Ymf.FilerName);
+                            if (filerName != null) cfsh.FilerName = filerName.ToString();
+
+                            var filerRelation = i.SelectToken(Ymf.FilerRelation);
+                            if (filerRelation != null) cfsh.FilerRelation = filerRelation.ToString();
+
+                            var moneyText = i.SelectToken(Ymf.MoneyText);
+                            if (moneyText != null) cfsh.MoneyText = moneyText.ToString();
+
+                            var ownership = i.SelectToken(Ymf.Ownership);
+                            if (ownership != null) cfsh.Ownership = ownership.ToString();
+
+                            var startDate = i.SelectToken(Ymf.StartDate);
+                            if (startDate != null && startDate.Count() != 0)
+                            {
+                                var startDateFmt = startDate["fmt"].ToString();
+                                cfsh.StartDate = startDateFmt;
+                            }
+                            var shares = i.SelectToken(Ymf.Shares);
+                            if (shares != null && shares.Count() != 0)
+                            {
+                                var sharesRaw = (double)shares["raw"];
+                                cfsh.Shares = sharesRaw;
+                            }
+                            
+                            var value = i.SelectToken(Ymf.Value);
+                            if (value != null && value.Count() != 0)
+                            {
+                                var valueRaw = (double)value["raw"];
+                                cfsh.Value = valueRaw;
+                            }
+                            
+                            Console.WriteLine($"{model.Ticker} : {cfsh.FilerName} : {cfsh.FilerRelation} : {cfsh.FilerUrl} : {cfsh.Ownership} : {cfsh.TransactionText}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddInsiderTransactions(cfsh);
                             companyExists = false;
                         }
                     }

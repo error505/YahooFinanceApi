@@ -18,11 +18,11 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Url { get; set; }
         public string TransactionDescription { get; set; }
         public string LatestTransDate { get; set; }
-        public string PositionDirect { get; set; }
+        public double PositionDirect { get; set; }
         public string PositionDirectDate { get; set; }
-        public string PositionIndirect { get; set; }
+        public double PositionIndirect { get; set; }
         public string PositionIndirectDate { get; set; }
-        public string PositionSummary { get; set; }
+        public double PositionSummary { get; set; }
         public string PositionSummaryDate { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
         public string CreatedByUser { get; set; }

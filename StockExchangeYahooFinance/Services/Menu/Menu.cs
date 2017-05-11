@@ -103,6 +103,18 @@ namespace StockExchangeYahooFinance.Services.Menu
         }
     }
 
+    internal class YahooCompanyProfileSummaryRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Profile Summary for selected company! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooCompanyProfileSummary(model);
+        }
+    }
+
     internal class YahooCompanyByName : IMenu
     {
         public string Description => "Get Yahoo Company Profile for selected company! (Data will be returned in Json format)!";
@@ -138,6 +150,18 @@ namespace StockExchangeYahooFinance.Services.Menu
         }
     }
 
+    internal class YahooCompanyIncomeStatementHistoryQuarterly : IMenu
+    {
+        public string Description => "Get Yahoo Company Income History Quarterly! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooIncomeStatementHistoryQuarterly(model);
+        }
+    }
+
     internal class YahooCompanyCashflowStatementHistory : IMenu
     {
         public string Description => "Get Yahoo Company Cash Flow Statement History! (Data will be returned in Json format)!";
@@ -147,6 +171,18 @@ namespace StockExchangeYahooFinance.Services.Menu
             var symbol = Console.ReadLine();
             model.Ticker = symbol;
             await execTask.YahooCashFlowStatementHistory(model);
+        }
+    }
+
+    internal class YahooCashflowStatementHistoryQuarterlyRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Cash Flow Statement History Quarterly! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooCashflowStatementHistoryQuarterly(model);
         }
     }
 
@@ -201,13 +237,72 @@ namespace StockExchangeYahooFinance.Services.Menu
 
     internal class YahooFinancialDataRequest : IMenu
     {
-        public string Description => "Get Yahoo Company YahooFinancial Data! (Data will be returned in Json format)!";
+        public string Description => "Get Yahoo Company Financial Data! (Data will be returned in Json format)!";
         public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
         {
             Console.WriteLine("Please enter the symbol!");
             var symbol = Console.ReadLine();
             model.Ticker = symbol;
             await execTask.YahooFinancialData(model);
+        }
+    }
+    internal class YahooMajorDirectHoldersRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Major Direct Holders! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooMajorDirectHolders(model);
+        }
+    }
+
+    internal class YahooFundOwnershipRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Fund Ownership! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooFundOwnership(model);
+        }
+    }
+
+    internal class YahooInsiderTransactionsRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Insider Transactions! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooInsiderTransactions(model);
+        }
+    }
+
+    internal class YahooInsiderHoldersRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Insider Holders! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooInsiderHolders(model);
+        }
+    }
+
+    internal class YahooBalanceSheetHistoryRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Balance Sheet History! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooBalanceSheetHistory(model);
         }
     }
 }
