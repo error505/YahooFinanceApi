@@ -284,8 +284,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                                 await _repository.AddCompanyOfficers(compOffices);
                                 Console.WriteLine($"{name} : {age} : {title} : {fiscalYear}");
                             }
-                        }
-                        
+                        }                        
                         companyExists = false;
                     }
                     else
@@ -302,6 +301,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooCompanyProfileSummary(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.SummaryProfile + Cfg.YCorsDomain;
@@ -381,6 +385,7 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 Console.Read();
             }
         }
+
         /// <summary>
         /// Get Company Profile from Yahoo finance
         /// </summary>
@@ -565,6 +570,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooIncomeStatementHistoryQuarterly(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.IncomeStatementHistoryQuarterly + Cfg.YCorsDomain;
@@ -911,6 +921,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooCashflowStatementHistoryQuarterly(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.CashflowStatementHistoryQuarterly + Cfg.YCorsDomain;
@@ -943,7 +958,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                                 depreciationRaw = depreciation["raw"].ToString();
                                 cfsh.Depreciation = depreciationRaw;
                             }
-
                             var otherCashflowsFromFinancingActivities = i.SelectToken(Ymf.OtherCashflowsFromFinancingActivities);
                             if (otherCashflowsFromFinancingActivities != null && otherCashflowsFromFinancingActivities.Count() != 0)
                             {
@@ -1073,6 +1087,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooBalanceSheetHistory(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.BalanceSheetHistory + Cfg.YCorsDomain;
@@ -1105,7 +1124,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                                 cashRaw = (double)cash["raw"];
                                 cfsh.Cash = cashRaw;
                             }
-
                             var shortTermInvestments = i.SelectToken(Ymf.ShortTermInvestments);
                             if (shortTermInvestments != null && shortTermInvestments.Count() != 0)
                             {
@@ -1498,38 +1516,38 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 while (companyExists)
                 {
                     if (symbolId != null)
-                    {                      
-                            var cfsh = new MajorHoldersBreakdown();
-                            var insidersPercentHeld = majorHoldersBreakdown.SelectToken(Ymf.InsidersPercentHeld);
-                            if (insidersPercentHeld != null && insidersPercentHeld.Count() != 0)
-                            {
-                                var insidersPercentHeldRaw = (double)insidersPercentHeld["raw"];
-                                cfsh.InsidersPercentHeld = insidersPercentHeldRaw;
-                            }
-                            var institutionsPercentHeld = majorHoldersBreakdown.SelectToken(Ymf.InstitutionsPercentHeld);
-                            if (institutionsPercentHeld != null && institutionsPercentHeld.Count() != 0)
-                            {
-                                var institutionsPercentHeldRaw = (double)institutionsPercentHeld["raw"];
-                                cfsh.InstitutionsPercentHeld = institutionsPercentHeldRaw;
-                            }
-                            var institutionsFloatPercentHeld = majorHoldersBreakdown.SelectToken(Ymf.InstitutionsFloatPercentHeld);
-                            if (institutionsFloatPercentHeld != null && institutionsFloatPercentHeld.Count() != 0)
-                            {
-                                var institutionsFloatPercentHeldRaw = (double)institutionsFloatPercentHeld["raw"];
-                                cfsh.InstitutionsFloatPercentHeld = institutionsFloatPercentHeldRaw;
-                            }
-                            var institutionsCount = majorHoldersBreakdown.SelectToken(Ymf.InstitutionsCount);
-                            if (institutionsCount != null && institutionsCount.Count() != 0)
-                            {
-                                var institutionsCountRaw = (int)institutionsCount["raw"];
-                                cfsh.InstitutionsCount = institutionsCountRaw;
-                            }
-                            
-                            Console.WriteLine($"{model.Ticker}");
-                            cfsh.CompaniesId = symbolId.Id;
-                            cfsh.CreatedByUser = Cfg.UserName;
-                            await _repository.AddMajorHoldersBreakdown(cfsh);
-                        
+                    {
+                        var cfsh = new MajorHoldersBreakdown();
+                        var insidersPercentHeld = majorHoldersBreakdown.SelectToken(Ymf.InsidersPercentHeld);
+                        if (insidersPercentHeld != null && insidersPercentHeld.Count() != 0)
+                        {
+                            var insidersPercentHeldRaw = (double) insidersPercentHeld["raw"];
+                            cfsh.InsidersPercentHeld = insidersPercentHeldRaw;
+                        }
+                        var institutionsPercentHeld = majorHoldersBreakdown.SelectToken(Ymf.InstitutionsPercentHeld);
+                        if (institutionsPercentHeld != null && institutionsPercentHeld.Count() != 0)
+                        {
+                            var institutionsPercentHeldRaw = (double) institutionsPercentHeld["raw"];
+                            cfsh.InstitutionsPercentHeld = institutionsPercentHeldRaw;
+                        }
+                        var institutionsFloatPercentHeld =
+                            majorHoldersBreakdown.SelectToken(Ymf.InstitutionsFloatPercentHeld);
+                        if (institutionsFloatPercentHeld != null && institutionsFloatPercentHeld.Count() != 0)
+                        {
+                            var institutionsFloatPercentHeldRaw = (double) institutionsFloatPercentHeld["raw"];
+                            cfsh.InstitutionsFloatPercentHeld = institutionsFloatPercentHeldRaw;
+                        }
+                        var institutionsCount = majorHoldersBreakdown.SelectToken(Ymf.InstitutionsCount);
+                        if (institutionsCount != null && institutionsCount.Count() != 0)
+                        {
+                            var institutionsCountRaw = (int) institutionsCount["raw"];
+                            cfsh.InstitutionsCount = institutionsCountRaw;
+                        }
+
+                        Console.WriteLine($"{model.Ticker}");
+                        cfsh.CompaniesId = symbolId.Id;
+                        cfsh.CreatedByUser = Cfg.UserName;
+                        await _repository.AddMajorHoldersBreakdown(cfsh);
                         companyExists = false;
                     }
                     else
@@ -1546,6 +1564,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooInstitutionOwnership(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.InstitutionOwnership + Cfg.YCorsDomain;
@@ -1572,7 +1595,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             }
                             var organization = i.SelectToken(Ymf.Organization);
                             if (organization != null) cfsh.Organization = organization.ToString();
-
                             var pctHeld = i.SelectToken(Ymf.PctHeld);
                             if (pctHeld != null && pctHeld.Count() != 0)
                             {
@@ -1591,7 +1613,8 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                                 var valueRaw = (double) value["raw"];
                                 cfsh.Value = valueRaw;
                             }
-                            Console.WriteLine($"{model.Ticker} : {cfsh.ReportDate} : {cfsh.Organization} : {cfsh.PctHeld} : {cfsh.Position} : {cfsh.Value}");
+                            Console.WriteLine(
+                                $"{model.Ticker} : {cfsh.ReportDate} : {cfsh.Organization} : {cfsh.PctHeld} : {cfsh.Position} : {cfsh.Value}");
                             cfsh.CompaniesId = symbolId.Id;
                             cfsh.CreatedByUser = Cfg.UserName;
                             await _repository.AddInstitutionOwnership(cfsh);
@@ -1612,6 +1635,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooFundOwnership(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.FundOwnership + Cfg.YCorsDomain;
@@ -1678,6 +1706,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooMajorDirectHolders(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.MajorDirectHolders + Cfg.YCorsDomain;
@@ -1700,13 +1733,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             if (name != null) cfsh.Name = name.ToString();
                             var relation = i.SelectToken(Ymf.Relation);
                             if (relation != null) cfsh.Relation = relation.ToString();
-
                             var holderUrl = i.SelectToken(Ymf.Url);
                             if (holderUrl != null) cfsh.Url = holderUrl.ToString();
-
                             var transactionDescription = i.SelectToken(Ymf.TransactionDescription);
                             if (transactionDescription != null) cfsh.TransactionDescription = transactionDescription.ToString();
-
                             var latestTransDate = i.SelectToken(Ymf.LatestTransDate);
                             if (latestTransDate != null && latestTransDate.Count() != 0)
                             {
@@ -1770,6 +1800,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooInsiderHolders(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.InsiderHolders + Cfg.YCorsDomain;
@@ -1792,13 +1827,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             if (name != null) cfsh.Name = name.ToString();
                             var relation = i.SelectToken(Ymf.Relation);
                             if (relation != null) cfsh.Relation = relation.ToString();
-
                             var holderUrl = i.SelectToken(Ymf.Url);
                             if (holderUrl != null) cfsh.Url = holderUrl.ToString();
-
                             var transactionDescription = i.SelectToken(Ymf.TransactionDescription);
                             if (transactionDescription != null) cfsh.TransactionDescription = transactionDescription.ToString();
-
                             var latestTransDate = i.SelectToken(Ymf.LatestTransDate);
                             if (latestTransDate != null && latestTransDate.Count() != 0)
                             {
@@ -1862,7 +1894,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooInsiderTransactions(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.InsiderTransactions + Cfg.YCorsDomain;
@@ -1883,22 +1919,16 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             var cfsh = new InsiderTransactions();
                             var filerUrl = i.SelectToken(Ymf.FilerUrl);
                             if (filerUrl != null) cfsh.FilerUrl = filerUrl.ToString();
-
                             var transactionText = i.SelectToken(Ymf.TransactionText);
                             if (transactionText != null) cfsh.TransactionText = transactionText.ToString();
-
                             var filerName = i.SelectToken(Ymf.FilerName);
                             if (filerName != null) cfsh.FilerName = filerName.ToString();
-
                             var filerRelation = i.SelectToken(Ymf.FilerRelation);
                             if (filerRelation != null) cfsh.FilerRelation = filerRelation.ToString();
-
                             var moneyText = i.SelectToken(Ymf.MoneyText);
                             if (moneyText != null) cfsh.MoneyText = moneyText.ToString();
-
                             var ownership = i.SelectToken(Ymf.Ownership);
                             if (ownership != null) cfsh.Ownership = ownership.ToString();
-
                             var startDate = i.SelectToken(Ymf.StartDate);
                             if (startDate != null && startDate.Count() != 0)
                             {
@@ -1910,15 +1940,13 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             {
                                 var sharesRaw = (double)shares["raw"];
                                 cfsh.Shares = sharesRaw;
-                            }
-                            
+                            }                            
                             var value = i.SelectToken(Ymf.Value);
                             if (value != null && value.Count() != 0)
                             {
                                 var valueRaw = (double)value["raw"];
                                 cfsh.Value = valueRaw;
-                            }
-                            
+                            }                            
                             Console.WriteLine($"{model.Ticker} : {cfsh.FilerName} : {cfsh.FilerRelation} : {cfsh.FilerUrl} : {cfsh.Ownership} : {cfsh.TransactionText}");
                             cfsh.CompaniesId = symbolId.Id;
                             cfsh.CreatedByUser = Cfg.UserName;
@@ -1940,6 +1968,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooRecommendationTrend(RequestModel model)
         {            
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.RecommendationTrend + Cfg.YCorsDomain;
@@ -1991,6 +2024,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task YahooUpgradeDowngradeHistory(RequestModel model)
         {
             var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.UpgradeDowngradeHistory + Cfg.YCorsDomain;
@@ -2275,6 +2313,11 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             //return results;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task AddYahooCompanyByName(RequestModel model)
         {
             //Search term
@@ -2294,12 +2337,10 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                 var data = await _callWebRequest.WebRequest(urlTosend);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(data);
-
                 var allRowNodes = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'yui-dt')]");
                 if (allRowNodes == null) continue;
                 foreach (var item in allRowNodes)
                 {
-
                     var com = item.FirstChild.InnerText;
                     var tickerName = item.ChildNodes[1].InnerText;
                     var lastTrade = item.ChildNodes[2].InnerText;
@@ -2328,8 +2369,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                                       "\t" + exchangeId);
                 }
             }
-            //SaveData(results);
-            //return results;
         }
 
         /// <summary>
@@ -2358,7 +2397,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                     var country = item.Attributes[6].Value;
                     var name = item.Attributes[7].Value;
                     var tradingDays = item.Attributes[8].Value;
-
                     //var reg = new Region { Name = region };
                     //var regId = await _repository.AddRegion(reg);
                     //var sector = new Sector { Name = sec };
@@ -2394,7 +2432,6 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             try
             {
                 var csvData = await _callWebRequest.WebRequest(url);
-
                 //Parse CSV
                 var rows = _parsersConvertert.ParseCsv(csvData);
                 //Get data from string

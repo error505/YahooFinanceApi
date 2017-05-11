@@ -16,6 +16,9 @@ namespace StockExchangeYahooFinance.Repository
         {
             _context = context;
         }
+
+        #region GetFromDatabase
+
         /// <summary>
         /// List of all finances
         /// </summary>
@@ -85,7 +88,7 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
-        public async Task<BalanceSheetStatements> GetBalanceSheetStatementsByDate(string endDate,double cash, string companyId)
+        public async Task<BalanceSheetStatements> GetBalanceSheetStatementsByDate(string endDate, double cash, string companyId)
         {
             try
             {
@@ -532,6 +535,11 @@ namespace StockExchangeYahooFinance.Repository
                     .SingleOrDefaultAsync(m => m.Id == id);
             return currency;
         }
+
+        #endregion GetFromDatabase
+
+        #region AddToDatabase
+
         /// <summary>
         /// Add FinanceModel to DataBase
         /// </summary>
@@ -695,44 +703,7 @@ namespace StockExchangeYahooFinance.Repository
             return balanceSheetStatements.Id;
         }
 
-        /// <summary>
-        /// Update Financial Data
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="financialData"></param>
-        /// <returns></returns>
-        public async Task<string> UpdateFinancialData(string id, FinancialData financialData)
-        {
-            if (financialData == null)
-            {
-                Console.WriteLine("Model Is empty!");
-            }
-
-            if (financialData != null && id != financialData.Id)
-            {
-                Console.WriteLine("Model Id is not the same like provided ID!");
-            }
-
-            _context.Entry(financialData).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (FinancialDataIdExists(financialData.TotalRevenue, financialData.CompaniesId))
-                {
-                    Console.WriteLine(ex.Message);
-                    Console.Read();
-                }
-                else
-                {
-                    Console.WriteLine(ex);
-                }
-            }
-            return financialData.Id;
-        }
+        
 
         public async Task<string> AddFinancialData(FinancialData financialData)
         {
@@ -1251,8 +1222,8 @@ namespace StockExchangeYahooFinance.Repository
             {
                 if (CompIdExists(companies.Symbol))
                 {
-                   Console.WriteLine(ex.Message);
-                   Console.Read();
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
                 }
                 else
                 {
@@ -1331,6 +1302,54 @@ namespace StockExchangeYahooFinance.Repository
             }
             return currencies.Id;
         }
+
+        #endregion AddToDatabase
+
+        #region UpdateRecord
+
+        /// <summary>
+        /// Update Financial Data
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="financialData"></param>
+        /// <returns></returns>
+        public async Task<string> UpdateFinancialData(string id, FinancialData financialData)
+        {
+            if (financialData == null)
+            {
+                Console.WriteLine("Model Is empty!");
+            }
+
+            if (financialData != null && id != financialData.Id)
+            {
+                Console.WriteLine("Model Id is not the same like provided ID!");
+            }
+
+            _context.Entry(financialData).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (FinancialDataIdExists(financialData.TotalRevenue, financialData.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return financialData.Id;
+        }
+
+        #endregion UpdateRecord
+
+        #region CheckIfExists
+
         /// <summary>
         /// Check if FinanceModel exists by its Id
         /// </summary>
@@ -1388,7 +1407,7 @@ namespace StockExchangeYahooFinance.Repository
             return _context.FinancialData.Count(e => (Math.Abs(e.TotalRevenue - totalRevenue) < 0.001 && e.CompaniesId == companyId)) > 0;
         }
 
-        public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld,string companyId)
+        public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld, string companyId)
         {
             return _context.MajorHoldersBreakdown.Count(e => (Math.Abs(e.InsidersPercentHeld - insidersPercentHeld) < 0.01 && e.CompaniesId == companyId)) > 0;
         }
@@ -1486,6 +1505,11 @@ namespace StockExchangeYahooFinance.Repository
         {
             return _context.Currencies.Count(e => e.Code == code) > 0;
         }
+
+        #endregion CheckIfExists
+
+        #region DeleteFromDatabase
+
         /// <summary>
         /// Task to delete company from database
         /// </summary>
@@ -1601,5 +1625,8 @@ namespace StockExchangeYahooFinance.Repository
                 Console.WriteLine(ex.Message);
             }
         }
+
+        #endregion DeleteFromDatabase
+
     }
 }
