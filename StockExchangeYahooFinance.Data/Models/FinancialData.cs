@@ -13,34 +13,34 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
-        public string CurrentPrice { get; set; }
-        public string TargetHighPrice { get; set; }
-        public string TargetLowPrice { get; set; }
-        public string TargetMeanPrice { get; set; }
-        public string TargetMedianPrice { get; set; }
-        public string RecommendationMean { get; set; }
+        public double CurrentPrice { get; set; }
+        public double TargetHighPrice { get; set; }
+        public double TargetLowPrice { get; set; }
+        public double TargetMeanPrice { get; set; }
+        public double TargetMedianPrice { get; set; }
+        public double RecommendationMean { get; set; }
         public string RecommendationKey { get; set; }
-        public string NumberOfAnalystOpinions { get; set; }
-        public string TotalCash { get; set; }
-        public string TotalCashPerShare { get; set; }
-        public string Ebitda { get; set; }
-        public string TotalDebt { get; set; }
-        public string QuickRatio { get; set; }
-        public string CurrentRatio { get; set; }
-        public string TotalRevenue { get; set; }
-        public string DebtToEquity { get; set; }
-        public string RevenuePerShare { get; set; }
-        public string ReturnOnAssets { get; set; }
-        public string ReturnOnEquity { get; set; }
-        public string GrossProfits { get; set; }
-        public string FreeCashflow { get; set; }
-        public string OperatingCashflow { get; set; }
-        public string EarningsGrowth { get; set; }
-        public string RevenueGrowth { get; set; }
-        public string GrossMargins { get; set; }
-        public string EbitdaMargins { get; set; }
-        public string OperatingMargins { get; set; }
-        public string ProfitMargins { get; set; }
+        public double NumberOfAnalystOpinions { get; set; }
+        public double TotalCash { get; set; }
+        public double TotalCashPerShare { get; set; }
+        public double Ebitda { get; set; }
+        public double TotalDebt { get; set; }
+        public double QuickRatio { get; set; }
+        public double CurrentRatio { get; set; }
+        public double TotalRevenue { get; set; }
+        public double DebtToEquity { get; set; }
+        public double RevenuePerShare { get; set; }
+        public double ReturnOnAssets { get; set; }
+        public double ReturnOnEquity { get; set; }
+        public double GrossProfits { get; set; }
+        public double FreeCashflow { get; set; }
+        public double OperatingCashflow { get; set; }
+        public double EarningsGrowth { get; set; }
+        public double RevenueGrowth { get; set; }
+        public double GrossMargins { get; set; }
+        public double EbitdaMargins { get; set; }
+        public double OperatingMargins { get; set; }
+        public double ProfitMargins { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
         public string CreatedByUser { get; set; }
     }

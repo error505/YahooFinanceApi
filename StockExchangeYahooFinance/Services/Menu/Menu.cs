@@ -198,4 +198,16 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.YahooInstitutionOwnership(model);
         }
     }
+
+    internal class YahooFinancialDataRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company YahooFinancial Data! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooFinancialData(model);
+        }
+    }
 }

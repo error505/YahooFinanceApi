@@ -101,6 +101,22 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
+        public async Task<FinancialData> GetFinancialDataByTotalRevenue(double totalRevenue, string companyId)
+        {
+            try
+            {
+                var financialData =
+                await _context.FinancialData
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.TotalRevenue - totalRevenue) < 0.001 && m.CompaniesId == companyId));
+                return financialData;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
         public async Task<InstitutionOwnership> GetInstitutionOwnershipByDate(string organisation, string companyId)
         {
             try
@@ -565,6 +581,77 @@ namespace StockExchangeYahooFinance.Repository
 
             }
             return cashflowStatement.Id;
+        }
+
+        /// <summary>
+        /// Update Financial Data
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="financialData"></param>
+        /// <returns></returns>
+        public async Task<string> UpdateFinancialData(string id, FinancialData financialData)
+        {
+            if (financialData == null)
+            {
+                Console.WriteLine("Model Is empty!");
+            }
+
+            if (financialData != null && id != financialData.Id)
+            {
+                Console.WriteLine("Model Id is not the same like provided ID!");
+            }
+
+            _context.Entry(financialData).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (FinancialDataIdExists(financialData.TotalRevenue, financialData.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return financialData.Id;
+        }
+
+        public async Task<string> AddFinancialData(FinancialData financialData)
+        {
+            if (financialData == null)
+            {
+                return null;
+            }
+            if (FinancialDataIdExists(financialData.TotalRevenue, financialData.CompaniesId))
+            {
+                var ind = await GetFinancialDataByTotalRevenue(financialData.TotalRevenue, financialData.CompaniesId);
+                return ind.Id;
+            }
+            _context.FinancialData.Add(financialData);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (FinancialDataIdExists(financialData.TotalRevenue, financialData.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return financialData.Id;
         }
 
         public async Task<string> AddMajorHoldersBreakdown(MajorHoldersBreakdown majorHoldersBreakdown)
@@ -1051,6 +1138,11 @@ namespace StockExchangeYahooFinance.Repository
         public bool CashflowStatementHistoryIdExists(string endDate, string companyId)
         {
             return _context.CashflowStatement.Count(e => (e.EndDate == endDate && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool FinancialDataIdExists(double totalRevenue, string companyId)
+        {
+            return _context.FinancialData.Count(e => (Math.Abs(e.TotalRevenue - totalRevenue) < 0.001 && e.CompaniesId == companyId)) > 0;
         }
 
         public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld,string companyId)

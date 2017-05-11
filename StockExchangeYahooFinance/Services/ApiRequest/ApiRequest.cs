@@ -646,6 +646,214 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
         }
 
         /// <summary>
+        /// Get Financial Data for Yahoo company and add it to database
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task YahooFinancialData(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.FinancialData + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var financialData = d["quoteSummary"]["result"][0][Ym.FinancialData];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        var cfsh = new FinancialData();
+                        var currentPrice = financialData.SelectToken(Ymf.CurrentPrice);
+                        double currentPriceRaw = 0;
+                        if (currentPrice != null && currentPrice.Count() != 0)
+                        {
+                            currentPriceRaw = (double) currentPrice["raw"];
+                            cfsh.CurrentPrice = currentPriceRaw;
+                        }
+                        var targetHighPrice = financialData.SelectToken(Ymf.TargetHighPrice);
+                        double targetHighPriceRaw = 0;
+                        if (targetHighPrice != null && targetHighPrice.Count() != 0)
+                        {
+                            targetHighPriceRaw = (double) targetHighPrice["raw"];
+                            cfsh.TargetHighPrice = targetHighPriceRaw;
+                        }
+                        var targetLowPrice = financialData.SelectToken(Ymf.TargetLowPrice);
+                        if (targetLowPrice != null && targetLowPrice.Count() != 0)
+                        {
+                            var targetLowPriceRaw = (double) targetLowPrice["raw"];
+                            cfsh.TargetLowPrice = targetLowPriceRaw;
+                        }
+                        var targetMeanPrice = financialData.SelectToken(Ymf.TargetMeanPrice);
+                        if (targetMeanPrice != null && targetMeanPrice.Count() != 0)
+                        {
+                            var targetMeanPriceRaw = (double) targetMeanPrice["raw"];
+                            cfsh.TargetMeanPrice = targetMeanPriceRaw;
+                        }
+                        var targetMedianPrice = financialData.SelectToken(Ymf.TargetMedianPrice);
+                        if (targetMedianPrice != null && targetMedianPrice.Count() != 0)
+                        {
+                            var targetMedianPriceRaw = (double) targetMedianPrice["raw"];
+                            cfsh.TargetMedianPrice = targetMedianPriceRaw;
+                        }
+                        var recommendationMean = financialData.SelectToken(Ymf.RecommendationMean);
+                        if (recommendationMean != null && recommendationMean.Count() != 0)
+                        {
+                            var recommendationMeanRaw = (double) recommendationMean["raw"];
+                            cfsh.RecommendationMean = recommendationMeanRaw;
+                        }
+                        var recommendationKey = financialData.SelectToken(Ymf.RecommendationKey);
+                        if (recommendationKey != null) cfsh.RecommendationKey = recommendationKey.ToString();
+
+                        var numberOfAnalystOpinions = financialData.SelectToken(Ymf.NumberOfAnalystOpinions);
+                        if (numberOfAnalystOpinions != null && numberOfAnalystOpinions.Count() != 0)
+                        {
+                            var numberOfAnalystOpinionsRaw = (double) numberOfAnalystOpinions["raw"];
+                            cfsh.NumberOfAnalystOpinions = numberOfAnalystOpinionsRaw;
+                        }
+                        var totalCash = financialData.SelectToken(Ymf.TotalCash);
+                        if (totalCash != null && totalCash.Count() != 0)
+                        {
+                            var totalCashRaw = (double) totalCash["raw"];
+                            cfsh.TotalCash = totalCashRaw;
+                        }
+                        var totalCashPerShare = financialData.SelectToken(Ymf.TotalCashPerShare);
+                        if (totalCashPerShare != null && totalCashPerShare.Count() != 0)
+                        {
+                            var totalCashPerShareRaw = (double) totalCashPerShare["raw"];
+                            cfsh.TotalCashPerShare = totalCashPerShareRaw;
+                        }
+                        var ebitda = financialData.SelectToken(Ymf.Ebitda);
+                        if (ebitda != null && ebitda.Count() != 0)
+                        {
+                            var ebitdaRaw = (double) ebitda["raw"];
+                            cfsh.Ebitda = ebitdaRaw;
+                        }
+                        var totalDebt = financialData.SelectToken(Ymf.TotalDebt);
+                        if (totalDebt != null && totalDebt.Count() != 0)
+                        {
+                            var totalDebtRaw = (double) totalDebt["raw"];
+                            cfsh.TotalDebt = totalDebtRaw;
+                        }
+                        var quickRatio = financialData.SelectToken(Ymf.QuickRatio);
+                        if (quickRatio != null && quickRatio.Count() != 0)
+                        {
+                            var quickRatioRaw = (double) quickRatio["raw"];
+                            cfsh.QuickRatio = quickRatioRaw;
+                        }
+                        var currentRatio = financialData.SelectToken(Ymf.CurrentRatio);
+                        if (currentRatio != null && currentRatio.Count() != 0)
+                        {
+                            var currentRatioRaw = (double) currentRatio["raw"];
+                            cfsh.CurrentRatio = currentRatioRaw;
+                        }
+                        var totalRevenue = financialData.SelectToken(Ymf.TotalRevenue);
+                        if (totalRevenue != null && totalRevenue.Count() != 0)
+                        {
+                            var totalRevenueRaw = (double) totalRevenue["raw"];
+                            cfsh.TotalRevenue = totalRevenueRaw;
+                        }
+                        var debtToEquity = financialData.SelectToken(Ymf.DebtToEquity);
+                        if (debtToEquity != null && debtToEquity.Count() != 0)
+                        {
+                            var debtToEquityRaw = (double) debtToEquity["raw"];
+                            cfsh.DebtToEquity = debtToEquityRaw;
+                        }
+                        var revenuePerShare = financialData.SelectToken(Ymf.RevenuePerShare);
+                        if (revenuePerShare != null && revenuePerShare.Count() != 0)
+                        {
+                            var revenuePerShareRaw = (double) revenuePerShare["raw"];
+                            cfsh.RevenuePerShare = revenuePerShareRaw;
+                        }
+                        var returnOnAssets = financialData.SelectToken(Ymf.ReturnOnAssets);
+                        if (returnOnAssets != null && returnOnAssets.Count() != 0)
+                        {
+                            var returnOnAssetsRaw = (double) returnOnAssets["raw"];
+                            cfsh.ReturnOnAssets = returnOnAssetsRaw;
+                        }
+                        var returnOnEquity = financialData.SelectToken(Ymf.ReturnOnEquity);
+                        if (returnOnEquity != null && returnOnEquity.Count() != 0)
+                        {
+                            var returnOnEquityRaw = (double) returnOnEquity["raw"];
+                            cfsh.ReturnOnEquity = returnOnEquityRaw;
+                        }
+                        var grossProfits = financialData.SelectToken(Ymf.GrossProfits);
+                        if (grossProfits != null && grossProfits.Count() != 0)
+                        {
+                            var grossProfitsRaw = (double) grossProfits["raw"];
+                            cfsh.GrossProfits = grossProfitsRaw;
+                        }
+                        var freeCashflow = financialData.SelectToken(Ymf.FreeCashflow);
+                        if (freeCashflow != null && freeCashflow.Count() != 0)
+                        {
+                            var freeCashflowRaw = (double) freeCashflow["raw"];
+                            cfsh.FreeCashflow = freeCashflowRaw;
+                        }
+                        var operatingCashflow = financialData.SelectToken(Ymf.OperatingCashflow);
+                        if (operatingCashflow != null && operatingCashflow.Count() != 0)
+                        {
+                            var operatingCashflowRaw = (double) operatingCashflow["raw"];
+                            cfsh.OperatingCashflow = operatingCashflowRaw;
+                        }
+                        var earningsGrowth = financialData.SelectToken(Ymf.EarningsGrowth);
+                        if (earningsGrowth != null && earningsGrowth.Count() != 0)
+                        {
+                            var earningsGrowthRaw = (double) earningsGrowth["raw"];
+                            cfsh.EarningsGrowth = earningsGrowthRaw;
+                        }
+                        var revenueGrowth = financialData.SelectToken(Ymf.RevenueGrowth);
+                        if (revenueGrowth != null && revenueGrowth.Count() != 0)
+                        {
+                            var revenueGrowthRaw = (double) revenueGrowth["raw"];
+                            cfsh.RevenueGrowth = revenueGrowthRaw;
+                        }
+                        var grossMargins = financialData.SelectToken(Ymf.GrossMargins);
+                        if (grossMargins != null && grossMargins.Count() != 0)
+                        {
+                            var grossMarginsRaw = (double) grossMargins["raw"];
+                            cfsh.GrossMargins = grossMarginsRaw;
+                        }
+                        var ebitdaMargins = financialData.SelectToken(Ymf.EbitdaMargins);
+                        if (ebitdaMargins != null && ebitdaMargins.Count() != 0)
+                        {
+                            var ebitdaMarginsRaw = (double) ebitdaMargins["raw"];
+                            cfsh.EbitdaMargins = ebitdaMarginsRaw;
+                        }
+                        var operatingMargins = financialData.SelectToken(Ymf.OperatingMargins);
+                        if (operatingMargins != null && operatingMargins.Count() != 0)
+                        {
+                            var operatingMarginsRaw = (double) operatingMargins["raw"];
+                            cfsh.OperatingMargins = operatingMarginsRaw;
+                        }
+                        var profitMargins = financialData.SelectToken(Ymf.ProfitMargins);
+                        if (profitMargins != null && profitMargins.Count() != 0)
+                        {
+                            var profitMarginsRaw = (double) profitMargins["raw"];
+                            cfsh.ProfitMargins = profitMarginsRaw;
+                        }
+                        Console.WriteLine($"{model.Ticker} : {currentPriceRaw} : {targetHighPriceRaw}");
+                        cfsh.CompaniesId = symbolId.Id;
+                        cfsh.CreatedByUser = Cfg.UserName;
+                        await _repository.AddFinancialData(cfsh);
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="model"></param>

@@ -74,5 +74,33 @@ namespace StockExchangeYahooFinance.Helpers
         public string PctHeld = "pctHeld";
         public string Position = "position";
         public string Value = "value";
+        // financialData Modul
+        public string CurrentPrice = "currentPrice";
+        public string TargetHighPrice = "targetHighPrice";
+        public string TargetLowPrice = "targetLowPrice";
+        public string TargetMeanPrice = "targetMeanPrice";
+        public string TargetMedianPrice = "targetMedianPrice";
+        public string RecommendationMean = "recommendationMean";
+        public string RecommendationKey = "recommendationKey";
+        public string NumberOfAnalystOpinions = "numberOfAnalystOpinions";
+        public string TotalCash = "totalCash";
+        public string TotalCashPerShare = "totalCashPerShare";
+        public string Ebitda = "ebitda";
+        public string TotalDebt = "totalDebt";
+        public string QuickRatio = "quickRatio";
+        public string CurrentRatio = "currentRatio";
+        public string DebtToEquity = "debtToEquity";
+        public string RevenuePerShare = "revenuePerShare";
+        public string ReturnOnAssets = "returnOnAssets";
+        public string ReturnOnEquity = "returnOnEquity";
+        public string GrossProfits = "grossProfits";
+        public string FreeCashflow = "freeCashflow";
+        public string OperatingCashflow = "operatingCashflow";
+        public string EarningsGrowth = "earningsGrowth";
+        public string RevenueGrowth = "revenueGrowth";
+        public string GrossMargins = "grossMargins";
+        public string EbitdaMargins = "ebitdaMargins";
+        public string OperatingMargins = "operatingMargins";
+        public string ProfitMargins = "profitMargins";
     }
 }
