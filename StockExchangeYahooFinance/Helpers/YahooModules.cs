@@ -37,5 +37,6 @@ namespace StockExchangeYahooFinance.Helpers
         public string Earnings = "earnings";
         public string DefaultKeyStatistics = "defaultKeyStatistics";
         public string CalendarEvents = "calendarEvents";
+        public string EarningsEstimate = "earningsEstimate";
     }
 }

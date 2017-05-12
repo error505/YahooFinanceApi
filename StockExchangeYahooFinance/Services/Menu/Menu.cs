@@ -329,4 +329,16 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.YahooDefaultKeyStatistics(model);
         }
     }
+
+    internal class YahooEarningsTrendRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Earnings Trend! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooEarningsTrend(model);
+        }
+    }
 }

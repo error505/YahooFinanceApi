@@ -263,6 +263,14 @@
     <Compile Include="Migrations\20170512124105_DefaultKeyStatisticsChange.designer.cs">
       <DependentUpon>20170512124105_DefaultKeyStatisticsChange.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170512131532_EarningsTrendChange.cs" />
+    <Compile Include="Migrations\20170512131532_EarningsTrendChange.designer.cs">
+      <DependentUpon>20170512131532_EarningsTrendChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170512135637_earningsTrendRelatedObjectsChange.cs" />
+    <Compile Include="Migrations\20170512135637_earningsTrendRelatedObjectsChange.designer.cs">
+      <DependentUpon>20170512135637_earningsTrendRelatedObjectsChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\IYahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\YahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\CallWebRequest.cs" />

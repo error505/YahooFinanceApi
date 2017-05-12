@@ -189,5 +189,23 @@ namespace StockExchangeYahooFinance.Helpers
         public string LastDividendValue = "lastDividendValue";
         public string LastCapGain = "lastCapGain";
         public string AnnualHoldingsTurnover = "annualHoldingsTurnover";
+        public string EarningsEstimate = "earningsEstimate";
+        public string Avg = "avg";
+        public string Low = "low";
+        public string High = "high";
+        public string YearAgoEps = "yearAgoEps";
+        public string NumberOfAnalysts = "numberOfAnalysts";
+        public string RevenueEstimate = "revenueEstimate";
+        public string EpsTrend = "epsTrend";
+        public string Current = "current";
+        public string SevenDaysAgo = "7daysAgo";
+        public string ThirtyDaysAgo = "30daysAgo";
+        public string SixtyDaysAgo = "60daysAgo";
+        public string NinetyDaysAgo = "90daysAgo";
+        public string EpsRevisions = "epsRevisions";
+        public string UpLast7Days = "upLast7days";
+        public string UpLast30Days = "upLast30days";
+        public string DownLast30Days = "downLast30days";
+        public string DownLast90Days = "downLast90days";
     }
 }

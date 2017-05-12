@@ -497,10 +497,19 @@ namespace StockExchangeYahooFinance.Repository
         /// <returns>Companies model</returns>
         public async Task<Companies> GetCompanyByName(string symbol)
         {
-            var company =
+            try
+            {
+                var company =
                 await _context.Companies
                     .SingleOrDefaultAsync(m => m.Symbol == symbol);
-            return company;
+                return company;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            
         }
 
         /// <summary>

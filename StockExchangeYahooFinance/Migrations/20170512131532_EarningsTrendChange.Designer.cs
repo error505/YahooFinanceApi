@@ -8,9 +8,10 @@ using StockExchangeYahooFinance.DbContext;
 namespace StockExchangeYahooFinance.Migrations
 {
     [DbContext(typeof(YahooFinanceDbContext))]
-    partial class YahooFinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170512131532_EarningsTrendChange")]
+    partial class EarningsTrendChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -665,13 +666,13 @@ namespace StockExchangeYahooFinance.Migrations
 
                     b.Property<DateTime>("CreationTime");
 
-                    b.Property<double>("DownLast30Days");
+                    b.Property<string>("DownLast30Days");
 
-                    b.Property<double>("DownLast90Days");
+                    b.Property<string>("DownLast90Days");
 
-                    b.Property<double>("UpLast30Days");
+                    b.Property<string>("UpLast30Days");
 
-                    b.Property<double>("UpLast7Days");
+                    b.Property<string>("UpLast7Days");
 
                     b.HasKey("Id");
 
@@ -691,15 +692,15 @@ namespace StockExchangeYahooFinance.Migrations
 
                     b.Property<DateTime>("CreationTime");
 
-                    b.Property<double>("Current");
+                    b.Property<string>("Current");
 
-                    b.Property<double>("NinetyDaysAgo");
+                    b.Property<string>("NinetyAgoRevenue");
 
-                    b.Property<double>("SevenDaysAgo");
+                    b.Property<string>("SevenDaysAgo");
 
-                    b.Property<double>("SixtyDaysAgo");
+                    b.Property<string>("SixtydaysAgo");
 
-                    b.Property<double>("ThirtyDaysAgo");
+                    b.Property<string>("ThirtydaysAgo");
 
                     b.HasKey("Id");
 
@@ -1799,7 +1800,7 @@ namespace StockExchangeYahooFinance.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Avg");
+                    b.Property<string>("Avg");
 
                     b.Property<string>("CompaniesId");
 
@@ -1807,15 +1808,15 @@ namespace StockExchangeYahooFinance.Migrations
 
                     b.Property<DateTime>("CreationTime");
 
-                    b.Property<double>("Growth");
+                    b.Property<string>("Growth");
 
-                    b.Property<double>("High");
+                    b.Property<string>("High");
 
-                    b.Property<double>("Low");
+                    b.Property<string>("Low");
 
-                    b.Property<double>("NumberOfAnalysts");
+                    b.Property<string>("NumberOfAnalysts");
 
-                    b.Property<double>("YearAgoEps");
+                    b.Property<string>("YearAgoRevenue");
 
                     b.HasKey("Id");
 

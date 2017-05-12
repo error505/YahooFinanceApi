@@ -50,6 +50,7 @@ namespace StockExchangeYahooFinance
                 new YahooBalanceSheetHistoryRequest(), 
                 new YahooBalanceSheetHistoryQuarterlyRequest(), 
                 new YahooDefaultKeyStatisticsRequest(), 
+                new YahooEarningsTrendRequest(), 
             };
 
             while (true)

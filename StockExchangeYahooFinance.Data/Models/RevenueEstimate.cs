@@ -13,14 +13,14 @@ namespace StockExchangeYahooFinance.Data.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string CompaniesId { get; set; }
         public Companies Companies { get; set; }
-        public string EarningsTrendId { get; set; }
-        public EarningsTrend EarningsTrend { get; set; }
-        public string Avg { get; set; }
-        public string Low { get; set; }
-        public string High { get; set; }
-        public string NumberOfAnalysts { get; set; }
-        public string YearAgoRevenue { get; set; }
-        public string Growth { get; set; }
+        //public string EarningsTrendId { get; set; }
+        //public EarningsTrend EarningsTrend { get; set; }
+        public double Avg { get; set; }
+        public double Low { get; set; }
+        public double High { get; set; }
+        public double YearAgoEps { get; set; }
+        public double Growth { get; set; }
+        public double NumberOfAnalysts { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now;
         public string CreatedByUser { get; set; }
     }

@@ -1486,6 +1486,217 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        public async Task YahooEarningsTrend(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.EarningsTrend + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var earningsTrend = d["quoteSummary"]["result"][0][Ym.EarningsTrend]["trend"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in earningsTrend)
+                        {
+                            var cfsh = new EarningsTrend();
+                            var period = i.SelectToken(Ymf.Period);
+                            if (period != null) cfsh.Period = period.ToString();
+                            var endDate = i.SelectToken(Ymf.EndDate);
+                            string formatedEndDate = null;
+                            if (endDate != null && endDate.Count() != 0)
+                            {
+                                formatedEndDate = endDate["fmt"].ToString();
+                                cfsh.EndDate = formatedEndDate;
+                            }
+                            var eEstimate = new EarningsEstimate();
+                            var earningsEstimateJson = i.SelectToken(Ymf.EarningsEstimate);
+                            if (earningsEstimateJson != null && earningsEstimateJson.Count() != 0)
+                            {
+                                var avg = earningsEstimateJson.SelectToken(Ymf.Avg);
+                                if (avg != null && avg.Count() != 0)
+                                {
+                                    var avgRaw = (double)avg["raw"];
+                                    eEstimate.Avg = avgRaw;
+                                }
+                                var low = earningsEstimateJson.SelectToken(Ymf.Low);
+                                if (low != null && low.Count() != 0)
+                                {
+                                    var lowRaw = (double)low["raw"];
+                                    eEstimate.Low = lowRaw;
+                                }
+                                var high = earningsEstimateJson.SelectToken(Ymf.High);
+                                if (high != null && high.Count() != 0)
+                                {
+                                    var highRaw = (double)high["raw"];
+                                    eEstimate.High = highRaw;
+                                }
+                                var yearAgoEps = earningsEstimateJson.SelectToken(Ymf.YearAgoEps);
+                                if (yearAgoEps != null && yearAgoEps.Count() != 0)
+                                {
+                                    var yearAgoEpsRaw = (double)yearAgoEps["raw"];
+                                    eEstimate.YearAgoEps = yearAgoEpsRaw;
+                                }
+                                var numberOfAnalysts = earningsEstimateJson.SelectToken(Ymf.NumberOfAnalysts);
+                                if (numberOfAnalysts != null && numberOfAnalysts.Count() != 0)
+                                {
+                                    var numberOfAnalystsRaw = (double)numberOfAnalysts["raw"];
+                                    eEstimate.NumberOfAnalysts = numberOfAnalystsRaw;
+                                }
+                                var growth = earningsEstimateJson.SelectToken(Ymf.Growth);
+                                if (growth != null && growth.Count() != 0)
+                                {
+                                    var growthRaw = (double)growth["raw"];
+                                    eEstimate.Growth = growthRaw;
+                                }
+                                eEstimate.CompaniesId = symbolId.Id;
+                                eEstimate.CreatedByUser = Cfg.UserName;
+                            }
+                            var rEstimate = new RevenueEstimate();
+                            var revenueEstimateJson = i.SelectToken(Ymf.RevenueEstimate);
+                            if (revenueEstimateJson != null && revenueEstimateJson.Count() != 0)
+                            {
+                                var avg = revenueEstimateJson.SelectToken(Ymf.Avg);
+                                if (avg != null && avg.Count() != 0)
+                                {
+                                    var avgRaw = (double)avg["raw"];
+                                    rEstimate.Avg = avgRaw;
+                                }
+                                var low = revenueEstimateJson.SelectToken(Ymf.Low);
+                                if (low != null && low.Count() != 0)
+                                {
+                                    var lowRaw = (double)low["raw"];
+                                    rEstimate.Low = lowRaw;
+                                }
+                                var high = revenueEstimateJson.SelectToken(Ymf.High);
+                                if (high != null && high.Count() != 0)
+                                {
+                                    var highRaw = (double)high["raw"];
+                                    rEstimate.High = highRaw;
+                                }
+                                var yearAgoEps = revenueEstimateJson.SelectToken(Ymf.YearAgoEps);
+                                if (yearAgoEps != null && yearAgoEps.Count() != 0)
+                                {
+                                    var yearAgoEpsRaw = (double)yearAgoEps["raw"];
+                                    rEstimate.YearAgoEps = yearAgoEpsRaw;
+                                }
+                                var numberOfAnalysts = revenueEstimateJson.SelectToken(Ymf.NumberOfAnalysts);
+                                if (numberOfAnalysts != null && numberOfAnalysts.Count() != 0)
+                                {
+                                    var numberOfAnalystsRaw = (double)numberOfAnalysts["raw"];
+                                    rEstimate.NumberOfAnalysts = numberOfAnalystsRaw;
+                                }
+                                var growth = revenueEstimateJson.SelectToken(Ymf.Growth);
+                                if (growth != null && growth.Count() != 0)
+                                {
+                                    var growthRaw = (double)growth["raw"];
+                                    rEstimate.Growth = growthRaw;
+                                }
+                                rEstimate.CompaniesId = symbolId.Id;
+                                rEstimate.CreatedByUser = Cfg.UserName;
+                            }
+                            var eTrend = new EpsTrend();
+                            var epsTrendJson = i.SelectToken(Ymf.EpsTrend);
+                            if (epsTrendJson != null && epsTrendJson.Count() != 0)
+                            {
+                                var current = epsTrendJson.SelectToken(Ymf.Current);
+                                if (current != null && current.Count() != 0)
+                                {
+                                    var currentRaw = (double)current["raw"];
+                                    eTrend.Current = currentRaw;
+                                }
+                                var sevenDaysAgo = epsTrendJson.SelectToken(Ymf.SevenDaysAgo);
+                                if (sevenDaysAgo != null && sevenDaysAgo.Count() != 0)
+                                {
+                                    var sevenDaysAgoRaw = (double)sevenDaysAgo["raw"];
+                                    eTrend.SevenDaysAgo = sevenDaysAgoRaw;
+                                }
+                                var thirtyDaysAgo = epsTrendJson.SelectToken(Ymf.ThirtyDaysAgo);
+                                if (thirtyDaysAgo != null && thirtyDaysAgo.Count() != 0)
+                                {
+                                    var thirtyDaysAgoRaw = (double)thirtyDaysAgo["raw"];
+                                    eTrend.ThirtyDaysAgo = thirtyDaysAgoRaw;
+                                }
+                                var sixtyDaysAgo = epsTrendJson.SelectToken(Ymf.SixtyDaysAgo);
+                                if (sixtyDaysAgo != null && sixtyDaysAgo.Count() != 0)
+                                {
+                                    var sixtyDaysAgoRaw = (double)sixtyDaysAgo["raw"];
+                                    eTrend.SixtyDaysAgo = sixtyDaysAgoRaw;
+                                }
+                                var ninetyDaysAgo = epsTrendJson.SelectToken(Ymf.NinetyDaysAgo);
+                                if (ninetyDaysAgo != null && ninetyDaysAgo.Count() != 0)
+                                {
+                                    var ninetyDaysAgoRaw = (double)ninetyDaysAgo["raw"];
+                                    eTrend.NinetyDaysAgo = ninetyDaysAgoRaw;
+                                }
+                                eTrend.CompaniesId = symbolId.Id;
+                                eTrend.CreatedByUser = Cfg.UserName;
+                            }
+                            var eRevisions = new EpsRevisions();
+                            var eRevisionsJson = i.SelectToken(Ymf.EpsRevisions);
+                            if (eRevisionsJson != null && eRevisionsJson.Count() != 0)
+                            {
+                                var upLast7Days = eRevisionsJson.SelectToken(Ymf.UpLast7Days);
+                                if (upLast7Days != null && upLast7Days.Count() != 0)
+                                {
+                                    var upLast7DaysRaw = (double)upLast7Days["raw"];
+                                    eRevisions.UpLast7Days = upLast7DaysRaw;
+                                }
+                                var upLast30Days = eRevisionsJson.SelectToken(Ymf.UpLast30Days);
+                                if (upLast30Days != null && upLast30Days.Count() != 0)
+                                {
+                                    var upLast30DaysRaw = (double)upLast30Days["raw"];
+                                    eRevisions.UpLast30Days = upLast30DaysRaw;
+                                }
+                                var downLast30Days = eRevisionsJson.SelectToken(Ymf.DownLast30Days);
+                                if (downLast30Days != null && downLast30Days.Count() != 0)
+                                {
+                                    var downLast30DaysRaw = (double)downLast30Days["raw"];
+                                    eRevisions.DownLast30Days = downLast30DaysRaw;
+                                }
+                                var downLast90Days = eRevisionsJson.SelectToken(Ymf.DownLast90Days);
+                                if (downLast90Days != null && downLast90Days.Count() != 0)
+                                {
+                                    var downLast90DaysRaw = (double)downLast90Days["raw"];
+                                    eRevisions.DownLast90Days = downLast90DaysRaw;
+                                }
+                                eRevisions.CompaniesId = symbolId.Id;
+                                eRevisions.CreatedByUser = Cfg.UserName;
+                            }
+                            //Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {cashRaw}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            //TODO: Finish repository for remaining objects                          
+                            //await _repository.AddEarningsEstimate(eEstimate);
+                            //await _repository.AddEpsRevisions(rEstimate);
+                            //await _repository.AddEpsTrend(eTrend);
+                            //await _repository.AddEpsRevisions(eRevisions);
+                            cfsh.EarningsEstimateId = eEstimate.Id;
+                            cfsh.EpsRevisionsId = eRevisions.Id;
+                            cfsh.EpsTrendId = eTrend.Id;
+                            cfsh.RevenueEstimateId = rEstimate.Id;
+                            //await _repository.AddEarningsTrend(cfsh);
+                        }
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
         /// <summary>
         /// Get Financial Data for Yahoo company and add it to database
         /// </summary>
