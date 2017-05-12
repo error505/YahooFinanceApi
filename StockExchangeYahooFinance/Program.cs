@@ -48,6 +48,8 @@ namespace StockExchangeYahooFinance
                 new YahooInsiderTransactionsRequest(), 
                 new YahooInsiderHoldersRequest(), 
                 new YahooBalanceSheetHistoryRequest(), 
+                new YahooBalanceSheetHistoryQuarterlyRequest(), 
+                new YahooDefaultKeyStatisticsRequest(), 
             };
 
             while (true)

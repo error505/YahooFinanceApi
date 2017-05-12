@@ -1289,6 +1289,203 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        public async Task YahooBalanceSheetHistoryQuarterly(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.BalanceSheetHistoryQuarterly + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var balanceSheetHistory = d["quoteSummary"]["result"][0][Ym.BalanceSheetHistoryQuarterly]["balanceSheetStatements"];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        foreach (var i in balanceSheetHistory)
+                        {
+                            var cfsh = new BalanceSheetStatements();
+                            var endDate = i.SelectToken(Ymf.EndDate);
+                            string formatedEndDate = null;
+                            if (endDate != null && endDate.Count() != 0)
+                            {
+                                formatedEndDate = endDate["fmt"].ToString();
+                                cfsh.EndDate = formatedEndDate;
+                            }
+                            var cash = i.SelectToken(Ymf.Cash);
+                            double cashRaw = 0;
+                            if (cash != null && cash.Count() != 0)
+                            {
+                                cashRaw = (double)cash["raw"];
+                                cfsh.Cash = cashRaw;
+                            }
+                            var shortTermInvestments = i.SelectToken(Ymf.ShortTermInvestments);
+                            if (shortTermInvestments != null && shortTermInvestments.Count() != 0)
+                            {
+                                var shortTermInvestmentsRaw = (double)shortTermInvestments["raw"];
+                                cfsh.ShortTermInvestments = shortTermInvestmentsRaw;
+                            }
+                            var netReceivables = i.SelectToken(Ymf.NetReceivables);
+                            if (netReceivables != null && netReceivables.Count() != 0)
+                            {
+                                var netReceivablesRaw = (double)netReceivables["raw"];
+                                cfsh.NetReceivables = netReceivablesRaw;
+                            }
+                            var inventory = i.SelectToken(Ymf.Inventory);
+                            if (inventory != null && inventory.Count() != 0)
+                            {
+                                var inventoryRaw = (double)inventory["raw"];
+                                cfsh.Inventory = inventoryRaw;
+                            }
+                            var otherCurrentAssets = i.SelectToken(Ymf.OtherCurrentAssets);
+                            if (otherCurrentAssets != null && otherCurrentAssets.Count() != 0)
+                            {
+                                var otherCurrentAssetsRaw = (double)otherCurrentAssets["raw"];
+                                cfsh.OtherCurrentAssets = otherCurrentAssetsRaw;
+                            }
+                            var totalCurrentAssets = i.SelectToken(Ymf.TotalCurrentAssets);
+                            if (totalCurrentAssets != null && totalCurrentAssets.Count() != 0)
+                            {
+                                var totalCurrentAssetsRaw = (double)totalCurrentAssets["raw"];
+                                cfsh.TotalCurrentAssets = totalCurrentAssetsRaw;
+                            }
+                            var longTermInvestments = i.SelectToken(Ymf.LongTermInvestments);
+                            if (longTermInvestments != null && longTermInvestments.Count() != 0)
+                            {
+                                var longTermInvestmentsRaw = (double)longTermInvestments["raw"];
+                                cfsh.LongTermInvestments = longTermInvestmentsRaw;
+                            }
+                            var propertyPlantEquipment = i.SelectToken(Ymf.PropertyPlantEquipment);
+                            if (propertyPlantEquipment != null && propertyPlantEquipment.Count() != 0)
+                            {
+                                var propertyPlantEquipmentRaw = (double)propertyPlantEquipment["raw"];
+                                cfsh.PropertyPlantEquipment = propertyPlantEquipmentRaw;
+                            }
+                            var goodWill = i.SelectToken(Ymf.GoodWill);
+                            if (goodWill != null && goodWill.Count() != 0)
+                            {
+                                var goodWillRaw = (double)goodWill["raw"];
+                                cfsh.GoodWill = goodWillRaw;
+                            }
+                            var intangibleAssets = i.SelectToken(Ymf.IntangibleAssets);
+                            if (intangibleAssets != null && intangibleAssets.Count() != 0)
+                            {
+                                var intangibleAssetsRaw = (double)intangibleAssets["raw"];
+                                cfsh.IntangibleAssets = intangibleAssetsRaw;
+                            }
+                            var otherAssets = i.SelectToken(Ymf.OtherAssets);
+                            if (otherAssets != null && otherAssets.Count() != 0)
+                            {
+                                var otherAssetsRaw = (double)otherAssets["raw"];
+                                cfsh.OtherAssets = otherAssetsRaw;
+                            }
+                            var totalAssets = i.SelectToken(Ymf.TotalAssets);
+                            if (totalAssets != null && totalAssets.Count() != 0)
+                            {
+                                var totalAssetsRaw = (double)totalAssets["raw"];
+                                cfsh.TotalAssets = totalAssetsRaw;
+                            }
+                            var accountsPayable = i.SelectToken(Ymf.AccountsPayable);
+                            if (accountsPayable != null && accountsPayable.Count() != 0)
+                            {
+                                var accountsPayableRaw = (double)accountsPayable["raw"];
+                                cfsh.AccountsPayable = accountsPayableRaw;
+                            }
+                            var shortLongTermDebt = i.SelectToken(Ymf.ShortLongTermDebt);
+                            if (shortLongTermDebt != null && shortLongTermDebt.Count() != 0)
+                            {
+                                var shortLongTermDebtRaw = (double)shortLongTermDebt["raw"];
+                                cfsh.ShortLongTermDebt = shortLongTermDebtRaw;
+                            }
+                            var otherCurrentLiab = i.SelectToken(Ymf.OtherCurrentLiab);
+                            if (otherCurrentLiab != null && otherCurrentLiab.Count() != 0)
+                            {
+                                var otherCurrentLiabRaw = (double)otherCurrentLiab["raw"];
+                                cfsh.OtherCurrentLiab = otherCurrentLiabRaw;
+                            }
+                            var longTermDebt = i.SelectToken(Ymf.LongTermDebt);
+                            if (longTermDebt != null && longTermDebt.Count() != 0)
+                            {
+                                var longTermDebtRaw = (double)longTermDebt["raw"];
+                                cfsh.LongTermDebt = longTermDebtRaw;
+                            }
+                            var otherLiab = i.SelectToken(Ymf.OtherLiab);
+                            if (otherLiab != null && otherLiab.Count() != 0)
+                            {
+                                var otherLiabRaw = (double)otherLiab["raw"];
+                                cfsh.OtherLiab = otherLiabRaw;
+                            }
+                            var deferredLongTermLiab = i.SelectToken(Ymf.DeferredLongTermLiab);
+                            if (deferredLongTermLiab != null && deferredLongTermLiab.Count() != 0)
+                            {
+                                var deferredLongTermLiabRaw = (double)deferredLongTermLiab["raw"];
+                                cfsh.DeferredLongTermLiab = deferredLongTermLiabRaw;
+                            }
+                            var totalCurrentLiabilities = i.SelectToken(Ymf.TotalCurrentLiabilities);
+                            if (totalCurrentLiabilities != null && totalCurrentLiabilities.Count() != 0)
+                            {
+                                var totalCurrentLiabilitiesRaw = (double)totalCurrentLiabilities["raw"];
+                                cfsh.TotalCurrentLiabilities = totalCurrentLiabilitiesRaw;
+                            }
+                            var totalLiab = i.SelectToken(Ymf.TotalLiab);
+                            if (totalLiab != null && totalLiab.Count() != 0)
+                            {
+                                var totalLiabRaw = (double)totalLiab["raw"];
+                                cfsh.TotalLiab = totalLiabRaw;
+                            }
+                            var commonStock = i.SelectToken(Ymf.CommonStock);
+                            if (commonStock != null && commonStock.Count() != 0)
+                            {
+                                var commonStockRaw = (double)commonStock["raw"];
+                                cfsh.CommonStock = commonStockRaw;
+                            }
+                            var retainedEarnings = i.SelectToken(Ymf.RetainedEarnings);
+                            if (retainedEarnings != null && retainedEarnings.Count() != 0)
+                            {
+                                var retainedEarningsRaw = (double)retainedEarnings["raw"];
+                                cfsh.RetainedEarnings = retainedEarningsRaw;
+                            }
+                            var otherStockholderEquity = i.SelectToken(Ymf.OtherStockholderEquity);
+                            if (otherStockholderEquity != null && otherStockholderEquity.Count() != 0)
+                            {
+                                var otherStockholderEquityRaw = (double)otherStockholderEquity["raw"];
+                                cfsh.OtherStockholderEquity = otherStockholderEquityRaw;
+                            }
+                            var totalStockholderEquity = i.SelectToken(Ymf.TotalStockholderEquity);
+                            if (totalStockholderEquity != null && totalStockholderEquity.Count() != 0)
+                            {
+                                var totalStockholderEquityRaw = (double)totalStockholderEquity["raw"];
+                                cfsh.TotalStockholderEquity = totalStockholderEquityRaw;
+                            }
+                            var netTangibleAssets = i.SelectToken(Ymf.NetTangibleAssets);
+                            if (netTangibleAssets != null && netTangibleAssets.Count() != 0)
+                            {
+                                var netTangibleAssetsRaw = (double)netTangibleAssets["raw"];
+                                cfsh.NetTangibleAssets = netTangibleAssetsRaw;
+                            }
+                            Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {cashRaw}");
+                            cfsh.CompaniesId = symbolId.Id;
+                            cfsh.CreatedByUser = Cfg.UserName;
+                            await _repository.AddBalanceSheetStatements(cfsh);
+                        }
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
         /// <summary>
         /// Get Financial Data for Yahoo company and add it to database
         /// </summary>
@@ -1481,6 +1678,307 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                         cfsh.CompaniesId = symbolId.Id;
                         cfsh.CreatedByUser = Cfg.UserName;
                         await _repository.AddFinancialData(cfsh);
+                        companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
+
+        public async Task YahooDefaultKeyStatistics(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.DefaultKeyStatistics + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var financialData = d["quoteSummary"]["result"][0][Ym.DefaultKeyStatistics];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        var cfsh = new DefaultKeyStatistics();
+                        var enterpriseValue = financialData.SelectToken(Ymf.EnterpriseValue);
+                        double enterpriseValueRaw = 0;
+                        if (enterpriseValue != null && enterpriseValue.Count() != 0)
+                        {
+                            enterpriseValueRaw = (double)enterpriseValue["raw"];
+                            cfsh.EnterpriseValue = enterpriseValueRaw;
+                        }
+                        var forwardPe = financialData.SelectToken(Ymf.ForwardPe);
+                        double forwardPeRaw = 0;
+                        if (forwardPe != null && forwardPe.Count() != 0)
+                        {
+                            forwardPeRaw = (double)forwardPe["raw"];
+                            cfsh.ForwardPe = forwardPeRaw;
+                        }
+                        var floatShares = financialData.SelectToken(Ymf.FloatShares);
+                        if (floatShares != null && floatShares.Count() != 0)
+                        {
+                            var floatSharesRaw = (double)floatShares["raw"];
+                            cfsh.FloatShares = floatSharesRaw;
+                        }
+                        var sharesOutstanding = financialData.SelectToken(Ymf.SharesOutstanding);
+                        if (sharesOutstanding != null && sharesOutstanding.Count() != 0)
+                        {
+                            var sharesOutstandingRaw = (double)sharesOutstanding["raw"];
+                            cfsh.SharesOutstanding = sharesOutstandingRaw;
+                        }
+                        var sharesShort = financialData.SelectToken(Ymf.SharesShort);
+                        if (sharesShort != null && sharesShort.Count() != 0)
+                        {
+                            var sharesShortRaw = (double)sharesShort["raw"];
+                            cfsh.SharesShort = sharesShortRaw;
+                        }
+                        var sharesShortPriorMonth = financialData.SelectToken(Ymf.SharesShortPriorMonth);
+                        if (sharesShortPriorMonth != null && sharesShortPriorMonth.Count() != 0)
+                        {
+                            var sharesShortPriorMonthRaw = (double)sharesShortPriorMonth["raw"];
+                            cfsh.SharesShortPriorMonth = sharesShortPriorMonthRaw;
+                        }
+                        var heldPercentInsiders = financialData.SelectToken(Ymf.HeldPercentInsiders);
+                        if (heldPercentInsiders != null && sharesShortPriorMonth.Count() != 0)
+                        {
+                            var heldPercentInsidersRaw = (double)heldPercentInsiders["raw"];
+                            cfsh.HeldPercentInsiders = heldPercentInsidersRaw;
+                        }
+                        var heldPercentInstitutions = financialData.SelectToken(Ymf.HeldPercentInstitutions);
+                        if (heldPercentInstitutions != null && heldPercentInstitutions.Count() != 0)
+                        {
+                            var heldPercentInstitutionsRaw = (double)heldPercentInstitutions["raw"];
+                            cfsh.HeldPercentInstitutions = heldPercentInstitutionsRaw;
+                        }
+                        var shortRatio = financialData.SelectToken(Ymf.ShortRatio);
+                        if (shortRatio != null && shortRatio.Count() != 0)
+                        {
+                            var shortRatioRaw = (double)shortRatio["raw"];
+                            cfsh.ShortRatio = shortRatioRaw;
+                        }
+                        var shortPercentOfFloat = financialData.SelectToken(Ymf.ShortPercentOfFloat);
+                        if (shortPercentOfFloat != null && shortPercentOfFloat.Count() != 0)
+                        {
+                            var shortPercentOfFloatRaw = (double)shortPercentOfFloat["raw"];
+                            cfsh.ShortPercentOfFloat = shortPercentOfFloatRaw;
+                        }
+                        var beta = financialData.SelectToken(Ymf.Beta);
+                        if (beta != null && beta.Count() != 0)
+                        {
+                            var betaRaw = (double)beta["raw"];
+                            cfsh.Beta = betaRaw;
+                        }
+                        var morningStarOverallRating = financialData.SelectToken(Ymf.MorningStarOverallRating);
+                        if (morningStarOverallRating != null && morningStarOverallRating.Count() != 0)
+                        {
+                            var morningStarOverallRatingRaw = (double)morningStarOverallRating["raw"];
+                            cfsh.MorningStarOverallRating = morningStarOverallRatingRaw;
+                        }
+                        var morningStarRiskRating = financialData.SelectToken(Ymf.MorningStarRiskRating);
+                        if (morningStarRiskRating != null && morningStarRiskRating.Count() != 0)
+                        {
+                            var morningStarRiskRatingRaw = (double)morningStarRiskRating["raw"];
+                            cfsh.MorningStarRiskRating = morningStarRiskRatingRaw;
+                        }
+                        var category = financialData.SelectToken(Ymf.Category);
+                        if (category != null) cfsh.Category = category.ToString();
+
+                        var bookValue = financialData.SelectToken(Ymf.BookValue);
+                        if (bookValue != null && bookValue.Count() != 0)
+                        {
+                            var bookValueRaw = (double)bookValue["raw"];
+                            cfsh.BookValue = bookValueRaw;
+                        }
+                        var priceToBook = financialData.SelectToken(Ymf.PriceToBook);
+                        if (priceToBook != null && priceToBook.Count() != 0)
+                        {
+                            var totalRevenueRaw = (double)priceToBook["raw"];
+                            cfsh.PriceToBook = totalRevenueRaw;
+                        }
+                        var annualReportExpenseRatio = financialData.SelectToken(Ymf.AnnualReportExpenseRatio);
+                        if (annualReportExpenseRatio != null && annualReportExpenseRatio.Count() != 0)
+                        {
+                            var annualReportExpenseRatioRaw = (double)annualReportExpenseRatio["raw"];
+                            cfsh.AnnualReportExpenseRatio = annualReportExpenseRatioRaw;
+                        }
+                        var ytdReturn = financialData.SelectToken(Ymf.YtdReturn);
+                        if (ytdReturn != null && ytdReturn.Count() != 0)
+                        {
+                            var ytdReturnRaw = (double)ytdReturn["raw"];
+                            cfsh.YtdReturn = ytdReturnRaw;
+                        }
+                        var beta3Year = financialData.SelectToken(Ymf.Beta3Year);
+                        if (beta3Year != null && beta3Year.Count() != 0)
+                        {
+                            var beta3YearRaw = (double)beta3Year["raw"];
+                            cfsh.Beta3Year = beta3YearRaw;
+                        }
+                        var totalAssets = financialData.SelectToken(Ymf.TotalAssets);
+                        if (totalAssets != null && totalAssets.Count() != 0)
+                        {
+                            var totalAssetsRaw = (double)totalAssets["raw"];
+                            cfsh.TotalAssets = totalAssetsRaw;
+                        }
+                        var yield = financialData.SelectToken(Ymf.Yield);
+                        if (yield != null && yield.Count() != 0)
+                        {
+                            var yieldRaw = (double)yield["raw"];
+                            cfsh.Yield = yieldRaw;
+                        }
+                        var fundFamily = financialData.SelectToken(Ymf.FundFamily);
+                        if (fundFamily != null) cfsh.FundFamily = fundFamily.ToString();
+                        var legalType = financialData.SelectToken(Ymf.LegalType);
+                        if (legalType != null) cfsh.LegalType = legalType.ToString();
+                        var fundInceptionDate = financialData.SelectToken(Ymf.FundInceptionDate);
+                        if (fundInceptionDate != null && fundInceptionDate.Count() != 0)
+                        {
+                            var fundInceptionDateRaw = fundInceptionDate["fmt"].ToString();
+                            cfsh.FundInceptionDate = fundInceptionDateRaw;
+                        }
+                        var threeYearAverageReturn = financialData.SelectToken(Ymf.ThreeYearAverageReturn);
+                        if (threeYearAverageReturn != null && threeYearAverageReturn.Count() != 0)
+                        {
+                            var threeYearAverageReturnRaw = (double)threeYearAverageReturn["raw"];
+                            cfsh.ThreeYearAverageReturn = threeYearAverageReturnRaw;
+                        }
+                        var fiveYearAverageReturn = financialData.SelectToken(Ymf.FiveYearAverageReturn);
+                        if (fiveYearAverageReturn != null && fiveYearAverageReturn.Count() != 0)
+                        {
+                            var fiveYearAverageReturnRaw = (double)fiveYearAverageReturn["raw"];
+                            cfsh.FiveYearAverageReturn = fiveYearAverageReturnRaw;
+                        }
+                        var priceToSalesTrailing12Months = financialData.SelectToken(Ymf.PriceToSalesTrailing12Months);
+                        if (priceToSalesTrailing12Months != null && priceToSalesTrailing12Months.Count() != 0)
+                        {
+                            var priceToSalesTrailing12MonthsRaw = (double)priceToSalesTrailing12Months["raw"];
+                            cfsh.PriceToSalesTrailing12Months = priceToSalesTrailing12MonthsRaw;
+                        }
+                        var lastFiscalYearEnd = financialData.SelectToken(Ymf.LastFiscalYearEnd);
+                        if (lastFiscalYearEnd != null && lastFiscalYearEnd.Count() != 0)
+                        {
+                            var lastFiscalYearEndRaw = lastFiscalYearEnd["fmt"].ToString();
+                            cfsh.LastFiscalYearEnd = lastFiscalYearEndRaw;
+                        }
+                        var nextFiscalYearEnd = financialData.SelectToken(Ymf.NextFiscalYearEnd);
+                        if (nextFiscalYearEnd != null && nextFiscalYearEnd.Count() != 0)
+                        {
+                            var nextFiscalYearEndRaw = nextFiscalYearEnd["fmt"].ToString();
+                            cfsh.NextFiscalYearEnd = nextFiscalYearEndRaw;
+                        }
+                        var mostRecentQuarter = financialData.SelectToken(Ymf.MostRecentQuarter);
+                        if (mostRecentQuarter != null && mostRecentQuarter.Count() != 0)
+                        {
+                            var mostRecentQuarterRaw = mostRecentQuarter["fmt"].ToString();
+                            cfsh.MostRecentQuarter = mostRecentQuarterRaw;
+                        }
+                        var profitMargins = financialData.SelectToken(Ymf.ProfitMargins);
+                        if (profitMargins != null && profitMargins.Count() != 0)
+                        {
+                            var profitMarginsRaw = (double)profitMargins["raw"];
+                            cfsh.ProfitMargins = profitMarginsRaw;
+                        }
+                        var earningsQuarterlyGrowth = financialData.SelectToken(Ymf.EarningsQuarterlyGrowth);
+                        if (earningsQuarterlyGrowth != null && earningsQuarterlyGrowth.Count() != 0)
+                        {
+                            var earningsQuarterlyGrowthRaw = (double)earningsQuarterlyGrowth["raw"];
+                            cfsh.EarningsQuarterlyGrowth = earningsQuarterlyGrowthRaw;
+                        }
+                        var revenueQuarterlyGrowth = financialData.SelectToken(Ymf.RevenueQuarterlyGrowth);
+                        if (revenueQuarterlyGrowth != null && revenueQuarterlyGrowth.Count() != 0)
+                        {
+                            var revenueQuarterlyGrowthRaw = (double)revenueQuarterlyGrowth["raw"];
+                            cfsh.RevenueQuarterlyGrowth = revenueQuarterlyGrowthRaw;
+                        }
+                        var netIncomeToCommon = financialData.SelectToken(Ymf.NetIncomeToCommon);
+                        if (netIncomeToCommon != null && netIncomeToCommon.Count() != 0)
+                        {
+                            var netIncomeToCommonRaw = (double)netIncomeToCommon["raw"];
+                            cfsh.NetIncomeToCommon = netIncomeToCommonRaw;
+                        }
+                        var trailingEps = financialData.SelectToken(Ymf.TrailingEps);
+                        if (trailingEps != null && trailingEps.Count() != 0)
+                        {
+                            var trailingEpsRaw = (double)trailingEps["raw"];
+                            cfsh.TrailingEps = trailingEpsRaw;
+                        }
+                        var forwardEps = financialData.SelectToken(Ymf.ForwardEps);
+                        if (forwardEps != null && forwardEps.Count() != 0)
+                        {
+                            var forwardEpsRaw = (double)forwardEps["raw"];
+                            cfsh.ForwardEps = forwardEpsRaw;
+                        }
+                        var pegRatio = financialData.SelectToken(Ymf.PegRatio);
+                        if (pegRatio != null && pegRatio.Count() != 0)
+                        {
+                            var pegRatioRaw = (double)pegRatio["raw"];
+                            cfsh.PegRatio = pegRatioRaw;
+                        }
+                        var lastSplitDate = financialData.SelectToken(Ymf.LastSplitDate);
+                        if (lastSplitDate != null && lastSplitDate.Count() != 0)
+                        {
+                            var lastSplitDateRaw = lastSplitDate["fmt"].ToString();
+                            cfsh.LastSplitDate = lastSplitDateRaw;
+                        }
+                        var lastSplitFactor = financialData.SelectToken(Ymf.LastSplitFactor);
+                        if (lastSplitFactor != null) cfsh.LastSplitFactor = lastSplitFactor.ToString();
+
+                        var enterpriseToRevenue = financialData.SelectToken(Ymf.EnterpriseToRevenue);
+                        if (enterpriseToRevenue != null && enterpriseToRevenue.Count() != 0)
+                        {
+                            var enterpriseToRevenueRaw = (double)enterpriseToRevenue["raw"];
+                            cfsh.EnterpriseToRevenue = enterpriseToRevenueRaw;
+                        }
+                        var enterpriseToEbitda = financialData.SelectToken(Ymf.EnterpriseToEbitda);
+                        if (enterpriseToEbitda != null && enterpriseToEbitda.Count() != 0)
+                        {
+                            var enterpriseToEbitdaRaw = (double)enterpriseToEbitda["raw"];
+                            cfsh.EnterpriseToEbitda = enterpriseToEbitdaRaw;
+                        }
+                        var weekChange52 = financialData.SelectToken(Ymf.WeekChange52);
+                        if (weekChange52 != null && weekChange52.Count() != 0)
+                        {
+                            var weekChange52Raw = (double)weekChange52["raw"];
+                            cfsh.FiftyTwoWeekChange = weekChange52Raw;
+                        }
+                        var sandP52WeekChange = financialData.SelectToken(Ymf.SandP52WeekChange);
+                        if (sandP52WeekChange != null && sandP52WeekChange.Count() != 0)
+                        {
+                            var sandP52WeekChangeRaw = (double)sandP52WeekChange["raw"];
+                            cfsh.SandP52WeekChange = sandP52WeekChangeRaw;
+                        }
+                        var lastDividendValue = financialData.SelectToken(Ymf.LastDividendValue);
+                        if (lastDividendValue != null && lastDividendValue.Count() != 0)
+                        {
+                            var lastDividendValueRaw = (double)lastDividendValue["raw"];
+                            cfsh.LastDividendValue = lastDividendValueRaw;
+                        }
+                        var lastCapGain = financialData.SelectToken(Ymf.LastCapGain);
+                        if (lastCapGain != null && lastCapGain.Count() != 0)
+                        {
+                            var lastCapGainRaw = (double)lastCapGain["raw"];
+                            cfsh.LastCapGain = lastCapGainRaw;
+                        }
+                        var annualHoldingsTurnover = financialData.SelectToken(Ymf.AnnualHoldingsTurnover);
+                        if (annualHoldingsTurnover != null && annualHoldingsTurnover.Count() != 0)
+                        {
+                            var annualHoldingsTurnoverRaw = (double)annualHoldingsTurnover["raw"];
+                            cfsh.AnnualHoldingsTurnover = annualHoldingsTurnoverRaw;
+                        }
+                        Console.WriteLine($"{model.Ticker} : {enterpriseValueRaw} : {forwardPeRaw}");
+                        cfsh.CompaniesId = symbolId.Id;
+                        cfsh.CreatedByUser = Cfg.UserName;
+                        await _repository.AddDefaultKeyStatistics(cfsh);
                         companyExists = false;
                     }
                     else

@@ -135,6 +135,22 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
+        public async Task<DefaultKeyStatistics> GetDefaultKeyStatistics(double enterpriseValue, string companyId)
+        {
+            try
+            {
+                var defaultKeyStatistics =
+                await _context.DefaultKeyStatistics
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.EnterpriseValue - enterpriseValue) < 0.001 && m.CompaniesId == companyId));
+                return defaultKeyStatistics;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
         public async Task<InstitutionOwnership> GetInstitutionOwnershipByDate(string organisation, string companyId)
         {
             try
@@ -735,6 +751,38 @@ namespace StockExchangeYahooFinance.Repository
 
             }
             return financialData.Id;
+        }
+
+        public async Task<string> AddDefaultKeyStatistics(DefaultKeyStatistics defaultKeyStatistics)
+        {
+            if (defaultKeyStatistics == null)
+            {
+                return null;
+            }
+            if (DefaultKeyStatisticsIdExists(defaultKeyStatistics.EnterpriseValue, defaultKeyStatistics.CompaniesId))
+            {
+                var ind = await GetDefaultKeyStatistics(defaultKeyStatistics.EnterpriseValue, defaultKeyStatistics.CompaniesId);
+                return ind.Id;
+            }
+            _context.DefaultKeyStatistics.Add(defaultKeyStatistics);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (DefaultKeyStatisticsIdExists(defaultKeyStatistics.EnterpriseValue, defaultKeyStatistics.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return defaultKeyStatistics.Id;
         }
 
         public async Task<string> AddMajorHoldersBreakdown(MajorHoldersBreakdown majorHoldersBreakdown)
@@ -1405,6 +1453,11 @@ namespace StockExchangeYahooFinance.Repository
         public bool FinancialDataIdExists(double totalRevenue, string companyId)
         {
             return _context.FinancialData.Count(e => (Math.Abs(e.TotalRevenue - totalRevenue) < 0.001 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool DefaultKeyStatisticsIdExists(double enterpriseValue, string companyId)
+        {
+            return _context.DefaultKeyStatistics.Count(e => (Math.Abs(e.EnterpriseValue - enterpriseValue) < 0.001 && e.CompaniesId == companyId)) > 0;
         }
 
         public bool MajorHoldersBreakdownIdExists(double insidersPercentHeld, string companyId)

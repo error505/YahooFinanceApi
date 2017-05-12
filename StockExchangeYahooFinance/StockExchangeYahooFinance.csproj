@@ -259,6 +259,10 @@
     <Compile Include="Migrations\20170511124944_BalanceSheetHistoryChange.designer.cs">
       <DependentUpon>20170511124944_BalanceSheetHistoryChange.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170512124105_DefaultKeyStatisticsChange.cs" />
+    <Compile Include="Migrations\20170512124105_DefaultKeyStatisticsChange.designer.cs">
+      <DependentUpon>20170512124105_DefaultKeyStatisticsChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\IYahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\ApiRequest\YahooFinanceApiModules\YahooFinanceApiModulesRequest.cs" />
     <Compile Include="Services\CallWebRequest.cs" />

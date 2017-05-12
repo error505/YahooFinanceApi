@@ -305,4 +305,28 @@ namespace StockExchangeYahooFinance.Services.Menu
             await execTask.YahooBalanceSheetHistory(model);
         }
     }
+
+    internal class YahooBalanceSheetHistoryQuarterlyRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Balance Sheet History Quarterly! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooBalanceSheetHistoryQuarterly(model);
+        }
+    }
+
+    internal class YahooDefaultKeyStatisticsRequest : IMenu
+    {
+        public string Description => "Get Yahoo Company Default Key Statistics! (Data will be returned in Json format)!";
+        public async Task Execute(ApiRequest.ApiRequest execTask, RequestModel model)
+        {
+            Console.WriteLine("Please enter the symbol!");
+            var symbol = Console.ReadLine();
+            model.Ticker = symbol;
+            await execTask.YahooDefaultKeyStatistics(model);
+        }
+    }
 }
