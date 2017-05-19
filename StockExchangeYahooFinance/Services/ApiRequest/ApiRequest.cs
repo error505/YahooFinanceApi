@@ -2273,6 +2273,68 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
             }
         }
 
+        public async Task YahooNetSharePurchaseActivity(RequestModel model)
+        {
+            var url = Cfg.YahooQuoteSummary + model.Ticker + Cfg.YFormated + Cfg.YModules + Ym.NetSharePurchaseActivity + Cfg.YCorsDomain;
+            try
+            {
+                Console.Clear();
+                var json = await _callWebRequest.WebRequest(url);
+                var d = JObject.Parse(json);
+                var symbolId = await _repository.GetCompanyByName(model.Ticker);
+                var netSharePurchaseActivity = d["quoteSummary"]["result"][0][Ym.NetSharePurchaseActivity];
+                var companyExists = true;
+                while (companyExists)
+                {
+                    if (symbolId != null)
+                    {
+                        //var cfsh = new NetSharePurchaseActivity();
+                        //var insidersPercentHeld = netSharePurchaseActivity.SelectToken(Ymf.InsidersPercentHeld);
+                        //if (insidersPercentHeld != null && insidersPercentHeld.Count() != 0)
+                        //{
+                        //    var insidersPercentHeldRaw = (double)insidersPercentHeld["raw"];
+                        //    cfsh.InsidersPercentHeld = insidersPercentHeldRaw;
+                        //}
+                        //var institutionsPercentHeld = netSharePurchaseActivity.SelectToken(Ymf.InstitutionsPercentHeld);
+                        //if (institutionsPercentHeld != null && institutionsPercentHeld.Count() != 0)
+                        //{
+                        //    var institutionsPercentHeldRaw = (double)institutionsPercentHeld["raw"];
+                        //    cfsh.InstitutionsPercentHeld = institutionsPercentHeldRaw;
+                        //}
+                        //var institutionsFloatPercentHeld =
+                        //    netSharePurchaseActivity.SelectToken(Ymf.InstitutionsFloatPercentHeld);
+                        //if (institutionsFloatPercentHeld != null && institutionsFloatPercentHeld.Count() != 0)
+                        //{
+                        //    var institutionsFloatPercentHeldRaw = (double)institutionsFloatPercentHeld["raw"];
+                        //    cfsh.InstitutionsFloatPercentHeld = institutionsFloatPercentHeldRaw;
+                        //}
+                        //var institutionsCount = netSharePurchaseActivity.SelectToken(Ymf.InstitutionsCount);
+                        //if (institutionsCount != null && institutionsCount.Count() != 0)
+                        //{
+                        //    var institutionsCountRaw = (int)institutionsCount["raw"];
+                        //    cfsh.InstitutionsCount = institutionsCountRaw;
+                        //}
+
+                        //Console.WriteLine($"{model.Ticker}");
+                        //cfsh.CompaniesId = symbolId.Id;
+                        //cfsh.CreatedByUser = Cfg.UserName;
+                        //await _repository.AddMajorHoldersBreakdown(cfsh);
+                        //companyExists = false;
+                    }
+                    else
+                    {
+                        await AddYahooCompanyByName(model);
+                        symbolId = await _repository.GetCompanyByName(model.Ticker);
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.Read();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
