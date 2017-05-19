@@ -1669,17 +1669,17 @@ namespace StockExchangeYahooFinance.Services.ApiRequest
                             }
                             //Console.WriteLine($"{model.Ticker} : {formatedEndDate} : {cashRaw}");
                             cfsh.CompaniesId = symbolId.Id;
-                            cfsh.CreatedByUser = Cfg.UserName;
-                            //TODO: Finish repository for remaining objects                          
-                            //await _repository.AddEarningsEstimate(eEstimate);
-                            //await _repository.AddEpsRevisions(rEstimate);
-                            //await _repository.AddEpsTrend(eTrend);
-                            //await _repository.AddEpsRevisions(eRevisions);
+                            cfsh.CreatedByUser = Cfg.UserName;                         
+                            await _repository.AddEarningsEstimate(eEstimate);
+                            await _repository.AddRevenueEstimate(rEstimate);
+                            await _repository.AddEpsRevisions(eRevisions);
+                            await _repository.AddEpsTrend(eTrend);
+                            
                             cfsh.EarningsEstimateId = eEstimate.Id;
                             cfsh.EpsRevisionsId = eRevisions.Id;
                             cfsh.EpsTrendId = eTrend.Id;
                             cfsh.RevenueEstimateId = rEstimate.Id;
-                            //await _repository.AddEarningsTrend(cfsh);
+                            await _repository.AddEarningsTrend(cfsh);
                         }
                         companyExists = false;
                     }

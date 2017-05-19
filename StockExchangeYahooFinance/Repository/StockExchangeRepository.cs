@@ -135,6 +135,86 @@ namespace StockExchangeYahooFinance.Repository
             }
         }
 
+        public async Task<EarningsEstimate> GetEarningsEstimateByGrowth(double growth, string companyId)
+        {
+            try
+            {
+                var earningsEstimate =
+                await _context.EarningsEstimate
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.Growth - growth) < 0.001 && m.CompaniesId == companyId));
+                return earningsEstimate;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<EpsRevisions> GetEpsRevisionsByGrowth(double upLast7Days, string companyId)
+        {
+            try
+            {
+                var epsRevisions =
+                await _context.EpsRevisions
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.UpLast7Days - upLast7Days) < 0.001 && m.CompaniesId == companyId));
+                return epsRevisions;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<RevenueEstimate> GetRevenueEstimateByGrowth(double growth, string companyId)
+        {
+            try
+            {
+                var revenueEstimate =
+                await _context.RevenueEstimate
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.Growth - growth) < 0.001 && m.CompaniesId == companyId));
+                return revenueEstimate;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<EpsTrend> GetEpsTrendByCurrent(double current, string companyId)
+        {
+            try
+            {
+                var epsTrend =
+                await _context.EpsTrend
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.Current - current) < 0.001 && m.CompaniesId == companyId));
+                return epsTrend;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<EarningsTrend> GetEarningsTrendByGrowthAndDate(double growth, string endDate, string companyId)
+        {
+            try
+            {
+                var earningsTrend =
+                await _context.EarningsTrend
+                    .SingleOrDefaultAsync(m => (Math.Abs(m.Growth - growth) < 0.001 && m.CompaniesId == companyId && m.EndDate == endDate));
+                return earningsTrend;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
         public async Task<DefaultKeyStatistics> GetDefaultKeyStatistics(double enterpriseValue, string companyId)
         {
             try
@@ -760,6 +840,163 @@ namespace StockExchangeYahooFinance.Repository
 
             }
             return financialData.Id;
+        }
+
+        public async Task<string> AddEarningsEstimate(EarningsEstimate earningsEstimate)
+        {
+            if (earningsEstimate == null)
+            {
+                return null;
+            }
+            if (EarningsEstimateIdExists(earningsEstimate.Growth, earningsEstimate.CompaniesId))
+            {
+                var ind = await GetEarningsEstimateByGrowth(earningsEstimate.Growth, earningsEstimate.CompaniesId);
+                return ind.Id;
+            }
+            _context.EarningsEstimate.Add(earningsEstimate);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (EarningsEstimateIdExists(earningsEstimate.Growth, earningsEstimate.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
+            return earningsEstimate.Id;
+        }
+
+        public async Task<string> AddEpsRevisions(EpsRevisions epsRevisions)
+        {
+            if (epsRevisions == null)
+            {
+                return null;
+            }
+            if (EpsRevisionsIdExists(epsRevisions.UpLast7Days, epsRevisions.CompaniesId))
+            {
+                var ind = await GetEpsRevisionsByGrowth(epsRevisions.UpLast7Days, epsRevisions.CompaniesId);
+                return ind.Id;
+            }
+            _context.EpsRevisions.Add(epsRevisions);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (EpsRevisionsIdExists(epsRevisions.UpLast7Days, epsRevisions.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return epsRevisions.Id;
+        }
+
+        public async Task<string> AddRevenueEstimate(RevenueEstimate estimate)
+        {
+            if (estimate == null)
+            {
+                return null;
+            }
+            if (RevenueEstimateIdExists(estimate.Growth, estimate.CompaniesId))
+            {
+                var ind = await GetRevenueEstimateByGrowth(estimate.Growth, estimate.CompaniesId);
+                return ind.Id;
+            }
+            _context.RevenueEstimate.Add(estimate);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (RevenueEstimateIdExists(estimate.Growth, estimate.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return estimate.Id;
+        }
+
+
+        public async Task<string> AddEpsTrend(EpsTrend epsTrend)
+        {
+            if (epsTrend == null)
+            {
+                return null;
+            }
+            if (EpsTrendIdExists(epsTrend.Current, epsTrend.CompaniesId))
+            {
+                var ind = await GetEpsTrendByCurrent(epsTrend.Current, epsTrend.CompaniesId);
+                return ind.Id;
+            }
+            _context.EpsTrend.Add(epsTrend);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (EpsTrendIdExists(epsTrend.Current, epsTrend.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return epsTrend.Id;
+        }
+
+        public async Task<string> AddEarningsTrend(EarningsTrend earningsTrend)
+        {
+            if (earningsTrend == null)
+            {
+                return null;
+            }
+            if (EarningsTrendIdExists(earningsTrend.Growth, earningsTrend.EndDate, earningsTrend.CompaniesId))
+            {
+                var ind = await GetEarningsTrendByGrowthAndDate(earningsTrend.Growth, earningsTrend.EndDate, earningsTrend.CompaniesId);
+                return ind.Id;
+            }
+            _context.EarningsTrend.Add(earningsTrend);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (EarningsTrendIdExists(earningsTrend.Growth, earningsTrend.EndDate, earningsTrend.CompaniesId))
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
+                else
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            return earningsTrend.Id;
         }
 
         public async Task<string> AddDefaultKeyStatistics(DefaultKeyStatistics defaultKeyStatistics)
@@ -1462,6 +1699,31 @@ namespace StockExchangeYahooFinance.Repository
         public bool FinancialDataIdExists(double totalRevenue, string companyId)
         {
             return _context.FinancialData.Count(e => (Math.Abs(e.TotalRevenue - totalRevenue) < 0.001 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool EarningsEstimateIdExists(double growth, string companyId)
+        {
+            return _context.EarningsEstimate.Count(e => (Math.Abs(e.Growth - growth) < 0.001 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool EpsRevisionsIdExists(double upLast7Days, string companyId)
+        {
+            return _context.EpsRevisions.Count(e => (Math.Abs(e.UpLast7Days - upLast7Days) < 0.001 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool RevenueEstimateIdExists(double growth, string companyId)
+        {
+            return _context.RevenueEstimate.Count(e => (Math.Abs(e.Growth - growth) < 0.001 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool EpsTrendIdExists(double current, string companyId)
+        {
+            return _context.EpsTrend.Count(e => (Math.Abs(e.Current - current) < 0.001 && e.CompaniesId == companyId)) > 0;
+        }
+
+        public bool EarningsTrendIdExists(double growth, string endDate, string companyId)
+        {
+            return _context.EarningsTrend.Any(e => (Math.Abs(e.Growth - growth) < 0.001 && e.CompaniesId == companyId && e.EndDate == endDate));
         }
 
         public bool DefaultKeyStatisticsIdExists(double enterpriseValue, string companyId)
